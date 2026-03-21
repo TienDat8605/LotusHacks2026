@@ -11,7 +11,7 @@ export default function VibeCheck() {
   const poi = route?.pois.find((p) => p.id === params.poiId);
 
   usePageMeta({
-    title: poi ? `VibeMap — Vibe Check · ${poi.name}` : 'VibeMap — Vibe Check',
+    title: poi ? `Kompas — Vibe Check · ${poi.name}` : 'Kompas — Vibe Check',
     description: 'Quick street-view style preview for a stop on your route.',
   });
 
@@ -101,4 +101,3 @@ export default function VibeCheck() {
     </div>
   );
 }
-

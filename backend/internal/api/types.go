@@ -20,6 +20,7 @@ type Poi struct {
 	Location       LatLng   `json:"location"`
 	Address        *string  `json:"address,omitempty"`
 	City           *string  `json:"city,omitempty"`
+	ImageURL       *string  `json:"imageUrl,omitempty"`
 	VideoURL       *string  `json:"videoUrl,omitempty"`
 	VideoID        *string  `json:"videoId,omitempty"`
 	VideoPlaycount *int64   `json:"videoPlaycount,omitempty"`

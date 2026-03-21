@@ -13,7 +13,7 @@ from .zilliz_store import ZillizStore
 
 
 settings = Settings.from_env()
-app = FastAPI(title="VibeMap Backend Services")
+app = FastAPI(title="Kompas Backend Services")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins or ["*"],

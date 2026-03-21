@@ -15,6 +15,7 @@ export type Poi = {
   location: LatLng;
   address?: string;
   city?: string;
+  imageUrl?: string;
   videoUrl?: string;
   videoId?: string;
   category?: string;

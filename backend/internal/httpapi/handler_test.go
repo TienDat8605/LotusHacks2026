@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"vibemap/backend/internal/api"
@@ -199,5 +201,52 @@ func TestCorsEchoOrigin(t *testing.T) {
 
 	if got := w.Header().Get("Access-Control-Allow-Origin"); got != "*" {
 		t.Fatalf("expected allow-origin header, got %q", got)
+	}
+}
+
+func TestAssetServing(t *testing.T) {
+	tmp := t.TempDir()
+	imageDir := filepath.Join(tmp, "images")
+	if err := os.MkdirAll(imageDir, 0o755); err != nil {
+		t.Fatalf("mkdir images: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(imageDir, "cafe.webp"), []byte("fake image bytes"), 0o644); err != nil {
+		t.Fatalf("write image: %v", err)
+	}
+
+	dataPath := filepath.Join(tmp, "data.json")
+	raw := []byte(`[{"poi_name":"Cafe","lat":"10.77","lng":"106.70","image_url":"images/cafe.webp"}]`)
+	if err := os.WriteFile(dataPath, raw, 0o644); err != nil {
+		t.Fatalf("write data: %v", err)
+	}
+
+	cfg := &config.Config{Port: "8080", PoiDataPath: dataPath}
+	poiRepo := pois.NewRepository(dataPath)
+	if err := poiRepo.Load(); err != nil {
+		t.Fatalf("load pois: %v", err)
+	}
+	socialStore := social.NewStore()
+	socialStore.SeedDefault()
+
+	h := NewHandler(cfg, poiRepo, socialStore)
+	srv := httptest.NewServer(h.Router())
+	t.Cleanup(srv.Close)
+
+	res, err := http.Get(srv.URL + "/assets/images/cafe.webp")
+	if err != nil {
+		t.Fatalf("get asset: %v", err)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", res.StatusCode)
+	}
+
+	res2, err := http.Get(srv.URL + "/assets/../go.mod")
+	if err != nil {
+		t.Fatalf("get traversal asset: %v", err)
+	}
+	defer res2.Body.Close()
+	if res2.StatusCode != http.StatusNotFound {
+		t.Fatalf("expected status 404 for traversal, got %d", res2.StatusCode)
 	}
 }

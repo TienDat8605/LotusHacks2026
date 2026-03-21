@@ -127,6 +127,11 @@ func decodePois(raw []byte) ([]api.Poi, error) {
 		if videoID != "" {
 			videoIDPtr = &videoID
 		}
+		imageURL := strings.TrimSpace(it.ImageURL)
+		var imageURLPtr *string
+		if imageURL != "" {
+			imageURLPtr = &imageURL
+		}
 		playcount, err := parseIntLoose(it.VideoPlaycount)
 		var playcountPtr *int64
 		if err == nil && playcount > 0 {
@@ -138,6 +143,7 @@ func decodePois(raw []byte) ([]api.Poi, error) {
 			Location:       api.LatLng{Lat: lat, Lng: lng},
 			Address:        addrPtr,
 			City:           cityPtr,
+			ImageURL:       imageURLPtr,
 			VideoURL:       videoURLPtr,
 			VideoID:        videoIDPtr,
 			VideoPlaycount: playcountPtr,
@@ -155,6 +161,7 @@ type rawPoiItem struct {
 	VideoID        string `json:"video_id"`
 	VideoURL       string `json:"video_url"`
 	VideoPlaycount string `json:"video_playcount"`
+	ImageURL       string `json:"image_url"`
 	PoiName        string `json:"poi_name"`
 	PoiAddress     string `json:"poi_address"`
 	PoiCity        string `json:"poi_city"`

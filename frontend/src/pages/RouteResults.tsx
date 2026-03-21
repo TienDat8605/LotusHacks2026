@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import type { Poi } from '@/api/types';
+import type { LatLng, Poi, RoutePlan } from '@/api/types';
 import { MapCanvas } from '@/components/map/MapCanvas';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { cn } from '@/lib/utils';
@@ -26,9 +26,54 @@ function minutesLabel(mins: number) {
   return `${h}h ${m}m`;
 }
 
-function distanceLabel(poiCount: number) {
-  const estimate = Math.max(1.2, poiCount * 0.8);
-  return `${estimate.toFixed(1)} km`;
+function haversineMeters(a: LatLng, b: LatLng) {
+  const toRad = (value: number) => (value * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const lat1 = toRad(a.lat);
+  const lat2 = toRad(b.lat);
+  const x = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+  return 6371000 * c;
+}
+
+function distanceKmFromPath(path?: LatLng[]) {
+  if (!path || path.length < 2) return 0;
+  let meters = 0;
+  for (let i = 0; i < path.length - 1; i += 1) {
+    meters += haversineMeters(path[i], path[i + 1]);
+  }
+  return meters / 1000;
+}
+
+function routeDistanceKm(route: RoutePlan) {
+  let km = 0;
+  for (const leg of route.legs) {
+    km += distanceKmFromPath(leg.path);
+  }
+  if (km > 0) return km;
+  if (route.origin?.location && route.destination?.location) {
+    return haversineMeters(route.origin.location, route.destination.location) / 1000;
+  }
+  if (route.pois.length < 2) return 0;
+  for (let i = 0; i < route.pois.length - 1; i += 1) {
+    km += haversineMeters(route.pois[i].location, route.pois[i + 1].location) / 1000;
+  }
+  return km;
+}
+
+function routeTravelMinutes(route: RoutePlan) {
+  const byLegs = route.legs.reduce((total, leg) => total + Math.max(0, leg.durationMinutes || 0), 0);
+  if (byLegs > 0) return byLegs;
+  const km = routeDistanceKm(route);
+  if (km <= 0) return Math.max(1, route.totalDurationMinutes);
+  return Math.max(1, Math.round((km / 18) * 60));
+}
+
+function distanceLabel(km: number) {
+  if (km <= 0) return '0 km';
+  if (km < 1) return `${Math.max(100, Math.round(km * 1000))} m`;
+  return `${km.toFixed(1)} km`;
 }
 
 function stopTone(index: number) {
@@ -123,14 +168,15 @@ export default function RouteResults() {
   const [embedErrors, setEmbedErrors] = useState<Record<string, boolean>>({});
 
   usePageMeta({
-    title: route ? `VibeMap — ${route.title}` : 'VibeMap — Your Route',
+    title: route ? `Kompas — ${route.title}` : 'Kompas — Your Route',
     description: 'Review itinerary, stops, and turn-by-turn directions.',
   });
 
   const activeLeg = useMemo(() => route?.legs[activeLegIndex], [route?.legs, activeLegIndex]);
   const activePoi = useMemo(() => route?.pois.find((p) => p.id === activePoiId) ?? route?.pois[0], [route?.pois, activePoiId]);
   const totalStops = route?.pois.length ?? 0;
-  const totalDistance = route ? distanceLabel(totalStops) : '0 km';
+  const totalDistance = route ? distanceLabel(routeDistanceKm(route)) : '0 km';
+  const travelMinutes = route ? routeTravelMinutes(route) : 0;
   const selectedPoi = activePoi ?? route?.pois[0];
   const selectedTikTokUrl = selectedPoi ? getTikTokUrl(selectedPoi) : undefined;
   const selectedEmbedUrl = selectedPoi ? getTikTokEmbedUrl(selectedPoi) : undefined;
@@ -179,8 +225,8 @@ export default function RouteResults() {
 
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <div className="rounded-2xl bg-surface-container-low px-2 py-2 text-center">
-                  <div className="font-headline text-sm font-black text-on-surface">{minutesLabel(route.totalDurationMinutes)}</div>
-                  <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-outline">Time</div>
+                  <div className="font-headline text-sm font-black text-on-surface">{minutesLabel(travelMinutes)}</div>
+                  <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-outline">Travel</div>
                 </div>
                 <div className="rounded-2xl bg-surface-container-low px-2 py-2 text-center">
                   <div className="font-headline text-sm font-black text-on-surface">{totalDistance}</div>

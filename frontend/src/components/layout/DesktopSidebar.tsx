@@ -9,7 +9,7 @@ export function DesktopSidebar() {
   return (
     <aside className="hidden lg:flex fixed left-0 top-0 h-full w-64 z-40 bg-surface-container-lowest/90 backdrop-blur-xl border-r border-surface-container flex-col py-8 px-4">
       <div className="mb-10 px-4">
-        <h1 className="font-headline text-2xl font-black tracking-tighter text-primary">VibeMap</h1>
+        <h1 className="font-headline text-2xl font-black tracking-tighter text-primary">Kompas</h1>
         <div className="mt-4">
           <p className="text-xs uppercase tracking-[0.24em] text-outline font-bold">The Curator</p>
           <p className="text-[10px] text-primary/60 font-bold">HCMC Edition</p>
@@ -67,4 +67,3 @@ export function DesktopSidebar() {
     </aside>
   );
 }
-

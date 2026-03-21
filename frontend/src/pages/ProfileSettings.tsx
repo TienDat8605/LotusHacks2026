@@ -8,7 +8,7 @@ import { useVibeMapStore } from '@/stores/vibemapStore';
 
 export default function ProfileSettings() {
   usePageMeta({
-    title: 'VibeMap — Profile',
+    title: 'Kompas — Profile',
     description: 'Your identity and preferences.',
   });
 

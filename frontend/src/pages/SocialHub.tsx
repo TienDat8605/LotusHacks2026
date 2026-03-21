@@ -21,6 +21,8 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import { cn } from '@/lib/utils';
 import { useVibeMapStore } from '@/stores/vibemapStore';
 
+const apiBase = ((import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '').replace(/\/+$/, '');
+
 function isoTime(ts: string) {
   try {
     const d = new Date(ts);
@@ -47,8 +49,8 @@ function relativeTime(ts: string) {
 
 function initials(value: string) {
   const parts = value.trim().split(/\s+/).filter(Boolean);
-  if (!parts.length) return 'VM';
-  return `${parts[0]?.[0] ?? 'V'}${parts[1]?.[0] ?? parts[0]?.[1] ?? 'M'}`.toUpperCase();
+  if (!parts.length) return 'KP';
+  return `${parts[0]?.[0] ?? 'K'}${parts[1]?.[0] ?? parts[0]?.[1] ?? 'P'}`.toUpperCase();
 }
 
 function seedColor(seed: string) {
@@ -60,9 +62,36 @@ function seedColor(seed: string) {
   return `hsl(${hue}, 72%, 52%)`;
 }
 
-function distanceLabel(index: number) {
-  const values = ['200m away', '450m away', '1.2km away', '900m away'];
-  return values[index % values.length];
+function distanceLabel(meters: number) {
+  if (!Number.isFinite(meters) || meters < 0) return '—';
+  if (meters < 1000) return `${Math.max(1, Math.round(meters))}m away`;
+  return `${(meters / 1000).toFixed(1)}km away`;
+}
+
+function metersBetween(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
+  const toRad = (value: number) => (value * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const lat1 = toRad(a.lat);
+  const lat2 = toRad(b.lat);
+  const x = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+  return 6371000 * c;
+}
+
+function generatedRecommendationImage(poi: Poi) {
+  return `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
+    `${poi.name}, Ho Chi Minh City social meetup hotspot, modern editorial travel photography, vibrant urban nightlife, cinematic lighting, realistic`
+  )}&image_size=landscape_4_3`;
+}
+
+function recommendationImageSrc(poi: Poi) {
+  const raw = (poi.imageUrl ?? '').trim();
+  if (!raw) return generatedRecommendationImage(poi);
+  if (/^https?:\/\//i.test(raw)) return raw;
+  const normalized = raw.replace(/^\/+/, '');
+  if (!normalized) return generatedRecommendationImage(poi);
+  return apiBase ? `${apiBase}/assets/${normalized}` : `/assets/${normalized}`;
 }
 
 type RecommendationAccent = {
@@ -175,7 +204,7 @@ function applySocialEvent(
 
 export default function SocialHub() {
   usePageMeta({
-    title: 'VibeMap — Social',
+    title: 'Kompas — Social',
     description: 'Join live meetups and coordinate on the move.',
   });
 
@@ -206,18 +235,30 @@ export default function SocialHub() {
   const [roomName, setRoomName] = useState('');
   const [joinCode, setJoinCode] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
   const geoWatchId = useRef<number | null>(null);
+  const lastSentLocationRef = useRef<{ lat: number; lng: number } | null>(null);
 
   const active = useMemo(() => sessions.find((s) => s.id === activeId), [sessions, activeId]);
   const onlineParticipants = useMemo(
     () => participants.filter((p) => typeof p.lat === 'number' && typeof p.lng === 'number'),
     [participants]
   );
+  const selfParticipant = useMemo(
+    () => participants.find((p) => p.id === participantId),
+    [participants, participantId]
+  );
   const onlineCount = onlineParticipants.length;
   const currentParticipant = useMemo(
     () => participants.find((p) => p.id === participantId) ?? onlineParticipants[0],
     [participantId, participants, onlineParticipants]
   );
+  const userLocationForDistance = useMemo(() => {
+    if (currentLocation) return currentLocation;
+    if (!selfParticipant) return null;
+    if (typeof selfParticipant.lat !== 'number' || typeof selfParticipant.lng !== 'number') return null;
+    return { lat: selfParticipant.lat, lng: selfParticipant.lng };
+  }, [currentLocation, selfParticipant]);
   const nearbyFriends = useMemo(() => participants.slice(0, 4), [participants]);
   const sessionFeed = useMemo(() => feedItems(messages, participants), [messages, participants]);
   const isInActiveRoom = Boolean(participantId && joinedSessionId && joinedSessionId === activeId);
@@ -258,23 +299,55 @@ export default function SocialHub() {
   }, [activeId]);
 
   useEffect(() => {
+    if (!selfParticipant) return;
+    if (typeof selfParticipant.lat !== 'number' || typeof selfParticipant.lng !== 'number') return;
+    if (currentLocation) return;
+    setCurrentLocation({ lat: selfParticipant.lat, lng: selfParticipant.lng });
+  }, [selfParticipant, currentLocation]);
+
+  useEffect(() => {
     if (!participantId || !activeId) return;
     if (!('geolocation' in navigator)) return;
+
+    const api = getApiClient();
+    const minMoveMeters = 12;
+    lastSentLocationRef.current = null;
+
+    const handlePosition = (pos: GeolocationPosition) => {
+      const { latitude, longitude, accuracy } = pos.coords;
+      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
+      if (Number.isFinite(accuracy) && accuracy > 120) return;
+
+      const next = { lat: latitude, lng: longitude };
+      const prev = lastSentLocationRef.current;
+      if (prev && metersBetween(prev, next) < minMoveMeters) {
+        setCurrentLocation(prev);
+        return;
+      }
+
+      lastSentLocationRef.current = next;
+      setCurrentLocation(next);
+      void api.updateSocialLocation(activeId, participantId, next.lat, next.lng);
+    };
 
     if (geoWatchId.current != null) {
       navigator.geolocation.clearWatch(geoWatchId.current);
     }
 
-    geoWatchId.current = navigator.geolocation.watchPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        const api = getApiClient();
-        void api.updateSocialLocation(activeId, participantId, latitude, longitude);
-      },
+    navigator.geolocation.getCurrentPosition(
+      handlePosition,
       () => {
         return;
       },
-      { enableHighAccuracy: true, maximumAge: 5000, timeout: 8000 }
+      { enableHighAccuracy: true, maximumAge: 30000, timeout: 12000 }
+    );
+
+    geoWatchId.current = navigator.geolocation.watchPosition(
+      handlePosition,
+      () => {
+        return;
+      },
+      { enableHighAccuracy: true, maximumAge: 30000, timeout: 12000 }
     );
 
     return () => {
@@ -291,6 +364,8 @@ export default function SocialHub() {
     const resp = await api.joinSocialSession(sessionId, profile.displayName);
     setParticipantId(resp.participantId);
     setJoinedSessionId(sessionId);
+    setCurrentLocation(null);
+    lastSentLocationRef.current = null;
     try {
       localStorage.setItem('vibemap.participantId', resp.participantId);
       localStorage.setItem('vibemap.joinedSessionId', sessionId);
@@ -319,6 +394,8 @@ export default function SocialHub() {
     setActiveId(resp.session.id);
     setParticipantId(resp.participantId);
     setJoinedSessionId(resp.session.id);
+    setCurrentLocation(null);
+    lastSentLocationRef.current = null;
     setJoinCode('');
     try {
       localStorage.setItem('vibemap.participantId', resp.participantId);
@@ -346,6 +423,8 @@ export default function SocialHub() {
   function exitRoom() {
     setParticipantId('');
     setJoinedSessionId('');
+    setCurrentLocation(null);
+    lastSentLocationRef.current = null;
     try {
       localStorage.removeItem('vibemap.participantId');
       localStorage.removeItem('vibemap.joinedSessionId');
@@ -355,8 +434,8 @@ export default function SocialHub() {
   }
 
   const mapCenter = {
-    lat: currentParticipant?.lat ?? onlineParticipants[0]?.lat ?? recommendations[0]?.location.lat ?? 10.7757,
-    lng: currentParticipant?.lng ?? onlineParticipants[0]?.lng ?? recommendations[0]?.location.lng ?? 106.7008,
+    lat: currentLocation?.lat ?? selfParticipant?.lat ?? currentParticipant?.lat ?? onlineParticipants[0]?.lat ?? recommendations[0]?.location.lat ?? 10.7757,
+    lng: currentLocation?.lng ?? selfParticipant?.lng ?? currentParticipant?.lng ?? onlineParticipants[0]?.lng ?? recommendations[0]?.location.lng ?? 106.7008,
   };
 
   return (
@@ -370,6 +449,7 @@ export default function SocialHub() {
                 participants={participants}
                 recommendations={recommendations.slice(0, 3)}
                 currentParticipantId={participantId}
+                currentLocation={currentLocation ?? undefined}
                 fullscreen={isFullscreen}
                 className="h-full rounded-none border-0 shadow-none"
               />
@@ -418,6 +498,9 @@ export default function SocialHub() {
                 {recommendations.slice(0, 3).map((poi, index) => {
                   const accent = recommendationAccent(poi, index);
                   const AccentIcon = accent.icon;
+                  const recommendationDistance = userLocationForDistance
+                    ? distanceLabel(metersBetween(userLocationForDistance, poi.location))
+                    : '—';
                   return (
                     <article
                       key={poi.id}
@@ -427,14 +510,18 @@ export default function SocialHub() {
                         <img
                           alt={poi.name}
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          src={`https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
-                            `${poi.name}, Ho Chi Minh City social meetup hotspot, modern editorial travel photography, vibrant urban nightlife, cinematic lighting, realistic`
-                          )}&image_size=landscape_4_3`}
+                          src={recommendationImageSrc(poi)}
+                          onError={(event) => {
+                            const fallback = generatedRecommendationImage(poi);
+                            if (event.currentTarget.src !== fallback) {
+                              event.currentTarget.src = fallback;
+                            }
+                          }}
                         />
                       </div>
                       <h4 className="truncate text-sm font-bold text-on-surface">{poi.name}</h4>
                       <div className="mt-2 flex items-center justify-between gap-3 text-[11px]">
-                        <span className="font-medium text-slate-500">{distanceLabel(index)}</span>
+                        <span className="font-medium text-slate-500">{recommendationDistance}</span>
                         <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-bold', accent.tone)}>
                           <AccentIcon className="h-3.5 w-3.5" />
                           {accent.label}
@@ -543,7 +630,7 @@ export default function SocialHub() {
               <div className="flex-1 space-y-5 overflow-y-auto p-6">
                 {sessionFeed.map((item: FeedItem) => {
                   if (item.type === 'message') {
-                    const author = item.participant?.displayName ?? (item.message.role === 'assistant' ? 'VibeMap Bot' : profile.displayName);
+                    const author = item.participant?.displayName ?? (item.message.role === 'assistant' ? 'Kompas Bot' : profile.displayName);
                     return (
                       <div key={item.id} className="flex items-start gap-4">
                         <div
