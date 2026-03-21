@@ -55,4 +55,3 @@ func main() {
 	defer cancel()
 	_ = srv.Shutdown(ctx)
 }
-

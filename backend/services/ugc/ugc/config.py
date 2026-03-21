@@ -93,7 +93,11 @@ def _load_env_file(env_file: Path | None) -> None:
     if env_file:
         load_dotenv(env_file)
         return
+    services_env = Path(__file__).resolve().parents[2] / ".env"
+    backend_env = Path(__file__).resolve().parents[3] / ".env"
     root_env = _repo_root() / ".env"
+    load_dotenv(services_env)
+    load_dotenv(backend_env)
     load_dotenv(root_env)
 
 

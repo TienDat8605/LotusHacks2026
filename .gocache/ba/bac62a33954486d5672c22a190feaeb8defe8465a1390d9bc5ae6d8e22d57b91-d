@@ -1,0 +1,16 @@
+# test log
+open ../data/pois.json
+open ..\data\pois.sample.json
+getenv HTTP_PROXY
+getenv http_proxy
+getenv HTTPS_PROXY
+getenv https_proxy
+getenv NO_PROXY
+getenv no_proxy
+getenv REQUEST_METHOD
+open ../data/pois.json
+open ..\data\pois.sample.json
+open ../data/data.json
+open ..\data\pois.sample.json
+open ../data/pois.json
+open ..\data\pois.sample.json
