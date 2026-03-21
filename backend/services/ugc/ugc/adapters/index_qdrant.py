@@ -11,7 +11,7 @@ from openai import OpenAI
 
 from ..config import UGCConfig
 from ..errors import IndexingError
-from ..types import CharacteristicRow, IndexResult
+from ..types import CharacteristicRow, IndexResult, TikTokDataRecord
 
 
 def _normalize_whitespace(value: str) -> str:
@@ -59,7 +59,11 @@ class QdrantVectorIndexer:
         self._mistral_api_key = cfg.mistral_api_key
         self._embed_model = cfg.embed_model
 
-    def index_characteristic(self, row: CharacteristicRow) -> IndexResult:
+    def index_characteristic(
+        self,
+        row: CharacteristicRow,
+        record: TikTokDataRecord | None = None,
+    ) -> IndexResult:
         """Index a characteristic row into Qdrant.
 
         Args:

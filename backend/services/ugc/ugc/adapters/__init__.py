@@ -13,6 +13,7 @@ __all__ = [
     "MistralCharacteristicJudge",
     "NoopOcrExtractor",
     "QdrantVectorIndexer",
+    "ZillizVectorIndexer",
     "FileSystemVideoStorage",
     "JsonJobRepository",
     "DefaultCharacteristicSerializer",
@@ -21,6 +22,7 @@ __all__ = [
 
 from .dataset_json import DataJsonRepository
 from .geocode_http import HttpGeocoder
+from .index_zilliz import ZillizVectorIndexer
 from .index_qdrant import QdrantVectorIndexer
 from .judge_interfaze import InterfazeCharacteristicJudge
 from .judge_mistral import MistralCharacteristicJudge

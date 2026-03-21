@@ -112,11 +112,16 @@ class VectorIndexer(Protocol):
     """Interface for indexing characteristics into vector storage."""
 
     @abstractmethod
-    def index_characteristic(self, row: CharacteristicRow) -> IndexResult:
+    def index_characteristic(
+        self,
+        row: CharacteristicRow,
+        record: TikTokDataRecord | None = None,
+    ) -> IndexResult:
         """Index a characteristic row into vector storage.
 
         Args:
             row: The characteristic row to index.
+            record: The normalized dataset record when available.
 
         Returns:
             IndexResult with collection, doc_id, and indexing status.

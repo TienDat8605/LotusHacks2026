@@ -31,6 +31,7 @@ DEFAULT_JUDGE_MODEL = "interfaze-beta"
 DEFAULT_EMBED_PROVIDER = "disabled"
 DEFAULT_EMBED_MODEL = "disabled"
 DEFAULT_INDEX_COLLECTION = "video_characteristics"
+DEFAULT_ZILLIZ_COLLECTION = "review_embeddings"
 DEFAULT_INTERFAZE_BASE_URL = "https://api.interfaze.ai/v1"
 DEFAULT_INTERFAZE_AUDIO_PATH = "/audio/transcriptions"
 DEFAULT_INTERFAZE_CHAT_PATH = "/chat/completions"
@@ -148,12 +149,17 @@ class UGCConfig:
     embed_provider: Literal["disabled", "openai_embed", "mistral_embed"]
     embed_model: str
     openai_api_key: str | None
+    openai_embedding_model: str
 
     # Shared Mistral API key (for OCR, judge, embed)
     mistral_api_key: str | None
 
     # Vector storage configuration
     index_collection: str
+    zilliz_uri: str | None
+    zilliz_token: str | None
+    zilliz_db_name: str | None
+    zilliz_collection: str
     qdrant_url: str
     qdrant_api_key: str | None
 
@@ -185,7 +191,12 @@ class UGCConfig:
             UGC_EMBED_PROVIDER: Embed provider (default: disabled)
             UGC_EMBED_MODEL: Embed model (default: disabled)
             OPENAI_API_KEY: OpenAI API key for optional embeddings
+            OPENAI_EMBEDDING_MODEL: OpenAI embedding model for Zilliz/optional embeddings
             UGC_INDEX_COLLECTION: Qdrant collection (default: video_characteristics)
+            ZILLIZ_URI: Zilliz endpoint URI
+            ZILLIZ_TOKEN: Zilliz auth token
+            ZILLIZ_DB_NAME: Zilliz database name (optional)
+            AI_ZILLIZ_COLLECTION: Zilliz collection (default: review_embeddings)
             UGC_STORAGE_PATH: Video storage directory
             UGC_JOBS_PATH: Jobs data directory
             UGC_MAX_VIDEO_SIZE_MB: Max video size in MB (default: 100)
@@ -268,10 +279,18 @@ class UGCConfig:
             embed_provider=os.getenv("UGC_EMBED_PROVIDER", DEFAULT_EMBED_PROVIDER),  # type: ignore
             embed_model=os.getenv("UGC_EMBED_MODEL", DEFAULT_EMBED_MODEL),
             openai_api_key=_optional_env("OPENAI_API_KEY"),
+            openai_embedding_model=os.getenv(
+                "OPENAI_EMBEDDING_MODEL",
+                "text-embedding-3-small",
+            ),
             # Mistral shared key
             mistral_api_key=_optional_env("MISTRAL_API_KEY"),
             # Vector storage
             index_collection=os.getenv("UGC_INDEX_COLLECTION", DEFAULT_INDEX_COLLECTION),
+            zilliz_uri=_optional_env("ZILLIZ_URI"),
+            zilliz_token=_optional_env("ZILLIZ_TOKEN"),
+            zilliz_db_name=_optional_env("ZILLIZ_DB_NAME"),
+            zilliz_collection=os.getenv("AI_ZILLIZ_COLLECTION", DEFAULT_ZILLIZ_COLLECTION),
             qdrant_url=os.getenv("QDRANT_URL", "http://localhost:6333"),
             qdrant_api_key=_optional_env("QDRANT_API_KEY"),
             # File storage

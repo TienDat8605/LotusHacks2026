@@ -379,7 +379,7 @@ class UGCService:
 
         # Step 6: Index
         try:
-            index_result = self._indexer.index_characteristic(char_row)
+            index_result = self._indexer.index_characteristic(char_row, dataset_record)
             job = dataclasses.replace(job, index=index_result)
             trace["index_status"] = "success" if index_result.indexed else "skipped"
             if index_result.error:

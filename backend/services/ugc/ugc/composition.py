@@ -22,6 +22,7 @@ from .adapters import (
     MistralOcrExtractor,
     NoopOcrExtractor,
     QdrantVectorIndexer,
+    ZillizVectorIndexer,
 )
 from .config import UGCConfig
 from .service import UGCService
@@ -136,6 +137,8 @@ def _create_serializer() -> DefaultCharacteristicSerializer:
 
 def _create_indexer(cfg: UGCConfig) -> QdrantVectorIndexer:
     """Create vector indexer adapter."""
+    if cfg.zilliz_uri and cfg.zilliz_token and cfg.openai_api_key:
+        return ZillizVectorIndexer(cfg)
     return QdrantVectorIndexer(cfg)
 
 
