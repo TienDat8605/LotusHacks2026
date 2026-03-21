@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 
+ugc_jobs
+ugc_videos
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
