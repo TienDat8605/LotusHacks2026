@@ -71,6 +71,11 @@ type ChatMessage struct {
 	CreatedAt string `json:"createdAt"`
 }
 
+type AssistantChatRequest struct {
+	Query string `json:"query"`
+	TopK  int    `json:"topK,omitempty"`
+}
+
 type SocialSession struct {
 	ID               string `json:"id"`
 	DestinationName  string `json:"destinationName"`

@@ -12,6 +12,7 @@ import (
 	"vibemap/backend/internal/config"
 	"vibemap/backend/internal/httpapi"
 	"vibemap/backend/internal/pois"
+	"vibemap/backend/internal/reviews"
 	"vibemap/backend/internal/social"
 )
 
@@ -30,10 +31,15 @@ func main() {
 		log.Printf("WARN: POI data load failed: %v", err)
 	}
 
+	reviewRepo := reviews.NewRepository(cfg.ReviewDataPath)
+	if err := reviewRepo.Load(); err != nil {
+		log.Printf("WARN: review data load failed: %v", err)
+	}
+
 	socialStore := social.NewStore()
 	socialStore.SeedDefault()
 
-	handler := httpapi.NewHandler(cfg, poiRepo, socialStore)
+	handler := httpapi.NewHandler(cfg, poiRepo, reviewRepo, socialStore)
 	srv := &http.Server{
 		Addr:              ":" + cfg.Port,
 		Handler:           handler.Router(),
@@ -55,4 +61,3 @@ func main() {
 	defer cancel()
 	_ = srv.Shutdown(ctx)
 }
-

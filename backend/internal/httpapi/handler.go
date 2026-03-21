@@ -8,20 +8,35 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"vibemap/backend/internal/api"
+	"vibemap/backend/internal/assistant"
 	"vibemap/backend/internal/config"
 	"vibemap/backend/internal/pois"
+	"vibemap/backend/internal/reviews"
 	"vibemap/backend/internal/routes"
 	"vibemap/backend/internal/social"
 )
 
 type Handler struct {
-	cfg    *config.Config
-	pois   *pois.Repository
-	social *social.Store
+	cfg       *config.Config
+	pois      *pois.Repository
+	reviews   *reviews.Repository
+	assistant *assistant.Service
+	social    *social.Store
 }
 
-func NewHandler(cfg *config.Config, poiRepo *pois.Repository, socialStore *social.Store) *Handler {
-	return &Handler{cfg: cfg, pois: poiRepo, social: socialStore}
+func NewHandler(cfg *config.Config, poiRepo *pois.Repository, reviewRepo *reviews.Repository, socialStore *social.Store) *Handler {
+	var assistantSvc *assistant.Service
+	if reviewRepo != nil {
+		assistantSvc = assistant.NewService(cfg, reviewRepo.List())
+	}
+
+	return &Handler{
+		cfg:       cfg,
+		pois:      poiRepo,
+		reviews:   reviewRepo,
+		assistant: assistantSvc,
+		social:    socialStore,
+	}
 }
 
 func (h *Handler) Router() http.Handler {
@@ -36,6 +51,7 @@ func (h *Handler) Router() http.Handler {
 	r.Route("/api", func(apiR chi.Router) {
 		apiR.Post("/routes/plan", h.handlePlanRoute)
 		apiR.Post("/route", h.handlePlanRouteCompat)
+		apiR.Post("/assistant/chat", h.handleAssistantChat)
 
 		apiR.Get("/social/sessions", h.handleListSessions)
 		apiR.Post("/social/sessions/{sessionId}/join", h.handleJoinSession)
@@ -251,6 +267,31 @@ func (h *Handler) handlePing(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
+}
+
+func (h *Handler) handleAssistantChat(w http.ResponseWriter, r *http.Request) {
+	if h.assistant == nil || !h.assistant.Enabled() {
+		writeError(w, http.StatusServiceUnavailable, "ASSISTANT_UNAVAILABLE", "Review assistant is not configured")
+		return
+	}
+
+	var req api.AssistantChatRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "BAD_REQUEST", "Invalid JSON body")
+		return
+	}
+	req.Query = strings.TrimSpace(req.Query)
+	if req.Query == "" {
+		writeError(w, http.StatusBadRequest, "BAD_REQUEST", "query is required")
+		return
+	}
+
+	resp, err := h.assistant.Chat(r.Context(), req.Query, req.TopK)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "ASSISTANT_FAILED", "Could not answer query")
+		return
+	}
+	writeJSON(w, http.StatusOK, resp)
 }
 
 func writeError(w http.ResponseWriter, status int, code, message string) {
