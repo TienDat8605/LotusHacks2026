@@ -4,9 +4,12 @@ WORKDIR /workspace/backend/services
 
 COPY requirements.txt ./requirements.txt
 
-RUN python -m pip install --no-cache-dir --upgrade pip \
-  && pip install --no-cache-dir -r requirements.txt
+RUN python -m venv /opt/venv-base \
+  && /opt/venv-base/bin/pip install --upgrade pip \
+  && /opt/venv-base/bin/pip install -r requirements.txt \
+  && sha256sum requirements.txt | awk '{print $1}' > /opt/venv-base/.requirements.sha \
+  && mkdir -p /opt/venv
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8090"]
+CMD ["sh", "-lc", "BASE_SHA=\"$(cat /opt/venv-base/.requirements.sha 2>/dev/null || true)\"; VENV_SHA=\"$(cat /opt/venv/.requirements.sha 2>/dev/null || true)\"; if [ ! -x /opt/venv/bin/python ] || [ \"$BASE_SHA\" != \"$VENV_SHA\" ]; then cp -a /opt/venv-base/. /opt/venv/; fi && exec /opt/venv/bin/uvicorn app.main:app --host ${AI_SERVICE_HOST:-0.0.0.0} --port ${AI_SERVICE_PORT:-8090}"]

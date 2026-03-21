@@ -2,10 +2,22 @@
 	encode zstd gzip
 
 	@assistant path /api/assistant*
-	reverse_proxy @assistant ai-service:8090
+	reverse_proxy @assistant ai-service:8090 {
+		lb_try_duration 10s
+		lb_try_interval 250ms
+		health_uri /healthz
+		health_interval 10s
+		health_timeout 2s
+	}
 
 	@backend path /api/* /assets/* /healthz
-	reverse_proxy @backend backend:8080
+	reverse_proxy @backend backend:8080 {
+		lb_try_duration 10s
+		lb_try_interval 250ms
+		health_uri /healthz
+		health_interval 10s
+		health_timeout 2s
+	}
 
 	reverse_proxy frontend:5173
 }

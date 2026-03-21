@@ -41,6 +41,7 @@ services:
     volumes:
       - ./backend/services:/workspace/backend/services
       - ./data:/workspace/data
+      - ai-venv:/opt/venv
     restart: unless-stopped
 
   backend:
@@ -94,3 +95,4 @@ volumes:
   go-mod-cache:
   go-build-cache:
   frontend-node-modules:
+  ai-venv:
