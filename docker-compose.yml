@@ -2,11 +2,16 @@ name: lotus-hacks
 
 services:
   ai-service:
+    # Keep Debian slim for binary wheel compatibility (e.g. pymilvus/grpc).
     image: python:3.11-slim
+    init: true
     working_dir: /workspace/backend/services
     command: >
-      sh -lc "pip install --no-cache-dir -r requirements.txt &&
-      uvicorn app.main:app --host 0.0.0.0 --port 8090"
+      sh -lc "if [ ! -x /opt/venv/bin/python ]; then python -m venv /opt/venv; fi &&
+      if [ ! -f /opt/venv/requirements.sha ] || ! sha256sum -c /opt/venv/requirements.sha >/dev/null 2>&1; then
+      /opt/venv/bin/pip install --no-cache-dir -r requirements.txt &&
+      sha256sum requirements.txt > /opt/venv/requirements.sha; fi &&
+      /opt/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8090"
     environment:
       PYTHONUNBUFFERED: "1"
       AI_SERVICE_HOST: 0.0.0.0
@@ -20,55 +25,56 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - ./:/workspace
+      - ./backend/services:/workspace/backend/services
+      - ./data:/workspace/data
       - pip-cache:/root/.cache/pip
+      - ai-venv:/opt/venv
     restart: unless-stopped
 
   backend:
-    image: golang:1.22
+    image: golang:1.22-alpine
+    init: true
     working_dir: /workspace/backend
-    command: >
-      sh -lc "go mod download &&
-      go run ./cmd/api"
+    command: sh -lc "go run ./cmd/api"
     environment:
       PORT: "8080"
       CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
       POI_DATA_PATH: ../data/data.json
       UGC_SERVICE_URL: http://ai-service:8090
-    depends_on:
-      - ai-service
     ports:
       - "8080:8080"
     volumes:
-      - ./:/workspace
+      - ./backend:/workspace/backend
+      - ./data:/workspace/data
       - go-mod-cache:/go/pkg/mod
       - go-build-cache:/root/.cache/go-build
     restart: unless-stopped
 
   frontend:
-    image: node:20
+    image: node:20-alpine
+    init: true
     working_dir: /workspace/frontend
     command: >
-      sh -lc "npm ci &&
+      sh -lc "if [ ! -f node_modules/.lock.sha ] || ! sha256sum -c node_modules/.lock.sha >/dev/null 2>&1; then
+      npm ci &&
+      sha256sum package-lock.json > node_modules/.lock.sha; fi &&
       npm run dev -- --host 0.0.0.0 --port 5173"
     environment:
       VITE_API_MODE: real
       VITE_API_BASE_URL: http://localhost:8080
       VITE_AI_API_BASE_URL: http://localhost:8090
       VITE_UGC_API_BASE_URL: http://localhost:8090
-      CHOKIDAR_USEPOLLING: "true"
-    depends_on:
-      - backend
-      - ai-service
+      CHOKIDAR_USEPOLLING: "${CHOKIDAR_USEPOLLING:-false}"
     ports:
       - "5173:5173"
     volumes:
-      - ./:/workspace
+      - ./frontend:/workspace/frontend
       - frontend-node-modules:/workspace/frontend/node_modules
     restart: unless-stopped
 
 volumes:
   pip-cache:
+  ai-venv:
   go-mod-cache:
   go-build-cache:
   frontend-node-modules:
