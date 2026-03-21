@@ -54,10 +54,41 @@ class JobResultDetail(BaseModel):
 
     characteristic: str | None = None
     confidence: float | None = Field(default=None, ge=0, le=1)
+    location_explicit: str | None = None
+    location_guess: str | None = None
+    description: str | None = None
+    entities: list["ExtractedEntityDetail"] = Field(default_factory=list)
+    facts: list["ExtractedFactDetail"] = Field(default_factory=list)
+    evidence: list["EvidenceItemDetail"] = Field(default_factory=list)
     indexed: bool = False
     provider_map: dict[str, str] = Field(default_factory=dict)
     transcription_text: str | None = None
     ocr_text: str | None = None
+    ocr_visual_clues: list[str] = Field(default_factory=list)
+
+
+class ExtractedEntityDetail(BaseModel):
+    """Named entity extracted from the video evidence."""
+
+    name: str
+    entity_type: str
+    source: str
+
+
+class ExtractedFactDetail(BaseModel):
+    """Fact extracted from the video evidence."""
+
+    claim: str
+    source: str
+
+
+class EvidenceItemDetail(BaseModel):
+    """Evidence supporting the final structured extraction."""
+
+    source: str
+    kind: str
+    detail: str
+    quote: str | None = None
 
 
 class HealthCheckResponse(BaseModel):

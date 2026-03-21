@@ -4,6 +4,9 @@ from __future__ import annotations
 
 __all__ = [
     "GroqWhisperTranscriber",
+    "InterfazeTranscriber",
+    "InterfazeVisionOcrExtractor",
+    "InterfazeStructuredJudge",
     "MistralOcrExtractor",
     "MistralCharacteristicJudge",
     "QdrantVectorIndexer",
@@ -12,6 +15,11 @@ __all__ = [
     "DefaultCharacteristicSerializer",
 ]
 
+from .interfaze import (
+    InterfazeStructuredJudge,
+    InterfazeTranscriber,
+    InterfazeVisionOcrExtractor,
+)
 from .index_qdrant import QdrantVectorIndexer
 from .judge_mistral import MistralCharacteristicJudge
 from .ocr_mistral import MistralOcrExtractor

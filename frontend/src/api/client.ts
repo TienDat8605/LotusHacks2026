@@ -2,6 +2,7 @@ import type {
   AssistantResponse,
   ChatMessage,
   Poi,
+  UgcJobStatusResponse,
   UploadLocationRequest,
   UploadLocationResponse,
   RoutePlan,
@@ -24,6 +25,8 @@ export type ApiClient = {
   sendSessionMessage: (sessionId: string, text: string) => Promise<ChatMessage>;
   sendSessionPing: (sessionId: string) => Promise<{ ok: true }>;
   uploadLocationVideo: (req: UploadLocationRequest) => Promise<UploadLocationResponse>;
+  processLocationVideo: (jobId: string) => Promise<UgcJobStatusResponse>;
+  getLocationVideoJob: (jobId: string) => Promise<UgcJobStatusResponse>;
 };
 
 export function getApiMode(): ApiMode {

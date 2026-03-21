@@ -11,12 +11,16 @@ from .adapters import (
     DefaultCharacteristicSerializer,
     FileSystemVideoStorage,
     GroqWhisperTranscriber,
+    InterfazeStructuredJudge,
+    InterfazeTranscriber,
+    InterfazeVisionOcrExtractor,
     JsonJobRepository,
     MistralCharacteristicJudge,
     MistralOcrExtractor,
     QdrantVectorIndexer,
 )
 from .config import UGCConfig
+from .contracts import CharacteristicJudge, OcrExtractor, Transcriber
 from .service import UGCService
 
 
@@ -62,31 +66,37 @@ def _create_storage(cfg: UGCConfig) -> FileSystemVideoStorage:
     return FileSystemVideoStorage(cfg)
 
 
-def _create_transcriber(cfg: UGCConfig) -> GroqWhisperTranscriber:
+def _create_transcriber(cfg: UGCConfig) -> Transcriber:
     """Create STT transcriber adapter based on provider config."""
+    if cfg.stt_provider == "interfaze_stt":
+        return InterfazeTranscriber(cfg)
     if cfg.stt_provider == "groq_whisper":
         return GroqWhisperTranscriber(cfg)
     else:
-        # Default to Groq Whisper
-        return GroqWhisperTranscriber(cfg)
+        # Default to Interfaze
+        return InterfazeTranscriber(cfg)
 
 
-def _create_ocr_extractor(cfg: UGCConfig) -> MistralOcrExtractor:
+def _create_ocr_extractor(cfg: UGCConfig) -> OcrExtractor:
     """Create OCR extractor adapter based on provider config."""
+    if cfg.ocr_provider == "interfaze_vision":
+        return InterfazeVisionOcrExtractor(cfg)
     if cfg.ocr_provider == "mistral_ocr":
         return MistralOcrExtractor(cfg)
     else:
-        # Default to Mistral OCR
-        return MistralOcrExtractor(cfg)
+        # Default to Interfaze vision
+        return InterfazeVisionOcrExtractor(cfg)
 
 
-def _create_judge(cfg: UGCConfig) -> MistralCharacteristicJudge:
+def _create_judge(cfg: UGCConfig) -> CharacteristicJudge:
     """Create characteristic judge adapter based on provider config."""
+    if cfg.judge_provider == "interfaze_structured":
+        return InterfazeStructuredJudge(cfg)
     if cfg.judge_provider == "mistral_chat":
         return MistralCharacteristicJudge(cfg)
     else:
-        # Default to Mistral chat
-        return MistralCharacteristicJudge(cfg)
+        # Default to Interfaze structured extraction
+        return InterfazeStructuredJudge(cfg)
 
 
 def _create_serializer() -> DefaultCharacteristicSerializer:

@@ -1,5 +1,54 @@
 import type { ApiClient } from '@/api/client';
 
+function mapUploadLocationResponse(payload: any) {
+  return {
+    jobId: payload.job_id,
+    videoId: payload.video_id,
+    status: payload.status,
+    createdAt: payload.created_at,
+  };
+}
+
+function mapUgcJobStatusResponse(payload: any) {
+  return {
+    jobId: payload.job_id,
+    videoId: payload.video_id,
+    status: payload.status,
+    createdAt: payload.created_at,
+    updatedAt: payload.updated_at,
+    error: payload.error ?? null,
+    result: payload.result
+      ? {
+          characteristic: payload.result.characteristic ?? null,
+          confidence: payload.result.confidence ?? null,
+          locationExplicit: payload.result.location_explicit ?? null,
+          locationGuess: payload.result.location_guess ?? null,
+          description: payload.result.description ?? null,
+          entities: (payload.result.entities ?? []).map((item: any) => ({
+            name: item.name,
+            entityType: item.entity_type,
+            source: item.source,
+          })),
+          facts: (payload.result.facts ?? []).map((item: any) => ({
+            claim: item.claim,
+            source: item.source,
+          })),
+          evidence: (payload.result.evidence ?? []).map((item: any) => ({
+            source: item.source,
+            kind: item.kind,
+            detail: item.detail,
+            quote: item.quote ?? null,
+          })),
+          indexed: Boolean(payload.result.indexed),
+          providerMap: payload.result.provider_map ?? {},
+          transcriptionText: payload.result.transcription_text ?? null,
+          ocrText: payload.result.ocr_text ?? null,
+          ocrVisualClues: payload.result.ocr_visual_clues ?? [],
+        }
+      : null,
+  };
+}
+
 async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     ...init,
@@ -19,6 +68,7 @@ async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
 
 export function createRealApiClient(): ApiClient {
   const base = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '';
+  const ugcBase = (import.meta.env.VITE_UGC_API_BASE_URL as string | undefined) ?? base;
 
   return {
     planRoute: (req) => jsonFetch(`${base}/api/routes/plan`, { method: 'POST', body: JSON.stringify(req) }),
@@ -56,13 +106,11 @@ export function createRealApiClient(): ApiClient {
     uploadLocationVideo: async (req) => {
       const form = new FormData();
       form.append('file', req.file);
-      form.append('point_of_interest', req.pointOfInterest);
-      form.append('city', req.city);
-      form.append('address', req.address);
-      if (req.shortDescription) form.append('short_description', req.shortDescription);
-      if (req.atmosphere) form.append('atmosphere', req.atmosphere);
+      form.append('poi_name', req.pointOfInterest);
+      form.append('poi_city', req.city);
+      form.append('poi_address', req.address);
 
-      const res = await fetch(`${base}/api/ugc/videos`, {
+      const res = await fetch(`${ugcBase}/ugc/videos`, {
         method: 'POST',
         body: form,
       });
@@ -70,7 +118,25 @@ export function createRealApiClient(): ApiClient {
         const text = await res.text().catch(() => '');
         throw new Error(text || `Request failed: ${res.status}`);
       }
-      return (await res.json()) as Awaited<ReturnType<ApiClient['uploadLocationVideo']>>;
+      return mapUploadLocationResponse(await res.json());
+    },
+    processLocationVideo: async (jobId) => {
+      const res = await fetch(`${ugcBase}/ugc/jobs/${encodeURIComponent(jobId)}/process`, {
+        method: 'POST',
+      });
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(text || `Request failed: ${res.status}`);
+      }
+      return mapUgcJobStatusResponse(await res.json());
+    },
+    getLocationVideoJob: async (jobId) => {
+      const res = await fetch(`${ugcBase}/ugc/jobs/${encodeURIComponent(jobId)}`);
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(text || `Request failed: ${res.status}`);
+      }
+      return mapUgcJobStatusResponse(await res.json());
     },
   };
 }

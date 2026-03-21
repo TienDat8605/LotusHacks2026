@@ -239,6 +239,10 @@ class UGCService:
             evidence_parts.append(f"[Speech transcript]\n{transcription.text}")
         if ocr_result and ocr_result.text:
             evidence_parts.append(f"[OCR text]\n{ocr_result.text}")
+        if ocr_result and ocr_result.visual_clues:
+            evidence_parts.append(
+                "[Visual clues]\n" + "\n".join(f"- {clue}" for clue in ocr_result.visual_clues)
+            )
 
         evidence = "\n\n".join(evidence_parts)
 

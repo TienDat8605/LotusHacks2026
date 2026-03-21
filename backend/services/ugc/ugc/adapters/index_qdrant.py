@@ -69,7 +69,13 @@ class QdrantVectorIndexer:
             IndexingError: If indexing fails.
         """
         if not self._mistral_api_key:
-            raise IndexingError("MISTRAL_API_KEY is not configured for embeddings")
+            return IndexResult(
+                collection=self._collection,
+                doc_id="",
+                point_id="",
+                indexed=False,
+                error="Skipped indexing because MISTRAL_API_KEY is not configured",
+            )
 
         # Parse the characteristic format to extract fields
         fields = self._parse_characteristic_fields(row.characteristic)

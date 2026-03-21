@@ -41,12 +41,23 @@ class DefaultCharacteristicSerializer:
             f"poi = {meta.poi_name}",
             f"city = {meta.poi_city}",
             f"characteristic_vi = {judge_result.characteristic_vi}",
+            f"description = {judge_result.description or judge_result.characteristic_vi}",
             f"confidence = {judge_result.confidence:.2f}",
         ]
+
+        if judge_result.location_explicit:
+            parts.append(f"location_explicit = {judge_result.location_explicit}")
+        if judge_result.location_guess:
+            parts.append(f"location_guess = {judge_result.location_guess}")
 
         if judge_result.evidence_quotes:
             evidence = " | ".join(judge_result.evidence_quotes[:3])
             parts.append(f"evidence = {evidence}")
+
+        if judge_result.facts:
+            fact_text = " | ".join(fact.claim for fact in judge_result.facts[:3] if fact.claim)
+            if fact_text:
+                parts.append(f"facts = {fact_text}")
 
         if meta.poi_address:
             parts.append(f"address = {meta.poi_address}")

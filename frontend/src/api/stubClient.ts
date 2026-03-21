@@ -2,6 +2,7 @@ import type { ApiClient } from '@/api/client';
 import type {
   AssistantResponse,
   ChatMessage,
+  UgcJobStatusResponse,
   UploadLocationRequest,
   UploadLocationResponse,
   Poi,
@@ -222,10 +223,73 @@ export function createStubApiClient(): ApiClient {
       const resp: UploadLocationResponse = {
         jobId: id('upload_job'),
         videoId,
-        status: 'queued',
+        status: 'pending',
         createdAt: nowIso(),
       };
       return resp;
+    },
+
+    processLocationVideo: async (jobId: string) => {
+      await sleep(1200);
+      const result: UgcJobStatusResponse = {
+        jobId,
+        videoId: id('video'),
+        status: 'completed',
+        createdAt: nowIso(),
+        updatedAt: nowIso(),
+        result: {
+          characteristic: 'Quan rooftop nho, view hoang hon dep, hop cho nhom ban va chup anh',
+          confidence: 0.84,
+          locationExplicit: 'District 1, Ho Chi Minh City',
+          locationGuess: 'A rooftop cafe near Nguyen Hue',
+          description:
+            'The video explicitly mentions District 1 and shows rooftop seating, sunset views, and drinks.',
+          entities: [
+            { name: 'District 1', entityType: 'district', source: 'speech' },
+            { name: 'Ho Chi Minh City', entityType: 'city', source: 'ocr' },
+          ],
+          facts: [
+            { claim: 'The place has rooftop seating.', source: 'visual' },
+            { claim: 'The video mentions sunset drinks.', source: 'speech' },
+          ],
+          evidence: [
+            {
+              source: 'speech',
+              kind: 'explicit_location',
+              detail: 'The speaker says the place is in District 1.',
+              quote: 'District 1 is the best area for sunset drinks.',
+            },
+            {
+              source: 'ocr',
+              kind: 'visible_text',
+              detail: 'City name appears on screen.',
+              quote: 'Ho Chi Minh City',
+            },
+          ],
+          indexed: true,
+          providerMap: {
+            stt: 'interfaze_stt:interfaze-beta',
+            ocr: 'interfaze_vision:interfaze-beta',
+            judge: 'interfaze_structured:interfaze-beta',
+          },
+          transcriptionText: 'District 1 is the best area for sunset drinks.',
+          ocrText: 'Ho Chi Minh City\nSunset rooftop',
+          ocrVisualClues: ['rooftop seating', 'sunset skyline', 'cocktail glasses'],
+        },
+      };
+      return result;
+    },
+
+    getLocationVideoJob: async (jobId: string) => {
+      await sleep(200);
+      return {
+        jobId,
+        videoId: id('video'),
+        status: 'completed',
+        createdAt: nowIso(),
+        updatedAt: nowIso(),
+        result: null,
+      };
     },
   };
 }

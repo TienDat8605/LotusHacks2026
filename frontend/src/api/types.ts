@@ -87,6 +87,50 @@ export type UploadLocationRequest = {
 export type UploadLocationResponse = {
   jobId: string;
   videoId: string;
-  status: 'queued' | 'processing' | 'completed' | 'failed';
+  status: 'pending' | 'processing' | 'completed' | 'failed';
   createdAt: string;
+};
+
+export type UgcEntity = {
+  name: string;
+  entityType: string;
+  source: string;
+};
+
+export type UgcFact = {
+  claim: string;
+  source: string;
+};
+
+export type UgcEvidenceItem = {
+  source: string;
+  kind: string;
+  detail: string;
+  quote?: string | null;
+};
+
+export type UgcJobResult = {
+  characteristic?: string | null;
+  confidence?: number | null;
+  locationExplicit?: string | null;
+  locationGuess?: string | null;
+  description?: string | null;
+  entities: UgcEntity[];
+  facts: UgcFact[];
+  evidence: UgcEvidenceItem[];
+  indexed: boolean;
+  providerMap: Record<string, string>;
+  transcriptionText?: string | null;
+  ocrText?: string | null;
+  ocrVisualClues: string[];
+};
+
+export type UgcJobStatusResponse = {
+  jobId: string;
+  videoId: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  createdAt: string;
+  updatedAt: string;
+  error?: string | null;
+  result?: UgcJobResult | null;
 };

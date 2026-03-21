@@ -47,6 +47,34 @@ class OcrResult:
     model: str
     frame_count: int
     frame_texts: list[str] = field(default_factory=list)
+    visual_clues: list[str] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class ExtractedEntity:
+    """Named entity extracted from the combined video evidence."""
+
+    name: str
+    entity_type: str
+    source: str
+
+
+@dataclass(frozen=True)
+class ExtractedFact:
+    """A factual statement extracted from the evidence."""
+
+    claim: str
+    source: str
+
+
+@dataclass(frozen=True)
+class EvidenceItem:
+    """Evidence explaining why the model reached its conclusion."""
+
+    source: str
+    kind: str
+    detail: str
+    quote: str | None = None
 
 
 @dataclass(frozen=True)
@@ -58,6 +86,12 @@ class JudgeResult:
     confidence: float
     reason: str
     evidence_quotes: list[str] = field(default_factory=list)
+    location_explicit: str | None = None
+    location_guess: str | None = None
+    description: str = ""
+    entities: list[ExtractedEntity] = field(default_factory=list)
+    facts: list[ExtractedFact] = field(default_factory=list)
+    evidence: list[EvidenceItem] = field(default_factory=list)
 
 
 @dataclass(frozen=True)

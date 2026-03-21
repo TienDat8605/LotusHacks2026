@@ -20,15 +20,16 @@ except ImportError:
 
 
 # Default provider/model selections
-DEFAULT_STT_PROVIDER = "groq_whisper"
-DEFAULT_STT_MODEL = "whisper-large-v3-turbo"
-DEFAULT_OCR_PROVIDER = "mistral_ocr"
-DEFAULT_OCR_MODEL = "mistral-ocr-latest"
-DEFAULT_JUDGE_PROVIDER = "mistral_chat"
-DEFAULT_JUDGE_MODEL = "mistral-small-latest"
+DEFAULT_STT_PROVIDER = "interfaze_stt"
+DEFAULT_STT_MODEL = "interfaze-beta"
+DEFAULT_OCR_PROVIDER = "interfaze_vision"
+DEFAULT_OCR_MODEL = "interfaze-beta"
+DEFAULT_JUDGE_PROVIDER = "interfaze_structured"
+DEFAULT_JUDGE_MODEL = "interfaze-beta"
 DEFAULT_EMBED_PROVIDER = "mistral_embed"
 DEFAULT_EMBED_MODEL = "mistral-embed"
 DEFAULT_INDEX_COLLECTION = "video_characteristics"
+DEFAULT_INTERFAZE_BASE_URL = "https://api.interfaze.ai/v1"
 
 # Storage defaults
 DEFAULT_STORAGE_PATH = "ugc_videos"
@@ -84,18 +85,20 @@ class UGCConfig:
     """
 
     # STT (Speech-to-Text) configuration
-    stt_provider: Literal["groq_whisper"]
+    stt_provider: Literal["interfaze_stt", "groq_whisper"]
     stt_model: str
     groq_api_key: str | None
+    interfaze_api_key: str | None
+    interfaze_base_url: str
 
     # OCR configuration
-    ocr_provider: Literal["mistral_ocr"]
+    ocr_provider: Literal["interfaze_vision", "mistral_ocr"]
     ocr_model: str
     ocr_frame_interval: float
     ocr_max_frames: int
 
     # Judge/Extractor configuration
-    judge_provider: Literal["mistral_chat"]
+    judge_provider: Literal["interfaze_structured", "mistral_chat"]
     judge_model: str
 
     # Embedding configuration
@@ -136,7 +139,9 @@ class UGCConfig:
             UGC_STORAGE_PATH: Video storage directory
             UGC_JOBS_PATH: Jobs data directory
             UGC_MAX_VIDEO_SIZE_MB: Max video size in MB (default: 100)
-            GROQ_API_KEY: Groq API key for STT
+            GROQ_API_KEY: Groq API key for Groq STT fallback
+            INTERFAZE_API_KEY: Interfaze API key for STT/OCR/judge
+            INTERFAZE_BASE_URL: Interfaze API base URL
             MISTRAL_API_KEY: Mistral API key for OCR/judge/embed
             QDRANT_URL: Qdrant server URL
             QDRANT_API_KEY: Qdrant API key (optional)
@@ -168,6 +173,11 @@ class UGCConfig:
             stt_provider=os.getenv("UGC_STT_PROVIDER", DEFAULT_STT_PROVIDER),  # type: ignore
             stt_model=os.getenv("UGC_STT_MODEL", DEFAULT_STT_MODEL),
             groq_api_key=_optional_env("GROQ_API_KEY"),
+            interfaze_api_key=_optional_env("INTERFAZE_API_KEY"),
+            interfaze_base_url=os.getenv(
+                "INTERFAZE_BASE_URL",
+                DEFAULT_INTERFAZE_BASE_URL,
+            ).rstrip("/"),
             # OCR
             ocr_provider=os.getenv("UGC_OCR_PROVIDER", DEFAULT_OCR_PROVIDER),  # type: ignore
             ocr_model=os.getenv("UGC_OCR_MODEL", DEFAULT_OCR_MODEL),
@@ -208,12 +218,23 @@ class UGCConfig:
 
         if self.stt_provider == "groq_whisper" and not self.groq_api_key:
             errors.append("GROQ_API_KEY required for groq_whisper STT provider")
+        if self.stt_provider == "interfaze_stt" and not self.interfaze_api_key:
+            errors.append("INTERFAZE_API_KEY required for interfaze_stt STT provider")
 
         if self.ocr_provider == "mistral_ocr" and not self.mistral_api_key:
             errors.append("MISTRAL_API_KEY required for mistral_ocr OCR provider")
+        if self.ocr_provider == "interfaze_vision" and not self.interfaze_api_key:
+            errors.append("INTERFAZE_API_KEY required for interfaze_vision OCR provider")
 
         if self.judge_provider == "mistral_chat" and not self.mistral_api_key:
             errors.append("MISTRAL_API_KEY required for mistral_chat judge provider")
+        if (
+            self.judge_provider == "interfaze_structured"
+            and not self.interfaze_api_key
+        ):
+            errors.append(
+                "INTERFAZE_API_KEY required for interfaze_structured judge provider"
+            )
 
         if self.embed_provider == "mistral_embed" and not self.mistral_api_key:
             errors.append("MISTRAL_API_KEY required for mistral_embed embed provider")

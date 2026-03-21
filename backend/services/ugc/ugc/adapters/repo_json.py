@@ -10,6 +10,9 @@ from pathlib import Path
 from ..config import UGCConfig
 from ..errors import JobNotFoundError, UGCError
 from ..types import (
+    EvidenceItem,
+    ExtractedEntity,
+    ExtractedFact,
     IndexResult,
     JobStatus,
     JudgeResult,
@@ -229,6 +232,7 @@ class JsonJobRepository:
             "model": o.model,
             "frame_count": o.frame_count,
             "frame_texts": o.frame_texts,
+            "visual_clues": o.visual_clues,
         }
 
     def _dict_to_ocr(self, data: dict | None) -> OcrResult | None:
@@ -240,6 +244,7 @@ class JsonJobRepository:
             model=data["model"],
             frame_count=data["frame_count"],
             frame_texts=data.get("frame_texts", []),
+            visual_clues=data.get("visual_clues", []),
         )
 
     def _judge_to_dict(self, j: JudgeResult | None) -> dict | None:
@@ -251,6 +256,33 @@ class JsonJobRepository:
             "confidence": j.confidence,
             "reason": j.reason,
             "evidence_quotes": j.evidence_quotes,
+            "location_explicit": j.location_explicit,
+            "location_guess": j.location_guess,
+            "description": j.description,
+            "entities": [
+                {
+                    "name": entity.name,
+                    "entity_type": entity.entity_type,
+                    "source": entity.source,
+                }
+                for entity in j.entities
+            ],
+            "facts": [
+                {
+                    "claim": fact.claim,
+                    "source": fact.source,
+                }
+                for fact in j.facts
+            ],
+            "evidence": [
+                {
+                    "source": item.source,
+                    "kind": item.kind,
+                    "detail": item.detail,
+                    "quote": item.quote,
+                }
+                for item in j.evidence
+            ],
         }
 
     def _dict_to_judge(self, data: dict | None) -> JudgeResult | None:
@@ -262,6 +294,33 @@ class JsonJobRepository:
             confidence=data["confidence"],
             reason=data["reason"],
             evidence_quotes=data.get("evidence_quotes", []),
+            location_explicit=data.get("location_explicit"),
+            location_guess=data.get("location_guess"),
+            description=data.get("description", ""),
+            entities=[
+                ExtractedEntity(
+                    name=item.get("name", ""),
+                    entity_type=item.get("entity_type", ""),
+                    source=item.get("source", "unknown"),
+                )
+                for item in data.get("entities", [])
+            ],
+            facts=[
+                ExtractedFact(
+                    claim=item.get("claim", ""),
+                    source=item.get("source", "unknown"),
+                )
+                for item in data.get("facts", [])
+            ],
+            evidence=[
+                EvidenceItem(
+                    source=item.get("source", "unknown"),
+                    kind=item.get("kind", "support"),
+                    detail=item.get("detail", ""),
+                    quote=item.get("quote"),
+                )
+                for item in data.get("evidence", [])
+            ],
         )
 
     def _index_to_dict(self, i: IndexResult | None) -> dict | None:

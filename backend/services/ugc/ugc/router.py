@@ -20,13 +20,16 @@ from .errors import (
 )
 from .schemas import (
     ErrorResponse,
+    EvidenceItemDetail,
+    ExtractedEntityDetail,
+    ExtractedFactDetail,
     HealthCheckResponse,
     JobResultDetail,
     JobStatusResponse,
     VideoUploadResponse,
 )
 from .service import UGCService
-from .types import VideoMetadata
+from .types import UGCJob, VideoMetadata
 
 
 def create_ugc_router(
@@ -160,14 +163,7 @@ def create_ugc_router(
         # Build result detail if completed
         result = None
         if job.judge is not None:
-            result = JobResultDetail(
-                characteristic=job.judge.characteristic_vi if job.judge.accepted else None,
-                confidence=job.judge.confidence,
-                indexed=job.index.indexed if job.index else False,
-                provider_map=job.provider_map,
-                transcription_text=job.transcription.text if job.transcription else None,
-                ocr_text=job.ocr.text if job.ocr else None,
-            )
+            result = _build_job_result_detail(job)
 
         return JobStatusResponse(
             job_id=job.job_id,
@@ -210,14 +206,7 @@ def create_ugc_router(
         # Build result detail
         result = None
         if job.judge is not None:
-            result = JobResultDetail(
-                characteristic=job.judge.characteristic_vi if job.judge.accepted else None,
-                confidence=job.judge.confidence,
-                indexed=job.index.indexed if job.index else False,
-                provider_map=job.provider_map,
-                transcription_text=job.transcription.text if job.transcription else None,
-                ocr_text=job.ocr.text if job.ocr else None,
-            )
+            result = _build_job_result_detail(job)
 
         return JobStatusResponse(
             job_id=job.job_id,
@@ -230,3 +219,46 @@ def create_ugc_router(
         )
 
     return router
+
+
+def _build_job_result_detail(job: UGCJob) -> JobResultDetail:
+    judge = job.judge
+    if judge is None:
+        return JobResultDetail()
+
+    return JobResultDetail(
+        characteristic=judge.characteristic_vi if judge.accepted else None,
+        confidence=judge.confidence,
+        location_explicit=judge.location_explicit,
+        location_guess=judge.location_guess,
+        description=judge.description or judge.characteristic_vi or None,
+        entities=[
+            ExtractedEntityDetail(
+                name=entity.name,
+                entity_type=entity.entity_type,
+                source=entity.source,
+            )
+            for entity in judge.entities
+        ],
+        facts=[
+            ExtractedFactDetail(
+                claim=fact.claim,
+                source=fact.source,
+            )
+            for fact in judge.facts
+        ],
+        evidence=[
+            EvidenceItemDetail(
+                source=item.source,
+                kind=item.kind,
+                detail=item.detail,
+                quote=item.quote,
+            )
+            for item in judge.evidence
+        ],
+        indexed=job.index.indexed if job.index else False,
+        provider_map=job.provider_map,
+        transcription_text=job.transcription.text if job.transcription else None,
+        ocr_text=job.ocr.text if job.ocr else None,
+        ocr_visual_clues=job.ocr.visual_clues if job.ocr else [],
+    )
