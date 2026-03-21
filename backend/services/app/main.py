@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from ugc.ugc.router import create_ugc_router
 
 from .assistant_router import create_assistant_router
-from .chat_service import AssistantChatService
+from .chat_service import AssistantChatService, RuleBasedAssistantService
 from .config import Settings
 from .openai_client import OpenAIService
 from .zilliz_store import ZillizStore
@@ -22,11 +22,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def build_assistant_service() -> AssistantChatService:
-    if not settings.openai_api_key:
-        raise RuntimeError("OPENAI_API_KEY is required for assistant service")
-    if not settings.zilliz_uri or not settings.zilliz_token:
-        raise RuntimeError("ZILLIZ_URI and ZILLIZ_TOKEN are required for assistant service")
+def build_assistant_service() -> AssistantChatService | RuleBasedAssistantService:
+    if not settings.openai_api_key or not settings.zilliz_uri or not settings.zilliz_token:
+        # Fallback mode keeps /api/assistant usable even when external AI credentials are absent.
+        return RuleBasedAssistantService.from_review_file(settings.review_data_path, settings.zilliz_top_k)
 
     openai_service = OpenAIService(
         api_key=settings.openai_api_key,
@@ -42,10 +41,10 @@ def build_assistant_service() -> AssistantChatService:
     return AssistantChatService(openai_service, zilliz_store, settings.zilliz_top_k)
 
 
-assistant_service: AssistantChatService | None = None
+assistant_service: AssistantChatService | RuleBasedAssistantService | None = None
 
 
-def get_assistant_service() -> AssistantChatService:
+def get_assistant_service() -> AssistantChatService | RuleBasedAssistantService:
     global assistant_service
     if assistant_service is None:
         assistant_service = build_assistant_service()

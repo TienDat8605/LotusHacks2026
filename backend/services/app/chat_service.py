@@ -1,11 +1,19 @@
 from __future__ import annotations
 
+import re
 from itertools import combinations
+from pathlib import Path
 
 from .openai_client import OpenAIService
-from .schemas import AssistantResponse, RetrievedReview
+from .reviews import load_review_documents
+from .schemas import AssistantResponse, RetrievedReview, ReviewDocument
 from .threads import ThreadStore
 from .zilliz_store import ZillizStore
+
+
+def _is_route_request(text: str) -> bool:
+    lowered = text.lower()
+    return "suggest a destination and route vibe" in lowered or "backend planner will create stops between" in lowered
 
 
 class AssistantChatService:
@@ -23,7 +31,7 @@ class AssistantChatService:
         text = text.strip()
         self._threads.add_message(thread_id, "user", text)
 
-        route_mode = self._is_route_request(text)
+        route_mode = _is_route_request(text)
         results = self.search_only(text, 12 if route_mode else None)
         if route_mode:
             results = self._pick_compact_route_results(results, 3)
@@ -60,8 +68,7 @@ class AssistantChatService:
 
     @staticmethod
     def _is_route_request(text: str) -> bool:
-        lowered = text.lower()
-        return "suggest a destination and route vibe" in lowered or "backend planner will create stops between" in lowered
+        return _is_route_request(text)
 
     def _pick_compact_route_results(self, results: list[RetrievedReview], target_size: int) -> list[RetrievedReview]:
         if len(results) <= target_size:
@@ -121,3 +128,154 @@ class AssistantChatService:
         dlng = radians(lng2 - lng1)
         a = sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlng / 2) ** 2
         return 6371.0 * 2 * asin(sqrt(a))
+
+
+class RuleBasedAssistantService:
+    def __init__(self, documents: list[ReviewDocument], top_k: int) -> None:
+        self._documents = documents
+        self._top_k = max(1, top_k)
+        self._threads = ThreadStore()
+
+    @classmethod
+    def from_review_file(cls, path: Path, top_k: int) -> "RuleBasedAssistantService":
+        if not path.exists():
+            return cls([], top_k)
+        docs = load_review_documents(path)
+        return cls(docs, top_k)
+
+    def search_only(self, query: str, top_k: int | None = None) -> list[RetrievedReview]:
+        text = query.strip()
+        if not text:
+            return []
+        limit = max(1, top_k or self._top_k)
+        if not self._documents:
+            return []
+
+        focus_name = self._extract_focus_name(text)
+        terms = self._tokenize(text)
+
+        ranked: list[tuple[float, ReviewDocument]] = []
+        for doc in self._documents:
+            score = self._score_document(doc, terms, focus_name)
+            if score <= 0:
+                continue
+            ranked.append((score, doc))
+
+        if not ranked:
+            ranked = [(0.001, doc) for doc in self._documents[:limit]]
+
+        ranked.sort(key=lambda item: (-item[0], item[1].poi.name))
+
+        out: list[RetrievedReview] = []
+        for score, doc in ranked[:limit]:
+            out.append(
+                RetrievedReview(
+                    poi=doc.poi,
+                    summary=doc.summary,
+                    evidence=doc.evidence,
+                    score=score,
+                )
+            )
+        return out
+
+    def handle_message(self, thread_id: str, text: str) -> AssistantResponse:
+        text = text.strip()
+        self._threads.add_message(thread_id, "user", text)
+
+        route_mode = _is_route_request(text)
+        results = self.search_only(text, 3 if route_mode else self._top_k)
+
+        if route_mode:
+            if results:
+                listed = ", ".join(item.poi.name for item in results)
+                answer = (
+                    "AI is running in fallback mode right now, so I used local review data to build route candidates. "
+                    f"Best nearby stops: {listed}."
+                )
+            else:
+                answer = "AI fallback could not find enough places for this route yet."
+        else:
+            if results:
+                highlights = []
+                for item in results[:3]:
+                    detail = item.summary.strip() or "popular on local reviews"
+                    highlights.append(f"- {item.poi.name}: {detail[:160]}")
+                answer = (
+                    "AI is in fallback mode (no live model key). I used local review evidence:\n"
+                    + "\n".join(highlights)
+                )
+            else:
+                answer = (
+                    "AI is in fallback mode and I could not find matching review evidence for this request yet."
+                )
+
+        self._threads.add_message(thread_id, "assistant", answer)
+        return AssistantResponse(
+            messages=self._threads.list_messages(thread_id),
+            suggestedPois=[item.poi for item in results],
+            suggestedPlan={"requiredPoiIds": [item.poi.id for item in results]} if route_mode and results else None,
+            followUps=[
+                "Show me a quieter option",
+                "Give me something more photogenic",
+                "Find a cafe for working",
+                "Plan a route to the best one",
+            ],
+        )
+
+    @staticmethod
+    def _tokenize(text: str) -> list[str]:
+        clean = re.sub(r"[^a-z0-9\s]+", " ", text.lower())
+        terms = [term for term in clean.split() if len(term) >= 2]
+        # Keep ordering stable while removing duplicates.
+        out: list[str] = []
+        seen: set[str] = set()
+        for term in terms:
+            if term in seen:
+                continue
+            seen.add(term)
+            out.append(term)
+        return out
+
+    @staticmethod
+    def _extract_focus_name(text: str) -> str:
+        lowered = text.lower()
+        marker = "vibe check this specific place:"
+        index = lowered.find(marker)
+        if index == -1:
+            return ""
+        value = text[index + len(marker) :].strip()
+        if not value:
+            return ""
+        value = value.split(".")[0].strip()
+        value = value.split("(")[0].strip()
+        return value.lower()
+
+    def _score_document(self, doc: ReviewDocument, terms: list[str], focus_name: str) -> float:
+        name = doc.poi.name.lower()
+        address = (doc.poi.address or "").lower()
+        city = (doc.poi.city or "").lower()
+        summary = (doc.summary or "").lower()
+        evidence = (doc.evidence or "").lower()
+
+        score = 0.0
+        if focus_name:
+            if focus_name in name:
+                score += 10.0
+            elif name in focus_name:
+                score += 8.0
+
+        for term in terms:
+            if term in name:
+                score += 3.0
+            elif term in address:
+                score += 1.8
+            elif term in city:
+                score += 1.0
+            elif term in summary:
+                score += 1.2
+            elif term in evidence:
+                score += 0.8
+
+        if doc.poi.rating is not None:
+            score += max(0.0, doc.poi.rating) * 0.08
+        return score

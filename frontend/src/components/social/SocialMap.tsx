@@ -117,20 +117,25 @@ export function SocialMap(props: {
     () => pinnedParticipants.find((p) => p.id === props.currentParticipantId),
     [pinnedParticipants, props.currentParticipantId]
   );
+  const currentLocationPoint = useMemo(() => {
+    if (props.currentLocation) return props.currentLocation;
+    if (!currentParticipant) return null;
+    return { lat: currentParticipant.lat, lng: currentParticipant.lng };
+  }, [props.currentLocation, currentParticipant]);
   const participantPoints = useMemo(
     () => pinnedParticipants.map((participant) => ({ lat: participant.lat, lng: participant.lng })),
     [pinnedParticipants]
   );
   const mapPoints = useMemo(() => {
-    if (!props.currentLocation) return participantPoints;
+    if (!currentLocationPoint) return participantPoints;
     const hasCurrent = participantPoints.some(
       (point) =>
-        Math.abs(point.lat - props.currentLocation!.lat) < 1e-6 &&
-        Math.abs(point.lng - props.currentLocation!.lng) < 1e-6
+        Math.abs(point.lat - currentLocationPoint.lat) < 1e-6 &&
+        Math.abs(point.lng - currentLocationPoint.lng) < 1e-6
     );
     if (hasCurrent) return participantPoints;
-    return [...participantPoints, props.currentLocation];
-  }, [participantPoints, props.currentLocation]);
+    return [...participantPoints, currentLocationPoint];
+  }, [participantPoints, currentLocationPoint]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -155,11 +160,12 @@ export function SocialMap(props: {
         />
         <ParticipantBounds points={mapPoints} fallback={props.center} />
 
-        {props.currentLocation && (
+        {currentLocationPoint && (
           <Marker
             key="current-location"
-            position={[props.currentLocation.lat, props.currentLocation.lng]}
+            position={[currentLocationPoint.lat, currentLocationPoint.lng]}
             icon={currentLocationIcon()}
+            zIndexOffset={1500}
           >
             <Tooltip direction="top" offset={[0, -12]} opacity={1}>
               Your current location
