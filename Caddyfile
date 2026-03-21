@@ -1,6 +1,7 @@
 {
-	# Use Google Public CA ACME to avoid Let's Encrypt rate-limit downtime.
-	acme_ca {$CADDY_ACME_CA:https://dv.acme-v02.api.pki.goog/directory}
+	# Keep ACME contact for account registration and expiry notices.
+	# Caddy will use its default public issuer chain (Let's Encrypt, ZeroSSL fallback).
+	email {$ACME_EMAIL:admin@tiendat.app}
 }
 
 {$APP_DOMAIN:localhost} {
