@@ -15,12 +15,28 @@ const modeItems: { mode: TransportMode; label: string; Icon: typeof Bike }[] = [
   { mode: 'bus', label: 'Bus', Icon: Bus },
 ];
 
+const MIN_DISCOVERY_BUDGET = 120;
+const MAX_DISCOVERY_BUDGET = 480;
+const DISCOVERY_BUDGET_STEP = 60;
+
 function minutesLabel(mins: number) {
   const h = Math.floor(mins / 60);
   const m = mins % 60;
   if (h <= 0) return `${m}m`;
   if (m === 0) return `${h}h`;
   return `${h}h ${m}m`;
+}
+
+function normalizeBudget(minutes: number) {
+  const clamped = Math.max(MIN_DISCOVERY_BUDGET, Math.min(MAX_DISCOVERY_BUDGET, Number.isFinite(minutes) ? minutes : MIN_DISCOVERY_BUDGET));
+  const stepIndex = Math.round((clamped - MIN_DISCOVERY_BUDGET) / DISCOVERY_BUDGET_STEP);
+  return MIN_DISCOVERY_BUDGET + stepIndex * DISCOVERY_BUDGET_STEP;
+}
+
+function poiCountForBudget(minutes: number) {
+  if (minutes <= 180) return 1;
+  if (minutes <= 300) return 2;
+  return 3;
 }
 
 const hcmcBounds = {
@@ -43,6 +59,15 @@ function isHcmcSuggestion(item: LocationSuggestion) {
   if (isWithinHcmc(item.location)) return true;
   const haystack = `${item.name} ${item.address ?? ''}`.toLowerCase();
   return haystack.includes('ho chi minh') || haystack.includes('hồ chí minh') || haystack.includes('saigon') || haystack.includes('sài gòn');
+}
+
+function rankDiscoverySuggestions(items: LocationSuggestion[]) {
+  return [...items].sort((a, b) => {
+    const aIn = isHcmcSuggestion(a);
+    const bIn = isHcmcSuggestion(b);
+    if (aIn !== bIn) return aIn ? -1 : 1;
+    return (a.name || '').localeCompare(b.name || '');
+  });
 }
 
 function withHcmcContext(query: string) {
@@ -72,7 +97,7 @@ export default function RoutePlanner() {
 
   const [origin, setOrigin] = useState('District 1, Ben Thanh');
   const [destination, setDestination] = useState('Landmark 81, Bình Thạnh');
-  const [timeBudgetMinutes, setTimeBudgetMinutes] = useState(prefs.defaultTimeBudgetMinutes);
+  const [timeBudgetMinutes, setTimeBudgetMinutes] = useState(normalizeBudget(prefs.defaultTimeBudgetMinutes));
   const [transportMode, setTransportMode] = useState<TransportMode>(prefs.defaultTransportMode);
   const [includeTrending, setIncludeTrending] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -115,9 +140,13 @@ export default function RoutePlanner() {
       setSearchingOrigin(true);
       try {
         const api = getApiClient();
-        const results = await api.searchLocations(withHcmcContext(query), 8);
+        const hcmcQuery = withHcmcContext(query);
+        let results = await api.searchLocations(hcmcQuery, 8);
+        if (!results.length && hcmcQuery !== query) {
+          results = await api.searchLocations(query, 8);
+        }
         if (cancelled) return;
-        setOriginSuggestions(results.filter(isHcmcSuggestion).slice(0, 6));
+        setOriginSuggestions(rankDiscoverySuggestions(results).slice(0, 6));
       } catch {
         if (cancelled) return;
         setOriginSuggestions([]);
@@ -147,9 +176,13 @@ export default function RoutePlanner() {
       setSearchingDestination(true);
       try {
         const api = getApiClient();
-        const results = await api.searchLocations(withHcmcContext(query), 8);
+        const hcmcQuery = withHcmcContext(query);
+        let results = await api.searchLocations(hcmcQuery, 8);
+        if (!results.length && hcmcQuery !== query) {
+          results = await api.searchLocations(query, 8);
+        }
         if (cancelled) return;
-        setDestinationSuggestions(results.filter(isHcmcSuggestion).slice(0, 6));
+        setDestinationSuggestions(rankDiscoverySuggestions(results).slice(0, 6));
       } catch {
         if (cancelled) return;
         setDestinationSuggestions([]);
@@ -236,7 +269,7 @@ export default function RoutePlanner() {
                     {showOriginSuggestions && (
                       <div className="absolute z-40 left-0 right-0 mt-2 max-h-56 overflow-y-auto rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-float">
                         {searchingOrigin ? (
-                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">Searching Vietmap…</div>
+                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">Searching addresses…</div>
                         ) : originSuggestions.length ? (
                           originSuggestions.map((suggestion) => (
                             <button
@@ -255,7 +288,7 @@ export default function RoutePlanner() {
                             </button>
                           ))
                         ) : (
-                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">No Ho Chi Minh City results from Vietmap</div>
+                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">No address results found</div>
                         )}
                       </div>
                     )}
@@ -301,7 +334,7 @@ export default function RoutePlanner() {
                     {showDestinationSuggestions && (
                       <div className="absolute z-40 left-0 right-0 mt-2 max-h-56 overflow-y-auto rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-float">
                         {searchingDestination ? (
-                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">Searching Vietmap…</div>
+                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">Searching addresses…</div>
                         ) : destinationSuggestions.length ? (
                           destinationSuggestions.map((suggestion) => (
                             <button
@@ -320,7 +353,7 @@ export default function RoutePlanner() {
                             </button>
                           ))
                         ) : (
-                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">No Ho Chi Minh City results from Vietmap</div>
+                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">No address results found</div>
                         )}
                       </div>
                     )}
@@ -335,16 +368,19 @@ export default function RoutePlanner() {
                 </div>
                 <input
                   className="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary"
-                  max={480}
-                  min={30}
-                  step={15}
+                  max={MAX_DISCOVERY_BUDGET}
+                  min={MIN_DISCOVERY_BUDGET}
+                  step={DISCOVERY_BUDGET_STEP}
                   value={timeBudgetMinutes}
-                  onChange={(e) => setTimeBudgetMinutes(Number(e.target.value))}
+                  onChange={(e) => setTimeBudgetMinutes(normalizeBudget(Number(e.target.value)))}
                   type="range"
                 />
                 <div className="flex justify-between mt-2 text-[10px] font-bold text-outline uppercase">
-                  <span>Quick Bite</span>
-                  <span>Full Day</span>
+                  <span>2 hrs</span>
+                  <span>8 hrs</span>
+                </div>
+                <div className="mt-2 text-xs font-semibold text-on-surface-variant">
+                  Planned stops: {poiCountForBudget(timeBudgetMinutes)} POI
                 </div>
               </div>
 

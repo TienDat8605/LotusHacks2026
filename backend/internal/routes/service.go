@@ -30,13 +30,13 @@ func NewService(pois []api.Poi, orsKey, vietmapKey string) *Service {
 func (s *Service) Plan(ctx context.Context, req api.RoutePlanRequest) (api.RoutePlan, error) {
 	budget := req.TimeBudgetMinutes
 	if budget <= 0 {
-		budget = 150
+		budget = 180
 	}
-	if budget < 30 {
-		budget = 30
+	if budget < 120 {
+		budget = 120
 	}
-	if budget > 8*60 {
-		budget = 8 * 60
+	if budget > 480 {
+		budget = 480
 	}
 
 	mode := req.TransportMode
@@ -57,28 +57,25 @@ func (s *Service) Plan(ctx context.Context, req api.RoutePlanRequest) (api.Route
 	}
 
 	dwellPerStop := 18
-	maxStops := int(math.Floor(float64(budget) / float64(dwellPerStop+18)))
-	if maxStops < 1 {
-		maxStops = 1
-	}
-	if maxStops > 3 {
-		maxStops = 3
-	}
-
 	profile := ors.Profile(mode)
+	targetStops := targetStopsForBudget(budget)
+	stops := pickStopsKnapsack(s.pois, originPt, destPt, budget, mode, dwellPerStop, targetStops, req.IncludeTrending)
+	if len(stops) == 0 && len(s.pois) > 0 && targetStops > 0 {
+		stops = pickFallbackStopsByValue(s.pois, originPt, destPt, targetStops, req.IncludeTrending)
+	}
+	tryStops := stops
 
 	var best api.RoutePlan
 	var bestOk bool
-	for n := maxStops; n >= 1; n-- {
-		stops := pickStops(s.pois, originPt, destPt, n)
-		coords := make([]api.LatLng, 0, len(stops)+2)
+	for {
+		coords := make([]api.LatLng, 0, len(tryStops)+2)
 		coords = append(coords, originPt)
-		for _, p := range stops {
+		for _, p := range tryStops {
 			coords = append(coords, p.Location)
 		}
 		coords = append(coords, destPt)
 
-		plan, ok := buildPlan(ctx, s.ors, profile, mode, req, originPt, destPt, stops, coords, budget, dwellPerStop)
+		plan, ok := buildPlan(ctx, s.ors, profile, mode, req, originPt, destPt, tryStops, coords, budget, dwellPerStop)
 		if ok {
 			return plan, nil
 		}
@@ -86,15 +83,17 @@ func (s *Service) Plan(ctx context.Context, req api.RoutePlanRequest) (api.Route
 			best = plan
 			bestOk = true
 		}
+		if len(tryStops) == 0 {
+			break
+		}
+		tryStops = dropLowestUtilityStop(tryStops, originPt, destPt, mode, dwellPerStop, req.IncludeTrending)
 	}
 
 	if bestOk {
 		return best, nil
 	}
-
-	stops := pickStops(s.pois, originPt, destPt, 1)
 	coords := []api.LatLng{originPt, destPt}
-	plan, _ := buildPlan(ctx, s.ors, profile, mode, req, originPt, destPt, stops, coords, budget, dwellPerStop)
+	plan, _ := buildPlan(ctx, s.ors, profile, mode, req, originPt, destPt, []api.Poi{}, coords, budget, dwellPerStop)
 	return plan, nil
 }
 
@@ -184,58 +183,371 @@ func fallbackPoint(seed string) api.LatLng {
 	return api.LatLng{Lat: baseLat + o1, Lng: baseLng + o2}
 }
 
-type scored struct {
-	poi   api.Poi
-	score float64
+type knapsackCandidate struct {
+	poi      api.Poi
+	weight   int
+	value    int64
+	progress float64
 }
 
-func pickStops(pois []api.Poi, origin, dest api.LatLng, targetStops int) []api.Poi {
+func pickStopsKnapsack(
+	pois []api.Poi,
+	origin api.LatLng,
+	dest api.LatLng,
+	budget int,
+	mode api.TransportMode,
+	dwellPerStop int,
+	targetStops int,
+	includeTrending bool,
+) []api.Poi {
 	if len(pois) == 0 {
 		return []api.Poi{}
 	}
+
+	baseTravel := estimateTravelMinutes(origin, dest, mode)
+	capacity := budget - baseTravel
+	if capacity <= dwellPerStop {
+		return []api.Poi{}
+	}
+
+	maxStops := targetStops
+	if maxStops < 1 {
+		return []api.Poi{}
+	}
+	if maxStops > 3 {
+		maxStops = 3
+	}
+
+	cands := make([]knapsackCandidate, 0, len(pois))
+	for _, p := range pois {
+		value := poiValueForKnapsack(p, includeTrending)
+		if value <= 0 {
+			continue
+		}
+		progress, distToPath := lineProgressAndDistanceMeters(origin, dest, p.Location)
+		if distToPath > 9000 {
+			continue
+		}
+		detour := detourMinutesEstimate(distToPath, mode)
+		weight := dwellPerStop + detour
+		if weight > capacity {
+			continue
+		}
+		cands = append(cands, knapsackCandidate{
+			poi:      p,
+			weight:   weight,
+			value:    value,
+			progress: progress,
+		})
+	}
+
+	if len(cands) == 0 {
+		return []api.Poi{}
+	}
+
+	sort.Slice(cands, func(i, j int) bool {
+		if cands[i].value != cands[j].value {
+			return cands[i].value > cands[j].value
+		}
+		if cands[i].weight != cands[j].weight {
+			return cands[i].weight < cands[j].weight
+		}
+		return cands[i].poi.ID < cands[j].poi.ID
+	})
+	if len(cands) > 64 {
+		cands = cands[:64]
+	}
+
+	selected := solveKnapsack(cands, capacity, maxStops)
+	if len(selected) == 0 {
+		return []api.Poi{}
+	}
+
+	sort.Slice(selected, func(i, j int) bool {
+		if selected[i].progress != selected[j].progress {
+			return selected[i].progress < selected[j].progress
+		}
+		return selected[i].poi.ID < selected[j].poi.ID
+	})
+
+	out := make([]api.Poi, 0, len(selected))
+	for _, item := range selected {
+		out = append(out, item.poi)
+	}
+	return out
+}
+
+func targetStopsForBudget(budget int) int {
+	if budget <= 180 {
+		return 1
+	}
+	if budget <= 300 {
+		return 2
+	}
+	return 3
+}
+
+type fallbackCandidate struct {
+	poi      api.Poi
+	value    int64
+	progress float64
+	dist     float64
+}
+
+func pickFallbackStopsByValue(
+	pois []api.Poi,
+	origin api.LatLng,
+	dest api.LatLng,
+	targetStops int,
+	includeTrending bool,
+) []api.Poi {
 	if targetStops < 1 {
-		targetStops = 1
+		return []api.Poi{}
 	}
 	if targetStops > 3 {
 		targetStops = 3
 	}
-
-	mid := api.LatLng{Lat: (origin.Lat + dest.Lat) / 2.0, Lng: (origin.Lng + dest.Lng) / 2.0}
-	od := haversineMeters(origin.Lat, origin.Lng, dest.Lat, dest.Lng)
-	radius := math.Max(2500, math.Min(8000, od*0.55))
-
-	cands := make([]scored, 0, len(pois))
+	cands := make([]fallbackCandidate, 0, len(pois))
 	for _, p := range pois {
-		d := haversineMeters(mid.Lat, mid.Lng, p.Location.Lat, p.Location.Lng)
-		if d > radius {
+		value := poiValueForKnapsack(p, includeTrending)
+		if value <= 0 {
 			continue
 		}
-		s := 1.0 / math.Max(1.0, d)
-		cands = append(cands, scored{poi: p, score: s})
+		progress, dist := lineProgressAndDistanceMeters(origin, dest, p.Location)
+		cands = append(cands, fallbackCandidate{
+			poi:      p,
+			value:    value,
+			progress: progress,
+			dist:     dist,
+		})
 	}
 	if len(cands) == 0 {
-		for _, p := range pois {
-			d := haversineMeters(mid.Lat, mid.Lng, p.Location.Lat, p.Location.Lng)
-			s := 1.0 / math.Max(1.0, d)
-			cands = append(cands, scored{poi: p, score: s})
-		}
+		return []api.Poi{}
 	}
-
 	sort.Slice(cands, func(i, j int) bool {
-		if cands[i].score != cands[j].score {
-			return cands[i].score > cands[j].score
+		if cands[i].value != cands[j].value {
+			return cands[i].value > cands[j].value
+		}
+		if cands[i].dist != cands[j].dist {
+			return cands[i].dist < cands[j].dist
 		}
 		return cands[i].poi.ID < cands[j].poi.ID
 	})
+	if len(cands) > targetStops {
+		cands = cands[:targetStops]
+	}
+	sort.Slice(cands, func(i, j int) bool {
+		if cands[i].progress != cands[j].progress {
+			return cands[i].progress < cands[j].progress
+		}
+		return cands[i].poi.ID < cands[j].poi.ID
+	})
+	out := make([]api.Poi, 0, len(cands))
+	for _, c := range cands {
+		out = append(out, c.poi)
+	}
+	return out
+}
 
-	if len(cands) < targetStops {
-		targetStops = len(cands)
+func solveKnapsack(cands []knapsackCandidate, capacity int, maxItems int) []knapsackCandidate {
+	if len(cands) == 0 || capacity <= 0 || maxItems <= 0 {
+		return []knapsackCandidate{}
 	}
-	stops := make([]api.Poi, 0, targetStops)
-	for i := 0; i < targetStops; i++ {
-		stops = append(stops, cands[i].poi)
+	if maxItems > len(cands) {
+		maxItems = len(cands)
 	}
-	return stops
+
+	negInf := int64(-1 << 60)
+	n := len(cands)
+	dp := make([][][]int64, n+1)
+	take := make([][][]bool, n+1)
+	for i := 0; i <= n; i++ {
+		dp[i] = make([][]int64, capacity+1)
+		take[i] = make([][]bool, capacity+1)
+		for w := 0; w <= capacity; w++ {
+			dp[i][w] = make([]int64, maxItems+1)
+			take[i][w] = make([]bool, maxItems+1)
+			for k := 0; k <= maxItems; k++ {
+				dp[i][w][k] = negInf
+			}
+		}
+	}
+	dp[0][0][0] = 0
+
+	for i := 1; i <= n; i++ {
+		item := cands[i-1]
+		for w := 0; w <= capacity; w++ {
+			for k := 0; k <= maxItems; k++ {
+				dp[i][w][k] = dp[i-1][w][k]
+				if k > 0 && w >= item.weight && dp[i-1][w-item.weight][k-1] != negInf {
+					v := dp[i-1][w-item.weight][k-1] + item.value
+					if v > dp[i][w][k] {
+						dp[i][w][k] = v
+						take[i][w][k] = true
+					}
+				}
+			}
+		}
+	}
+
+	bestValue := int64(0)
+	bestW := 0
+	bestK := 0
+	for w := 0; w <= capacity; w++ {
+		for k := 0; k <= maxItems; k++ {
+			v := dp[n][w][k]
+			if v > bestValue || (v == bestValue && k > bestK) || (v == bestValue && k == bestK && w < bestW) {
+				bestValue = v
+				bestW = w
+				bestK = k
+			}
+		}
+	}
+	if bestValue <= 0 {
+		return []knapsackCandidate{}
+	}
+
+	selection := make([]knapsackCandidate, 0, bestK)
+	w := bestW
+	k := bestK
+	for i := n; i >= 1 && k >= 0; i-- {
+		if !take[i][w][k] {
+			continue
+		}
+		item := cands[i-1]
+		selection = append(selection, item)
+		w -= item.weight
+		k--
+	}
+
+	for i, j := 0, len(selection)-1; i < j; i, j = i+1, j-1 {
+		selection[i], selection[j] = selection[j], selection[i]
+	}
+	return selection
+}
+
+func dropLowestUtilityStop(
+	stops []api.Poi,
+	origin api.LatLng,
+	dest api.LatLng,
+	mode api.TransportMode,
+	dwellPerStop int,
+	includeTrending bool,
+) []api.Poi {
+	if len(stops) == 0 {
+		return stops
+	}
+	if len(stops) == 1 {
+		return []api.Poi{}
+	}
+
+	lowestIdx := 0
+	lowestScore := math.MaxFloat64
+	for i, poi := range stops {
+		value := float64(poiValueForKnapsack(poi, includeTrending))
+		_, distToPath := lineProgressAndDistanceMeters(origin, dest, poi.Location)
+		weight := float64(dwellPerStop + detourMinutesEstimate(distToPath, mode))
+		score := value / math.Max(1.0, weight)
+		if score < lowestScore {
+			lowestScore = score
+			lowestIdx = i
+		}
+	}
+
+	out := make([]api.Poi, 0, len(stops)-1)
+	out = append(out, stops[:lowestIdx]...)
+	out = append(out, stops[lowestIdx+1:]...)
+	return out
+}
+
+func poiValueForKnapsack(p api.Poi, includeTrending bool) int64 {
+	if p.VideoPlaycount != nil && *p.VideoPlaycount > 0 {
+		v := *p.VideoPlaycount
+		if includeTrending {
+			for _, b := range p.Badges {
+				if strings.EqualFold(strings.TrimSpace(b), "Trending on TikTok") {
+					v = int64(math.Round(float64(v) * 1.08))
+					break
+				}
+			}
+		}
+		return v
+	}
+
+	v := int64(1000)
+	if p.Rating != nil && *p.Rating > 0 {
+		v += int64(math.Round(*p.Rating * 100000))
+	}
+	if includeTrending {
+		for _, b := range p.Badges {
+			if strings.EqualFold(strings.TrimSpace(b), "Trending on TikTok") {
+				v += 120000
+			}
+		}
+	}
+	return v
+}
+
+func lineProgressAndDistanceMeters(origin, dest, p api.LatLng) (float64, float64) {
+	dx, dy := toXYMeters(dest, origin)
+	px, py := toXYMeters(p, origin)
+
+	denom := dx*dx + dy*dy
+	if denom < 1e-9 {
+		return 0, math.Hypot(px, py)
+	}
+
+	t := (px*dx + py*dy) / denom
+	if t < 0 {
+		t = 0
+	} else if t > 1 {
+		t = 1
+	}
+
+	cx := t * dx
+	cy := t * dy
+	dist := math.Hypot(px-cx, py-cy)
+	return t, dist
+}
+
+func toXYMeters(p, ref api.LatLng) (float64, float64) {
+	const earthR = 6371000.0
+	lat1 := ref.Lat * math.Pi / 180.0
+	lat2 := p.Lat * math.Pi / 180.0
+	lngDelta := (p.Lng - ref.Lng) * math.Pi / 180.0
+	latDelta := (p.Lat - ref.Lat) * math.Pi / 180.0
+
+	x := lngDelta * earthR * math.Cos((lat1+lat2)/2.0)
+	y := latDelta * earthR
+	return x, y
+}
+
+func detourMinutesEstimate(distanceToPathMeters float64, mode api.TransportMode) int {
+	detourMeters := 260.0 + distanceToPathMeters*1.9
+	if detourMeters < 320 {
+		detourMeters = 320
+	}
+	return minutesForMeters(detourMeters, mode)
+}
+
+func minutesForMeters(distanceMeters float64, mode api.TransportMode) int {
+	speedKmh := 18.0
+	switch mode {
+	case api.TransportModeWalk:
+		speedKmh = 4.2
+	case api.TransportModeCar:
+		speedKmh = 16.0
+	case api.TransportModeBus:
+		speedKmh = 14.0
+	default:
+		speedKmh = 18.0
+	}
+	hours := (distanceMeters / 1000.0) / speedKmh
+	mins := int(math.Round(hours * 60.0))
+	if mins < 2 {
+		mins = 2
+	}
+	return mins
 }
 
 func buildPlan(

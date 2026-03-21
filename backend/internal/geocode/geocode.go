@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -53,6 +54,11 @@ func (c *Client) Geocode(ctx context.Context, text string) (api.LatLng, error) {
 		if err == nil {
 			return p, nil
 		}
+	}
+
+	p, err := c.geocodeOSM(ctx, text)
+	if err == nil {
+		return p, nil
 	}
 
 	return api.LatLng{}, fmt.Errorf("geocode failed")
@@ -105,6 +111,17 @@ func (c *Client) geocodeVietmap(ctx context.Context, text string) (api.LatLng, e
 		return api.LatLng{}, fmt.Errorf("vietmap search no result")
 	}
 	return suggestions[0].Location, nil
+}
+
+func (c *Client) geocodeOSM(ctx context.Context, text string) (api.LatLng, error) {
+	results, err := c.searchOSM(ctx, text, 1)
+	if err != nil {
+		return api.LatLng{}, err
+	}
+	if len(results) == 0 {
+		return api.LatLng{}, fmt.Errorf("osm search no result")
+	}
+	return results[0].Location, nil
 }
 
 func (c *Client) SearchVietmap(ctx context.Context, text string, limit int) ([]Suggestion, error) {
@@ -179,6 +196,28 @@ func (c *Client) SearchVietmap(ctx context.Context, text string, limit int) ([]S
 	return out, nil
 }
 
+func (c *Client) Search(ctx context.Context, text string, limit int) ([]Suggestion, error) {
+	text = strings.TrimSpace(text)
+	if text == "" {
+		return nil, fmt.Errorf("empty query")
+	}
+	if limit <= 0 {
+		limit = 5
+	}
+	if limit > 10 {
+		limit = 10
+	}
+
+	if c.vietmapKey != "" {
+		results, err := c.SearchVietmap(ctx, text, limit)
+		if err == nil && len(results) > 0 {
+			return results, nil
+		}
+	}
+
+	return c.searchOSM(ctx, text, limit)
+}
+
 type vietmapSearchItem struct {
 	RefID       string `json:"ref_id"`
 	Name        string `json:"name"`
@@ -245,4 +284,78 @@ func (c *Client) vietmapPlaceByRefID(ctx context.Context, refID string) (api.Lat
 		return api.LatLng{}, fmt.Errorf("vietmap empty coords")
 	}
 	return api.LatLng{Lat: place.Lat, Lng: place.Lng}, nil
+}
+
+func (c *Client) searchOSM(ctx context.Context, text string, limit int) ([]Suggestion, error) {
+	q := url.Values{}
+	q.Set("format", "jsonv2")
+	q.Set("q", text)
+	q.Set("limit", strconv.Itoa(limit))
+	q.Set("addressdetails", "1")
+	q.Set("countrycodes", "vn")
+	q.Set("dedupe", "1")
+
+	reqURL := "https://nominatim.openstreetmap.org/search?" + q.Encode()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", "vibemap/1.0")
+	req.Header.Set("Accept-Language", "vi,en")
+
+	res, err := c.http.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("osm search status %d", res.StatusCode)
+	}
+
+	var items []struct {
+		PlaceID     int64  `json:"place_id"`
+		Name        string `json:"name"`
+		DisplayName string `json:"display_name"`
+		Lat         string `json:"lat"`
+		Lon         string `json:"lon"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&items); err != nil {
+		return nil, err
+	}
+	if len(items) == 0 {
+		return nil, fmt.Errorf("osm search no result")
+	}
+
+	out := make([]Suggestion, 0, limit)
+	for _, item := range items {
+		if len(out) >= limit {
+			break
+		}
+		lat, err1 := strconv.ParseFloat(strings.TrimSpace(item.Lat), 64)
+		lng, err2 := strconv.ParseFloat(strings.TrimSpace(item.Lon), 64)
+		if err1 != nil || err2 != nil {
+			continue
+		}
+		name := strings.TrimSpace(item.Name)
+		display := strings.TrimSpace(item.DisplayName)
+		if name == "" {
+			if parts := strings.Split(display, ","); len(parts) > 0 {
+				name = strings.TrimSpace(parts[0])
+			}
+		}
+		if name == "" {
+			name = text
+		}
+
+		out = append(out, Suggestion{
+			RefID:    fmt.Sprintf("osm:%d", item.PlaceID),
+			Name:     name,
+			Address:  display,
+			Location: api.LatLng{Lat: lat, Lng: lng},
+		})
+	}
+	if len(out) == 0 {
+		return nil, fmt.Errorf("osm search no result")
+	}
+	return out, nil
 }

@@ -15,16 +15,17 @@ const (
 )
 
 type Poi struct {
-	ID       string   `json:"id"`
-	Name     string   `json:"name"`
-	Location LatLng   `json:"location"`
-	Address  *string  `json:"address,omitempty"`
-	City     *string  `json:"city,omitempty"`
-	VideoURL *string  `json:"videoUrl,omitempty"`
-	VideoID  *string  `json:"videoId,omitempty"`
-	Category *string  `json:"category,omitempty"`
-	Rating   *float64 `json:"rating,omitempty"`
-	Badges   []string `json:"badges,omitempty"`
+	ID             string   `json:"id"`
+	Name           string   `json:"name"`
+	Location       LatLng   `json:"location"`
+	Address        *string  `json:"address,omitempty"`
+	City           *string  `json:"city,omitempty"`
+	VideoURL       *string  `json:"videoUrl,omitempty"`
+	VideoID        *string  `json:"videoId,omitempty"`
+	VideoPlaycount *int64   `json:"videoPlaycount,omitempty"`
+	Category       *string  `json:"category,omitempty"`
+	Rating         *float64 `json:"rating,omitempty"`
+	Badges         []string `json:"badges,omitempty"`
 }
 
 type RoutePlanRequest struct {

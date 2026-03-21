@@ -49,7 +49,7 @@ const lastPlanKey = 'vibemap.lastPlan';
 
 const defaultState = {
   profile: { displayName: 'Explorer', avatarSeed: 'urban_pulse' },
-  preferences: { defaultTransportMode: 'bike' as const, defaultTimeBudgetMinutes: 150 },
+  preferences: { defaultTransportMode: 'bike' as const, defaultTimeBudgetMinutes: 180 },
 };
 
 export const useVibeMapStore = create<VibeMapState>((set, get) => ({
@@ -102,4 +102,3 @@ export const useVibeMapStore = create<VibeMapState>((set, get) => ({
     });
   },
 }));
-
