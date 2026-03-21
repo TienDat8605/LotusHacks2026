@@ -6,7 +6,6 @@ services:
     init: true
     environment:
       APP_DOMAIN: "${APP_DOMAIN:-localhost}"
-      ACME_EMAIL: "${ACME_EMAIL:-}"
     ports:
       - "80:80"
       - "443:443"
@@ -30,6 +29,8 @@ services:
       if [ ! -f /opt/venv/requirements.sha ] || ! sha256sum -c /opt/venv/requirements.sha >/dev/null 2>&1; then
       /opt/venv/bin/pip install --no-cache-dir -r requirements.txt &&
       sha256sum requirements.txt > /opt/venv/requirements.sha; fi &&
+      if ! /opt/venv/bin/python -c 'import multipart' >/dev/null 2>&1; then
+      /opt/venv/bin/pip install --no-cache-dir python-multipart; fi &&
       /opt/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8090"
     environment:
       PYTHONUNBUFFERED: "1"
