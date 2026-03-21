@@ -34,6 +34,15 @@ type RoutePlanRequest struct {
 	TimeBudgetMinutes int           `json:"timeBudgetMinutes"`
 	TransportMode     TransportMode `json:"transportMode"`
 	IncludeTrending   bool          `json:"includeTrending"`
+	RequiredPoiIDs    []string      `json:"requiredPoiIds,omitempty"`
+}
+
+type ConnectPoisRouteRequest struct {
+	Origin          string        `json:"origin"`
+	PoiIDs          []string      `json:"poiIds"`
+	PoiNames        []string      `json:"poiNames,omitempty"`
+	TransportMode   TransportMode `json:"transportMode"`
+	IncludeTrending bool          `json:"includeTrending"`
 }
 
 type RouteStep struct {

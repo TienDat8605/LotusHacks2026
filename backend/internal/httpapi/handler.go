@@ -47,6 +47,7 @@ func (h *Handler) Router() http.Handler {
 		apiR.Get("/geocode/search", h.handleGeocodeSearch)
 		apiR.Post("/routes/plan", h.handlePlanRoute)
 		apiR.Post("/routes/normal", h.handlePlanNormalRoute)
+		apiR.Post("/routes/connect-pois", h.handleConnectPoisRoute)
 		apiR.Post("/route", h.handlePlanRouteCompat)
 
 		apiR.Handle("/ugc", http.HandlerFunc(h.handleUGCProxy))
@@ -157,6 +158,30 @@ func (h *Handler) handlePlanNormalRoute(w http.ResponseWriter, r *http.Request) 
 	plan, err := svc.PlanNormal(r.Context(), req)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, "ROUTE_FAILED", "Could not plan normal route")
+		return
+	}
+	writeJSON(w, http.StatusOK, plan)
+}
+
+func (h *Handler) handleConnectPoisRoute(w http.ResponseWriter, r *http.Request) {
+	var req api.ConnectPoisRouteRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "BAD_REQUEST", "Invalid JSON body")
+		return
+	}
+	if strings.TrimSpace(req.Origin) == "" || len(req.PoiIDs) == 0 {
+		writeError(w, http.StatusBadRequest, "BAD_REQUEST", "origin and poiIds are required")
+		return
+	}
+
+	svc := routes.NewService(h.pois.List(), h.cfg.OrsAPIKey, h.cfg.VietmapAPIKey)
+	plan, err := svc.ConnectPois(r.Context(), req)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "ROUTE_FAILED", "Could not connect suggested places")
+		return
+	}
+	if len(plan.Pois) == 0 {
+		writeError(w, http.StatusBadRequest, "ROUTE_FAILED", "No valid POIs were provided")
 		return
 	}
 	writeJSON(w, http.StatusOK, plan)

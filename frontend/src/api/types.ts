@@ -28,6 +28,15 @@ export type RoutePlanRequest = {
   timeBudgetMinutes: number;
   transportMode: TransportMode;
   includeTrending: boolean;
+  requiredPoiIds?: string[];
+};
+
+export type ConnectPoisRouteRequest = {
+  origin: string;
+  poiIds: string[];
+  poiNames?: string[];
+  transportMode: TransportMode;
+  includeTrending: boolean;
 };
 
 export type RouteLeg = {

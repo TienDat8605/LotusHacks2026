@@ -38,6 +38,7 @@ export function createRealApiClient(): ApiClient {
       jsonFetch(`${base}/api/geocode/search?q=${encodeURIComponent(query)}&limit=${encodeURIComponent(String(limit))}`),
     planRoute: (req) => jsonFetch(`${base}/api/routes/plan`, { method: 'POST', body: JSON.stringify(req) }),
     planNormalRoute: (req) => jsonFetch(`${base}/api/routes/normal`, { method: 'POST', body: JSON.stringify(req) }),
+    connectPoisRoute: (req) => jsonFetch(`${base}/api/routes/connect-pois`, { method: 'POST', body: JSON.stringify(req) }),
     sendAssistantMessage: (threadId, text) =>
       jsonFetch(`${aiBase}/api/assistant/messages`, {
         method: 'POST',

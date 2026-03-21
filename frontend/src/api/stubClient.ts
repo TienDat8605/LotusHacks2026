@@ -2,6 +2,7 @@ import type { ApiClient } from '@/api/client';
 import type {
   AssistantResponse,
   ChatMessage,
+  ConnectPoisRouteRequest,
   JoinByCodeResponse,
   LocationSuggestion,
   UploadLocationRequest,
@@ -252,6 +253,23 @@ export function createStubApiClient(): ApiClient {
           },
         ],
         totalDurationMinutes: minutes,
+      };
+      return plan;
+    },
+
+    connectPoisRoute: async (req: ConnectPoisRouteRequest) => {
+      await sleep(420);
+      const pois = samplePois(req.includeTrending).slice(0, Math.max(1, Math.min(3, req.poiIds.length)));
+      const total = Math.max(45, pois.length * 35);
+      const origin = pointFromText(req.origin, 10.7757, 106.7008);
+      const plan: RoutePlan = {
+        id: id('route'),
+        title: req.includeTrending ? 'Guided Route (Trending Cut)' : 'Guided Route',
+        origin: { name: req.origin.trim() || 'Origin', location: origin },
+        destination: pois.length ? { name: pois[pois.length - 1].name, location: pois[pois.length - 1].location } : undefined,
+        pois,
+        legs: makeLegs([{ id: 'origin', name: 'Origin', location: origin }, ...pois], total),
+        totalDurationMinutes: total,
       };
       return plan;
     },

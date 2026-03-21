@@ -7,6 +7,7 @@ import type {
   UploadLocationRequest,
   UploadLocationResponse,
   RoutePlan,
+  ConnectPoisRouteRequest,
   RoutePlanRequest,
   SocialEvent,
   SocialParticipant,
@@ -19,6 +20,7 @@ export type ApiClient = {
   searchLocations: (query: string, limit?: number) => Promise<LocationSuggestion[]>;
   planRoute: (req: RoutePlanRequest) => Promise<RoutePlan>;
   planNormalRoute: (req: RoutePlanRequest) => Promise<RoutePlan>;
+  connectPoisRoute: (req: ConnectPoisRouteRequest) => Promise<RoutePlan>;
   sendAssistantMessage: (threadId: string, text: string) => Promise<AssistantResponse>;
   listSocialSessions: () => Promise<SocialSession[]>;
   createSocialSession: (destinationName: string) => Promise<SocialSession>;

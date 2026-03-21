@@ -4,6 +4,7 @@ import (
 	"context"
 	"hash/fnv"
 	"math"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -12,6 +13,8 @@ import (
 	"vibemap/backend/internal/geocode"
 	"vibemap/backend/internal/ors"
 )
+
+var normalizeLookupNonAlnum = regexp.MustCompile(`[^a-z0-9]+`)
 
 type Service struct {
 	pois     []api.Poi
@@ -28,6 +31,10 @@ func NewService(pois []api.Poi, orsKey, vietmapKey string) *Service {
 }
 
 func (s *Service) Plan(ctx context.Context, req api.RoutePlanRequest) (api.RoutePlan, error) {
+	if len(req.RequiredPoiIDs) > 0 {
+		return s.connectPois(ctx, req.Origin, req.RequiredPoiIDs, nil, req.TransportMode, req.IncludeTrending)
+	}
+
 	budget := req.TimeBudgetMinutes
 	if budget <= 0 {
 		budget = 180
@@ -95,6 +102,79 @@ func (s *Service) Plan(ctx context.Context, req api.RoutePlanRequest) (api.Route
 	coords := []api.LatLng{originPt, destPt}
 	plan, _ := buildPlan(ctx, s.ors, profile, mode, req, originPt, destPt, []api.Poi{}, coords, budget, dwellPerStop)
 	return plan, nil
+}
+
+func (s *Service) ConnectPois(ctx context.Context, req api.ConnectPoisRouteRequest) (api.RoutePlan, error) {
+	return s.connectPois(ctx, req.Origin, req.PoiIDs, req.PoiNames, req.TransportMode, req.IncludeTrending)
+}
+
+func (s *Service) connectPois(ctx context.Context, origin string, poiIDs []string, poiNames []string, mode api.TransportMode, includeTrending bool) (api.RoutePlan, error) {
+	if mode == "" {
+		mode = api.TransportModeBike
+	}
+
+	ctx, cancel := context.WithTimeout(ctx, 22*time.Second)
+	defer cancel()
+
+	originPt, err := s.geocoder.Geocode(ctx, origin)
+	if err != nil {
+		originPt = fallbackPoint(origin)
+	}
+
+	stops := s.lookupPois(poiIDs, poiNames)
+	if len(stops) == 0 {
+		return api.RoutePlan{}, nil
+	}
+
+	coords := make([]api.LatLng, 0, len(stops)+1)
+	coords = append(coords, originPt)
+	for _, poi := range stops {
+		coords = append(coords, poi.Location)
+	}
+
+	profile := ors.Profile(mode)
+	directions, err := s.ors.Directions(ctx, profile, coords)
+	if err != nil {
+		return s.buildRequiredFallback(origin, originPt, stops, mode, includeTrending), nil
+	}
+
+	legs := make([]api.RouteLeg, 0, len(directions.Segments))
+	totalTravel := 0
+	for i, seg := range directions.Segments {
+		totalTravel += seg.DurationMinutes
+		var toID *string
+		if i < len(stops) {
+			v := stops[i].ID
+			toID = &v
+		}
+		var fromID *string
+		if i > 0 && i-1 < len(stops) {
+			v := stops[i-1].ID
+			fromID = &v
+		}
+		legs = append(legs, api.RouteLeg{
+			FromPoiID:       fromID,
+			ToPoiID:         toID,
+			DurationMinutes: seg.DurationMinutes,
+			Path:            seg.Path,
+			Steps:           seg.Steps,
+		})
+	}
+
+	total := totalTravel + (len(stops) * 18)
+	if total < 30 {
+		total = 30
+	}
+
+	return api.RoutePlan{
+		ID:                   newID("route"),
+		Title:                guidedRouteTitle(includeTrending),
+		Origin:               &api.NamedPoint{Location: originPt, Name: strPtr(strings.TrimSpace(origin))},
+		Destination:          &api.NamedPoint{Location: stops[len(stops)-1].Location, Name: strPtr(stops[len(stops)-1].Name)},
+		Pois:                 stops,
+		Legs:                 legs,
+		TotalDurationMinutes: total,
+	}, nil
 }
 
 func (s *Service) PlanNormal(ctx context.Context, req api.RoutePlanRequest) (api.RoutePlan, error) {
@@ -170,6 +250,116 @@ func strPtr(v string) *string {
 		return nil
 	}
 	return &v
+}
+
+func normalizePoiLookupKey(v string) string {
+	v = strings.ToLower(strings.TrimSpace(v))
+	v = normalizeLookupNonAlnum.ReplaceAllString(v, "_")
+	return strings.Trim(v, "_")
+}
+
+func (s *Service) lookupPois(ids []string, names []string) []api.Poi {
+	if len(ids) == 0 && len(names) == 0 {
+		return nil
+	}
+
+	byID := make(map[string]api.Poi, len(s.pois))
+	byName := make(map[string]api.Poi, len(s.pois))
+	for _, poi := range s.pois {
+		byID[poi.ID] = poi
+		key := normalizePoiLookupKey(poi.Name)
+		if key != "" {
+			if _, exists := byName[key]; !exists {
+				byName[key] = poi
+			}
+		}
+	}
+
+	out := make([]api.Poi, 0, max(len(ids), len(names)))
+	seen := make(map[string]struct{}, max(len(ids), len(names)))
+	for _, id := range ids {
+		id = strings.TrimSpace(id)
+		if id == "" {
+			continue
+		}
+		if _, ok := seen[id]; ok {
+			continue
+		}
+		poi, ok := byID[id]
+		if !ok {
+			continue
+		}
+		out = append(out, poi)
+		seen[id] = struct{}{}
+	}
+
+	for _, name := range names {
+		key := normalizePoiLookupKey(name)
+		if key == "" {
+			continue
+		}
+		poi, ok := byName[key]
+		if !ok {
+			continue
+		}
+		if _, exists := seen[poi.ID]; exists {
+			continue
+		}
+		out = append(out, poi)
+		seen[poi.ID] = struct{}{}
+	}
+
+	return out
+}
+
+func guidedRouteTitle(includeTrending bool) string {
+	if includeTrending {
+		return "Guided Route (Trending Cut)"
+	}
+	return "Guided Route"
+}
+
+func (s *Service) buildRequiredFallback(origin string, originPt api.LatLng, stops []api.Poi, mode api.TransportMode, includeTrending bool) api.RoutePlan {
+	legs := make([]api.RouteLeg, 0, len(stops))
+	totalTravel := 0
+
+	current := originPt
+	for i, stop := range stops {
+		minutes := estimateTravelMinutes(current, stop.Location, mode)
+		totalTravel += minutes
+
+		var fromID *string
+		if i > 0 {
+			v := stops[i-1].ID
+			fromID = &v
+		}
+		v := stop.ID
+		toID := &v
+
+		legs = append(legs, api.RouteLeg{
+			FromPoiID:       fromID,
+			ToPoiID:         toID,
+			DurationMinutes: minutes,
+			Path:            []api.LatLng{current, stop.Location},
+			Steps:           stepsForLeg("", stop.Name, minutes),
+		})
+		current = stop.Location
+	}
+
+	total := totalTravel + (len(stops) * 18)
+	if total < 30 {
+		total = 30
+	}
+
+	return api.RoutePlan{
+		ID:                   newID("route"),
+		Title:                guidedRouteTitle(includeTrending),
+		Origin:               &api.NamedPoint{Location: originPt, Name: strPtr(strings.TrimSpace(origin))},
+		Destination:          &api.NamedPoint{Location: stops[len(stops)-1].Location, Name: strPtr(stops[len(stops)-1].Name)},
+		Pois:                 stops,
+		Legs:                 legs,
+		TotalDurationMinutes: total,
+	}
 }
 
 func fallbackPoint(seed string) api.LatLng {

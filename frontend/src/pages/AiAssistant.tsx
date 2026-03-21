@@ -41,6 +41,15 @@ function buildNamedDestination(poi: Poi) {
   return poi.address ?? poi.name;
 }
 
+function buildRouteSummary(origin: string, pois: Poi[]) {
+  if (!pois.length) {
+    return `I could not build a guided route from **${origin}** because there were no connected POIs.`;
+  }
+
+  const stopNames = pois.map((poi) => poi.name).join(' -> ');
+  return `I planned your guided route from **${origin}** using these exact places: **${stopNames}**.`;
+}
+
 export default function AiAssistant() {
   usePageMeta({
     title: 'VibeMap - AI Assistant',
@@ -167,14 +176,16 @@ export default function AiAssistant() {
 
   async function planSuggestedRoute() {
     const trimmedOrigin = origin.trim();
-    const destination = suggestedPlan?.destination ?? suggestedPois[suggestedPois.length - 1]?.name;
+    const exactPoiIds = suggestedPlan?.requiredPoiIds?.length
+      ? suggestedPlan.requiredPoiIds
+      : suggestedPois.map((poi) => poi.id);
 
     if (!trimmedOrigin) {
       setError('Please enter your starting location first.');
       return;
     }
-    if (!destination) {
-      setError('I do not have a destination to plan this route yet.');
+    if (!exactPoiIds.length) {
+      setError('I do not have enough suggested places to build this route yet.');
       return;
     }
 
@@ -183,15 +194,40 @@ export default function AiAssistant() {
 
     try {
       const api = getApiClient();
-      const request: RoutePlanRequest = {
+      const selectedPois = suggestedPois.slice(0, 3);
+      const request = {
         origin: trimmedOrigin,
-        destination,
-        timeBudgetMinutes: suggestedPlan?.timeBudgetMinutes ?? prefs.defaultTimeBudgetMinutes,
         transportMode: suggestedPlan?.transportMode ?? prefs.defaultTransportMode,
         includeTrending: suggestedPlan?.includeTrending ?? true,
+        poiIds: exactPoiIds.slice(0, 3),
+        poiNames: selectedPois.map((poi) => poi.name),
       };
-      const route = await api.planRoute(request);
-      setLastPlan(request);
+      const route = await api.connectPoisRoute(request);
+      const plannedMessage: ChatMessage = {
+        id: `planned_${Date.now()}`,
+        role: 'assistant',
+        text: buildRouteSummary(request.origin, route.pois),
+        createdAt: new Date().toISOString(),
+      };
+
+      setAssistantState({
+        messages: [...messages, plannedMessage],
+        suggestedPois: route.pois,
+        suggestedPlan: {
+          origin: request.origin,
+          transportMode: request.transportMode,
+          includeTrending: request.includeTrending,
+          requiredPoiIds: request.poiIds,
+        },
+      });
+      setLastPlan({
+        origin: request.origin,
+        destination: route.pois[route.pois.length - 1]?.name ?? 'Guided Route',
+        timeBudgetMinutes: prefs.defaultTimeBudgetMinutes,
+        transportMode: request.transportMode,
+        includeTrending: request.includeTrending,
+        requiredPoiIds: request.poiIds,
+      });
       setRoute(route);
       navigate(`/results/${encodeURIComponent(route.id)}`);
     } catch (err) {
@@ -296,7 +332,7 @@ export default function AiAssistant() {
               <div className="space-y-4">
                 <div className="px-1">
                   <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-outline">
-                    {mode === 'poi' ? 'Suggested places' : 'Suggested destination ideas'}
+                    {mode === 'poi' ? 'Suggested places' : 'Planned route stops'}
                   </div>
                 </div>
 
@@ -322,7 +358,7 @@ export default function AiAssistant() {
                           <h3 className="font-headline font-bold text-lg text-on-surface">{p.name}</h3>
                           {mode === 'route' && (
                             <span className="rounded-full bg-surface-container-low px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
-                              Option {idx + 1}
+                              Stop {idx + 1}
                             </span>
                           )}
                         </div>
@@ -366,7 +402,7 @@ export default function AiAssistant() {
 
             {mode === 'route' && (
               <div className="rounded-2xl bg-surface-container-low px-4 py-3 text-sm text-on-surface-variant">
-                Route mode now uses the backend multi-stop planner between your typed start location and the final AI-suggested destination.
+                Route mode uses the backend multi-stop planner between your typed start location and the final AI destination. After planning, the cards above switch to the actual connected stops from that route.
               </div>
             )}
 

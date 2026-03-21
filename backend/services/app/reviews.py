@@ -13,7 +13,7 @@ _NON_ALNUM = re.compile(r"[^a-z0-9]+")
 def _stable_id(name: str) -> str:
     slug = _NON_ALNUM.sub("_", name.strip().lower()).strip("_")
     slug = slug[:48].strip("_")
-    return f"review_{slug or 'item'}"
+    return f"poi_{slug or 'item'}"
 
 
 def load_review_documents(path: Path) -> list[ReviewDocument]:
