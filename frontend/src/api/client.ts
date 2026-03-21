@@ -1,6 +1,8 @@
 import type {
   AssistantResponse,
   ChatMessage,
+  UploadLocationRequest,
+  UploadLocationResponse,
   RoutePlan,
   RoutePlanRequest,
   SocialSession,
@@ -16,6 +18,7 @@ export type ApiClient = {
   listSessionMessages: (sessionId: string) => Promise<ChatMessage[]>;
   sendSessionMessage: (sessionId: string, text: string) => Promise<ChatMessage>;
   sendSessionPing: (sessionId: string) => Promise<{ ok: true }>;
+  uploadLocationVideo: (req: UploadLocationRequest) => Promise<UploadLocationResponse>;
 };
 
 export function getApiMode(): ApiMode {

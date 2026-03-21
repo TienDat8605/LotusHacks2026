@@ -44,6 +44,25 @@ export function createRealApiClient(): ApiClient {
       jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/ping`, {
         method: 'POST',
       }),
+    uploadLocationVideo: async (req) => {
+      const form = new FormData();
+      form.append('file', req.file);
+      form.append('point_of_interest', req.pointOfInterest);
+      form.append('city', req.city);
+      form.append('address', req.address);
+      if (req.shortDescription) form.append('short_description', req.shortDescription);
+      if (req.atmosphere) form.append('atmosphere', req.atmosphere);
+
+      const res = await fetch(`${base}/api/ugc/videos`, {
+        method: 'POST',
+        body: form,
+      });
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(text || `Request failed: ${res.status}`);
+      }
+      return (await res.json()) as Awaited<ReturnType<ApiClient['uploadLocationVideo']>>;
+    },
   };
 }
 

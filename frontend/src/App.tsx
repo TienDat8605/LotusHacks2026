@@ -6,6 +6,7 @@ import RouteResults from '@/pages/RouteResults';
 import VibeCheck from '@/pages/VibeCheck';
 import AiAssistant from '@/pages/AiAssistant';
 import SocialHub from '@/pages/SocialHub';
+import UploadLocation from '@/pages/UgcUpload';
 import ProfileSettings from '@/pages/ProfileSettings';
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/results/:routeId/vibe/:poiId" element={<VibeCheck />} />
           <Route path="/assistant" element={<AiAssistant />} />
           <Route path="/social" element={<SocialHub />} />
+          <Route path="/ugc" element={<UploadLocation />} />
           <Route path="/profile" element={<ProfileSettings />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

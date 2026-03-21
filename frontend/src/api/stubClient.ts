@@ -1,5 +1,14 @@
 import type { ApiClient } from '@/api/client';
-import type { AssistantResponse, ChatMessage, Poi, RoutePlan, RoutePlanRequest, SocialSession } from '@/api/types';
+import type {
+  AssistantResponse,
+  ChatMessage,
+  UploadLocationRequest,
+  UploadLocationResponse,
+  Poi,
+  RoutePlan,
+  RoutePlanRequest,
+  SocialSession,
+} from '@/api/types';
 
 function nowIso() {
   return new Date().toISOString();
@@ -11,6 +20,14 @@ function id(prefix: string) {
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+function toSafeId(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 40);
 }
 
 function samplePois(includeTrending: boolean): Poi[] {
@@ -161,6 +178,19 @@ export function createStubApiClient(): ApiClient {
     sendSessionPing: async () => {
       await sleep(140);
       return { ok: true };
+    },
+
+    uploadLocationVideo: async (req: UploadLocationRequest) => {
+      await sleep(900);
+      const fileStem = req.file.name.replace(/\.[^.]+$/, '') || 'upload';
+      const videoId = `video_${toSafeId(fileStem)}_${Date.now().toString(16)}`;
+      const resp: UploadLocationResponse = {
+        jobId: id('upload_job'),
+        videoId,
+        status: 'queued',
+        createdAt: nowIso(),
+      };
+      return resp;
     },
   };
 }
