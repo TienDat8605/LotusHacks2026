@@ -1,4 +1,4 @@
-import { Bot, PlusCircle, Send, Sparkles } from 'lucide-react';
+import { Bot, MapPin, PlusCircle, Send, Sparkles } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -37,6 +37,10 @@ function renderMessageText(text: string) {
   });
 }
 
+function buildNamedDestination(poi: Poi) {
+  return poi.address ?? poi.name;
+}
+
 export default function AiAssistant() {
   usePageMeta({
     title: 'VibeMap - AI Assistant',
@@ -45,6 +49,7 @@ export default function AiAssistant() {
 
   const navigate = useNavigate();
   const prefs = useVibeMapStore((s) => s.preferences);
+  const lastPlanRequest = useVibeMapStore((s) => s.lastPlanRequest);
   const setLastPlan = useVibeMapStore((s) => s.setLastPlanRequest);
   const setRoute = useVibeMapStore((s) => s.setRoute);
   const assistant = useVibeMapStore((s) => s.assistant);
@@ -54,9 +59,10 @@ export default function AiAssistant() {
   const threadId = 'default';
   const [mode, setMode] = useState<'poi' | 'route'>('poi');
   const [input, setInput] = useState('');
+  const [origin, setOrigin] = useState(lastPlanRequest?.origin ?? '');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [planningPoiId, setPlanningPoiId] = useState<string | null>(null);
+  const [planningKey, setPlanningKey] = useState<string | null>(null);
 
   const messages = assistant.messages;
   const suggestedPois = assistant.suggestedPois;
@@ -64,7 +70,7 @@ export default function AiAssistant() {
   const followUps = assistant.followUps;
 
   const placeholder = useMemo(
-    () => (mode === 'poi' ? 'Where to next, explorer?' : 'Plan a route: vibe, time budget, and transport'),
+    () => (mode === 'poi' ? 'Where to next, explorer?' : 'Plan a route: date vibe, budget, and mood'),
     [mode]
   );
 
@@ -75,7 +81,7 @@ export default function AiAssistant() {
         {
           id: 'seed',
           role: 'assistant',
-          text: 'Tell me your vibe. I can search review-based places, show matching shops, and send you straight to a visualized route.',
+          text: 'Tell me your vibe. In Ask POI mode I will recommend one place and route you there. In Plan Route mode I will suggest a destination vibe and the route planner will fill in stops between your start and end points.',
           createdAt: new Date().toISOString(),
         },
       ],
@@ -83,36 +89,43 @@ export default function AiAssistant() {
   }, [messages.length, setAssistantState]);
 
   async function send(text: string) {
-    if (!text.trim()) return;
+    const trimmed = text.trim();
+    if (!trimmed) return;
+
     setSending(true);
     setError(null);
     setInput('');
-    const trimmed = text.trim();
+
     const optimisticMessage: ChatMessage = {
       id: `local_${Date.now()}`,
       role: 'user',
       text: trimmed,
       createdAt: new Date().toISOString(),
     };
+
     setAssistantState({ messages: [...messages, optimisticMessage] });
 
     try {
       const api = getApiClient();
       const outbound =
         mode === 'route'
-          ? `Help me turn this into a route plan with a clear destination suggestion: ${trimmed}`
-          : trimmed;
+          ? `Suggest a destination and route vibe for this request. The backend planner will create stops between the user's start and destination: ${trimmed}`
+          : `Recommend the single best matching place for this request and explain why: ${trimmed}`;
+
       const resp = await api.sendAssistantMessage(threadId, outbound);
+
       replaceAssistantFromResponse({
         ...resp,
         suggestedPlan:
-          resp.suggestedPlan ??
-          (mode === 'route' && resp.suggestedPois?.[0]
-            ? {
-                destination: resp.suggestedPois[0].name,
+          mode === 'route'
+            ? resp.suggestedPlan ?? {
+                origin,
+                destination: resp.suggestedPois?.[resp.suggestedPois.length - 1]?.name,
+                timeBudgetMinutes: prefs.defaultTimeBudgetMinutes,
+                transportMode: prefs.defaultTransportMode,
                 includeTrending: true,
               }
-            : null),
+            : null,
       });
     } catch (err) {
       setAssistantState({ messages });
@@ -122,42 +135,60 @@ export default function AiAssistant() {
     }
   }
 
-  async function planRouteToPoi(poi: Poi) {
-    setPlanningPoiId(poi.id);
+  async function routeToSinglePoi(poi: Poi) {
+    const trimmedOrigin = origin.trim();
+    if (!trimmedOrigin) {
+      setError('Please enter your starting location first.');
+      return;
+    }
+
+    setPlanningKey(poi.id);
     setError(null);
 
     try {
       const api = getApiClient();
       const request: RoutePlanRequest = {
-        origin: 'District 1, Ben Thanh',
-        destination: poi.address ?? poi.name,
+        origin: trimmedOrigin,
+        destination: buildNamedDestination(poi),
         timeBudgetMinutes: prefs.defaultTimeBudgetMinutes,
         transportMode: prefs.defaultTransportMode,
         includeTrending: true,
       };
-      const route = await api.planRoute(request);
+      const route = await api.planNormalRoute(request);
       setLastPlan(request);
       setRoute(route);
       navigate(`/results/${encodeURIComponent(route.id)}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not plan a route to this place.');
+      setError(err instanceof Error ? err.message : 'Could not build the route to this place.');
     } finally {
-      setPlanningPoiId(null);
+      setPlanningKey(null);
     }
   }
 
-  async function useSuggestedPlan(plan: Partial<RoutePlanRequest>) {
+  async function planSuggestedRoute() {
+    const trimmedOrigin = origin.trim();
+    const destination = suggestedPlan?.destination ?? suggestedPois[suggestedPois.length - 1]?.name;
+
+    if (!trimmedOrigin) {
+      setError('Please enter your starting location first.');
+      return;
+    }
+    if (!destination) {
+      setError('I do not have a destination to plan this route yet.');
+      return;
+    }
+
+    setPlanningKey('itinerary');
     setError(null);
-    setPlanningPoiId('suggested-plan');
 
     try {
       const api = getApiClient();
       const request: RoutePlanRequest = {
-        origin: plan.origin ?? 'District 1, Ben Thanh',
-        destination: plan.destination ?? suggestedPois[0]?.name ?? 'District 1',
-        timeBudgetMinutes: plan.timeBudgetMinutes ?? prefs.defaultTimeBudgetMinutes,
-        transportMode: plan.transportMode ?? prefs.defaultTransportMode,
-        includeTrending: plan.includeTrending ?? true,
+        origin: trimmedOrigin,
+        destination,
+        timeBudgetMinutes: suggestedPlan?.timeBudgetMinutes ?? prefs.defaultTimeBudgetMinutes,
+        transportMode: suggestedPlan?.transportMode ?? prefs.defaultTransportMode,
+        includeTrending: suggestedPlan?.includeTrending ?? true,
       };
       const route = await api.planRoute(request);
       setLastPlan(request);
@@ -166,7 +197,7 @@ export default function AiAssistant() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not build the suggested route.');
     } finally {
-      setPlanningPoiId(null);
+      setPlanningKey(null);
     }
   }
 
@@ -204,6 +235,18 @@ export default function AiAssistant() {
                 <Sparkles className="h-4 w-4" />
                 Plan Route
               </button>
+            </div>
+
+            <div className="w-[92%] max-w-2xl mt-4">
+              <div className="flex items-center gap-3 rounded-2xl bg-white/80 border border-white/60 px-4 py-3 shadow-float">
+                <MapPin className="h-4 w-4 text-primary" />
+                <input
+                  value={origin}
+                  onChange={(e) => setOrigin(e.target.value)}
+                  placeholder="Starting from..."
+                  className="w-full bg-transparent border-none focus:ring-0 text-sm font-medium text-on-surface placeholder:text-on-surface-variant/70"
+                />
+              </div>
             </div>
           </div>
 
@@ -252,11 +295,13 @@ export default function AiAssistant() {
             {suggestedPois.length > 0 && (
               <div className="space-y-4">
                 <div className="px-1">
-                  <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-outline">Suggested places</div>
+                  <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-outline">
+                    {mode === 'poi' ? 'Suggested places' : 'Suggested destination ideas'}
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-12 gap-4">
-                  {suggestedPois.slice(0, 3).map((p, idx) => (
+                  {suggestedPois.slice(0, mode === 'poi' ? 3 : 4).map((p, idx) => (
                     <div
                       key={p.id}
                       className={cn(
@@ -273,7 +318,14 @@ export default function AiAssistant() {
                         )}
                       </div>
                       <div className="p-4">
-                        <h3 className="font-headline font-bold text-lg text-on-surface">{p.name}</h3>
+                        <div className="flex items-start justify-between gap-3">
+                          <h3 className="font-headline font-bold text-lg text-on-surface">{p.name}</h3>
+                          {mode === 'route' && (
+                            <span className="rounded-full bg-surface-container-low px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+                              Option {idx + 1}
+                            </span>
+                          )}
+                        </div>
                         <p className="text-on-surface-variant text-sm mt-1">
                           {p.category ?? 'Curated'}
                           {p.rating ? ` - ${p.rating.toFixed(1)} stars` : ''}
@@ -283,15 +335,17 @@ export default function AiAssistant() {
                             {[p.address, p.city].filter(Boolean).join(' - ')}
                           </p>
                         )}
-                        <button
-                          type="button"
-                          onClick={() => void planRouteToPoi(p)}
-                          disabled={planningPoiId !== null}
-                          className="w-full mt-4 py-3 rounded-full bg-primary text-white font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-70"
-                        >
-                          <Send className="h-4 w-4" />
-                          {planningPoiId === p.id ? 'Planning route...' : 'Plan route here'}
-                        </button>
+                        {mode === 'poi' && (
+                          <button
+                            type="button"
+                            onClick={() => void routeToSinglePoi(p)}
+                            disabled={planningKey !== null}
+                            className="w-full mt-4 py-3 rounded-full bg-primary text-white font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-70"
+                          >
+                            <Send className="h-4 w-4" />
+                            {planningKey === p.id ? 'Routing there...' : 'Show route there'}
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -299,15 +353,21 @@ export default function AiAssistant() {
               </div>
             )}
 
-            {suggestedPlan && (
+            {mode === 'route' && suggestedPois.length > 0 && (
               <button
                 type="button"
-                onClick={() => void useSuggestedPlan(suggestedPlan)}
-                disabled={planningPoiId !== null}
+                onClick={() => void planSuggestedRoute()}
+                disabled={planningKey !== null}
                 className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 rounded-full font-headline font-extrabold shadow-float active:scale-95 transition-transform disabled:opacity-70"
               >
-                {planningPoiId === 'suggested-plan' ? 'Building route...' : 'Use suggested route plan'}
+                {planningKey === 'itinerary' ? 'Building route...' : 'Show route for this plan'}
               </button>
+            )}
+
+            {mode === 'route' && (
+              <div className="rounded-2xl bg-surface-container-low px-4 py-3 text-sm text-on-surface-variant">
+                Route mode now uses the backend multi-stop planner between your typed start location and the final AI-suggested destination.
+              </div>
             )}
 
             {followUps.length > 0 && (
@@ -350,10 +410,10 @@ export default function AiAssistant() {
                 />
                 <button
                   type="submit"
-                  disabled={sending || planningPoiId !== null}
+                  disabled={sending || planningKey !== null}
                   className={cn(
                     'w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center shadow-float active:scale-90 transition-transform',
-                    sending || planningPoiId !== null ? 'opacity-80' : 'opacity-100'
+                    sending || planningKey !== null ? 'opacity-80' : 'opacity-100'
                   )}
                   aria-label="Send"
                 >

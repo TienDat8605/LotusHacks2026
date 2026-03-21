@@ -3,6 +3,7 @@ import type {
   AssistantResponse,
   ChatMessage,
   JoinByCodeResponse,
+  LocationSuggestion,
   UploadLocationRequest,
   UploadLocationResponse,
   Poi,
@@ -59,6 +60,81 @@ function samplePois(includeTrending: boolean): Poi[] {
       rating: 4.9,
       badges: ['Curator Pick'],
     },
+  ];
+}
+
+const stubLocations: LocationSuggestion[] = [
+  { refId: 'vm_benthanh', name: 'Ben Thanh Market', address: 'District 1, Ho Chi Minh City', location: { lat: 10.7724, lng: 106.698 } },
+  { refId: 'vm_landmark81', name: 'Landmark 81', address: 'Binh Thanh, Ho Chi Minh City', location: { lat: 10.7942, lng: 106.7218 } },
+  { refId: 'vm_nguyenhue', name: 'Nguyen Hue Walking Street', address: 'District 1, Ho Chi Minh City', location: { lat: 10.7745, lng: 106.7037 } },
+  { refId: 'vm_taodam', name: 'Tao Dan Park', address: 'District 1, Ho Chi Minh City', location: { lat: 10.7764, lng: 106.6923 } },
+  { refId: 'vm_phumyhung', name: 'Crescent Mall', address: 'District 7, Ho Chi Minh City', location: { lat: 10.7293, lng: 106.7194 } },
+  { refId: 'vm_thaodien', name: 'Thao Dien', address: 'Thu Duc, Ho Chi Minh City', location: { lat: 10.8031, lng: 106.7327 } },
+];
+
+function sampleLocationSuggestions(query: string, limit: number) {
+  const q = query.trim().toLowerCase();
+  if (!q) return [] as LocationSuggestion[];
+
+  const ranked = stubLocations
+    .filter((item) => item.name.toLowerCase().includes(q) || (item.address ?? '').toLowerCase().includes(q))
+    .sort((a, b) => {
+      const ai = a.name.toLowerCase().indexOf(q);
+      const bi = b.name.toLowerCase().indexOf(q);
+      return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
+    });
+
+  return ranked.slice(0, Math.max(1, limit));
+}
+
+function hashSeed(input: string) {
+  let h = 2166136261;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function pointFromText(input: string, fallbackLat: number, fallbackLng: number) {
+  const seed = hashSeed(input.trim().toLowerCase() || `${fallbackLat},${fallbackLng}`);
+  const latOffset = ((seed % 2800) - 1400) / 10000;
+  const lngOffset = (((seed / 2800) % 2800) - 1400) / 10000;
+  return {
+    lat: fallbackLat + latOffset,
+    lng: fallbackLng + lngOffset,
+  };
+}
+
+function haversineMeters(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
+  const toRad = (value: number) => (value * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const lat1 = toRad(a.lat);
+  const lat2 = toRad(b.lat);
+  const x = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+  return 6371000 * c;
+}
+
+function estimateTravelMinutesByMode(meters: number, mode: RoutePlanRequest['transportMode']) {
+  const speedKmh =
+    mode === 'walk' ? 4.2
+    : mode === 'car' ? 16
+    : mode === 'bus' ? 14
+    : 18;
+  const minutes = Math.round(((meters / 1000) / speedKmh) * 60);
+  return Math.max(2, minutes);
+}
+
+function makeNormalLegSteps(totalMinutes: number) {
+  const first = Math.max(1, Math.round(totalMinutes * 0.25));
+  const second = Math.max(1, Math.round(totalMinutes * 0.45));
+  const third = Math.max(1, totalMinutes - first - second);
+  return [
+    { instruction: 'Head toward the destination corridor', durationMinutes: first },
+    { instruction: 'Continue along the suggested direct route', durationMinutes: second },
+    { instruction: 'Arrive at destination', durationMinutes: third },
   ];
 }
 
@@ -137,6 +213,11 @@ function snapshot(sessionId: string): SocialEvent {
 
 export function createStubApiClient(): ApiClient {
   return {
+    searchLocations: async (query, limit = 5) => {
+      await sleep(180);
+      return sampleLocationSuggestions(query, limit);
+    },
+
     planRoute: async (req: RoutePlanRequest) => {
       await sleep(550);
       const pois = samplePois(req.includeTrending);
@@ -147,6 +228,30 @@ export function createStubApiClient(): ApiClient {
         pois,
         legs: makeLegs(pois, total),
         totalDurationMinutes: total,
+      };
+      return plan;
+    },
+
+    planNormalRoute: async (req: RoutePlanRequest) => {
+      await sleep(360);
+      const origin = pointFromText(req.origin, 10.7757, 106.7008);
+      const destination = pointFromText(req.destination, 10.7857, 106.7108);
+      const meters = haversineMeters(origin, destination);
+      const minutes = estimateTravelMinutesByMode(meters, req.transportMode);
+      const plan: RoutePlan = {
+        id: id('route'),
+        title: 'Normal Route',
+        origin: { name: req.origin.trim() || 'Origin', location: origin },
+        destination: { name: req.destination.trim() || 'Destination', location: destination },
+        pois: [],
+        legs: [
+          {
+            durationMinutes: minutes,
+            path: [origin, destination],
+            steps: makeNormalLegSteps(minutes),
+          },
+        ],
+        totalDurationMinutes: minutes,
       };
       return plan;
     },

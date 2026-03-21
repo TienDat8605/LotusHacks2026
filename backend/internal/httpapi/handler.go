@@ -44,7 +44,9 @@ func (h *Handler) Router() http.Handler {
 	})
 
 	r.Route("/api", func(apiR chi.Router) {
+		apiR.Get("/geocode/search", h.handleGeocodeSearch)
 		apiR.Post("/routes/plan", h.handlePlanRoute)
+		apiR.Post("/routes/normal", h.handlePlanNormalRoute)
 		apiR.Post("/route", h.handlePlanRouteCompat)
 
 		apiR.Handle("/ugc", http.HandlerFunc(h.handleUGCProxy))
@@ -135,6 +137,26 @@ func (h *Handler) handlePlanRoute(w http.ResponseWriter, r *http.Request) {
 	plan, err := svc.Plan(r.Context(), req)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, "ROUTE_FAILED", "Could not plan route")
+		return
+	}
+	writeJSON(w, http.StatusOK, plan)
+}
+
+func (h *Handler) handlePlanNormalRoute(w http.ResponseWriter, r *http.Request) {
+	var req api.RoutePlanRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "BAD_REQUEST", "Invalid JSON body")
+		return
+	}
+	if strings.TrimSpace(req.Origin) == "" || strings.TrimSpace(req.Destination) == "" {
+		writeError(w, http.StatusBadRequest, "BAD_REQUEST", "origin and destination are required")
+		return
+	}
+
+	svc := routes.NewService(h.pois.List(), h.cfg.OrsAPIKey, h.cfg.VietmapAPIKey)
+	plan, err := svc.PlanNormal(r.Context(), req)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "ROUTE_FAILED", "Could not plan normal route")
 		return
 	}
 	writeJSON(w, http.StatusOK, plan)

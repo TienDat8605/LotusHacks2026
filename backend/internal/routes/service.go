@@ -98,6 +98,73 @@ func (s *Service) Plan(ctx context.Context, req api.RoutePlanRequest) (api.Route
 	return plan, nil
 }
 
+func (s *Service) PlanNormal(ctx context.Context, req api.RoutePlanRequest) (api.RoutePlan, error) {
+	mode := req.TransportMode
+	if mode == "" {
+		mode = api.TransportModeBike
+	}
+
+	ctx, cancel := context.WithTimeout(ctx, 22*time.Second)
+	defer cancel()
+
+	originPt, err := s.geocoder.Geocode(ctx, req.Origin)
+	if err != nil {
+		originPt = fallbackPoint(req.Origin)
+	}
+	destPt, err := s.geocoder.Geocode(ctx, req.Destination)
+	if err != nil {
+		destPt = fallbackPoint(req.Destination)
+	}
+
+	coords := []api.LatLng{originPt, destPt}
+	profile := ors.Profile(mode)
+	directions, err := s.ors.Directions(ctx, profile, coords)
+	if err != nil {
+		minutes := estimateTravelMinutes(originPt, destPt, mode)
+		plan := api.RoutePlan{
+			ID:          newID("route"),
+			Title:       "Normal Route",
+			Origin:      &api.NamedPoint{Location: originPt, Name: strPtr(strings.TrimSpace(req.Origin))},
+			Destination: &api.NamedPoint{Location: destPt, Name: strPtr(strings.TrimSpace(req.Destination))},
+			Pois:        []api.Poi{},
+			Legs: []api.RouteLeg{
+				{
+					DurationMinutes: minutes,
+					Path:            []api.LatLng{originPt, destPt},
+					Steps:           stepsForLeg("", "", minutes),
+				},
+			},
+			TotalDurationMinutes: minutes,
+		}
+		return plan, nil
+	}
+
+	legs := make([]api.RouteLeg, 0, len(directions.Segments))
+	total := 0
+	for _, seg := range directions.Segments {
+		total += seg.DurationMinutes
+		legs = append(legs, api.RouteLeg{
+			DurationMinutes: seg.DurationMinutes,
+			Path:            seg.Path,
+			Steps:           seg.Steps,
+		})
+	}
+	if total < 1 {
+		total = 1
+	}
+
+	plan := api.RoutePlan{
+		ID:                   newID("route"),
+		Title:                "Normal Route",
+		Origin:               &api.NamedPoint{Location: originPt, Name: strPtr(strings.TrimSpace(req.Origin))},
+		Destination:          &api.NamedPoint{Location: destPt, Name: strPtr(strings.TrimSpace(req.Destination))},
+		Pois:                 []api.Poi{},
+		Legs:                 legs,
+		TotalDurationMinutes: total,
+	}
+	return plan, nil
+}
+
 func strPtr(v string) *string {
 	v = strings.TrimSpace(v)
 	if v == "" {

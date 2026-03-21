@@ -1,12 +1,10 @@
 import {
-  Bell,
   Compass,
   Flame,
   Leaf,
-  LocateFixed,
   LogIn,
+  LogOut,
   Maximize,
-  MessageCircle,
   Minimize,
   Plus,
   Send,
@@ -95,7 +93,7 @@ function recommendationAccent(poi: Poi, index: number): RecommendationAccent {
   }
 
   const fallback: RecommendationAccent[] = [
-    { icon: Compass, label: 'Midpoint', tone: 'text-primary bg-primary/10' },
+    { icon: Compass, label: 'Nearby', tone: 'text-primary bg-primary/10' },
     { icon: Sparkles, label: 'Group pick', tone: 'text-fuchsia-700 bg-fuchsia-500/10' },
   ];
 
@@ -195,6 +193,13 @@ export default function SocialHub() {
       return '';
     }
   });
+  const [joinedSessionId, setJoinedSessionId] = useState<string>(() => {
+    try {
+      return localStorage.getItem('vibemap.joinedSessionId') ?? '';
+    } catch {
+      return '';
+    }
+  });
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -215,6 +220,12 @@ export default function SocialHub() {
   );
   const nearbyFriends = useMemo(() => participants.slice(0, 4), [participants]);
   const sessionFeed = useMemo(() => feedItems(messages, participants), [messages, participants]);
+  const isInActiveRoom = Boolean(participantId && joinedSessionId && joinedSessionId === activeId);
+  const sessionDisplayName = useMemo(() => {
+    const raw = (active?.destinationName ?? '').trim();
+    if (!raw || raw.toLowerCase() === 'new meetup room') return 'Live Meetup Room';
+    return raw;
+  }, [active?.destinationName]);
 
   useEffect(() => {
     let cancelled = false;
@@ -224,7 +235,8 @@ export default function SocialHub() {
       const list = await api.listSocialSessions();
       if (cancelled) return;
       setSessions(list);
-      const nextActive = list.find((x) => x.status === 'live')?.id ?? list[0]?.id ?? '';
+      const joinedActive = joinedSessionId && list.some((x) => x.id === joinedSessionId) ? joinedSessionId : '';
+      const nextActive = joinedActive || list.find((x) => x.status === 'live')?.id || list[0]?.id || '';
       setActiveId((current) => current || nextActive);
       setLoading(false);
     }
@@ -278,8 +290,10 @@ export default function SocialHub() {
     const api = getApiClient();
     const resp = await api.joinSocialSession(sessionId, profile.displayName);
     setParticipantId(resp.participantId);
+    setJoinedSessionId(sessionId);
     try {
       localStorage.setItem('vibemap.participantId', resp.participantId);
+      localStorage.setItem('vibemap.joinedSessionId', sessionId);
     } catch {
       return;
     }
@@ -304,21 +318,17 @@ export default function SocialHub() {
     setSessions((current) => [resp.session, ...current.filter((entry) => entry.id !== resp.session.id)]);
     setActiveId(resp.session.id);
     setParticipantId(resp.participantId);
+    setJoinedSessionId(resp.session.id);
     setJoinCode('');
     try {
       localStorage.setItem('vibemap.participantId', resp.participantId);
+      localStorage.setItem('vibemap.joinedSessionId', resp.session.id);
     } catch {
       return;
     }
     if (resp.avatarSeed) {
       setProfile({ avatarSeed: resp.avatarSeed });
     }
-  }
-
-  async function ping() {
-    if (!activeId) return;
-    const api = getApiClient();
-    await api.sendSessionPing(activeId);
   }
 
   async function send() {
@@ -330,6 +340,17 @@ export default function SocialHub() {
       setInput('');
     } finally {
       setSending(false);
+    }
+  }
+
+  function exitRoom() {
+    setParticipantId('');
+    setJoinedSessionId('');
+    try {
+      localStorage.removeItem('vibemap.participantId');
+      localStorage.removeItem('vibemap.joinedSessionId');
+    } catch {
+      return;
     }
   }
 
@@ -376,31 +397,11 @@ export default function SocialHub() {
               <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
                   <h2 className="font-headline text-2xl font-black text-white drop-shadow-md lg:text-3xl">
-                    {active?.destinationName ?? 'Meetup Session'}
+                    {sessionDisplayName}
                   </h2>
                   <p className="mt-2 text-sm font-medium text-slate-100">
                     Room code: {active?.code ?? '—'} • {active?.participantCount ?? 0} participants joined
                   </p>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  <button
-                    type="button"
-                    onClick={() => void join()}
-                    disabled={loading || !activeId}
-                    className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-headline text-sm font-extrabold text-white shadow-xl shadow-primary/30 transition-all hover:bg-primary/90 active:scale-95"
-                  >
-                    <LogIn className="h-4 w-4" />
-                    Join now
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => void ping()}
-                    disabled={loading || !activeId}
-                    className="inline-flex items-center gap-2 rounded-full bg-white/90 px-5 py-3 text-sm font-extrabold text-on-background shadow-lg backdrop-blur transition-all hover:bg-white active:scale-95"
-                  >
-                    <Zap className="h-4 w-4 text-primary" />
-                    Ping group
-                  </button>
                 </div>
               </div>
             </div>
@@ -409,7 +410,7 @@ export default function SocialHub() {
               <div className="mb-6 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Compass className="h-5 w-5 text-primary" />
-                  <h3 className="font-headline text-lg font-bold text-on-surface">Midpoint Recommendations</h3>
+                  <h3 className="font-headline text-lg font-bold text-on-surface">Nearby Recommendations</h3>
                 </div>
               </div>
 
@@ -444,7 +445,7 @@ export default function SocialHub() {
                 })}
                 {!recommendations.length && !loading ? (
                   <div className="rounded-2xl border border-dashed border-slate-300 bg-white/70 p-6 text-sm text-on-surface-variant">
-                    Share live location in the room to unlock midpoint recommendations.
+                    Share live location in the room to unlock nearby recommendations.
                   </div>
                 ) : null}
               </div>
@@ -453,44 +454,66 @@ export default function SocialHub() {
 
           <div className="xl:col-span-4 flex min-h-0 flex-col gap-6">
             <section className="rounded-[28px] border border-slate-200/60 bg-white p-5 shadow-sm">
-              <div className="grid grid-cols-1 gap-3">
-                <div>
-                  <h3 className="font-headline text-base font-extrabold text-on-surface">Meetup room</h3>
-                  <p className="mt-1 text-xs text-on-surface-variant">Create a room or join instantly with a code.</p>
-                </div>
-                <div className="flex gap-2">
-                  <input
-                    value={roomName}
-                    onChange={(e) => setRoomName(e.target.value)}
-                    placeholder="Room name"
-                    className="w-full rounded-2xl bg-surface px-4 py-3 text-sm outline-none"
-                  />
+              {isInActiveRoom ? (
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <h3 className="font-headline text-base font-extrabold text-on-surface">Meetup room</h3>
+                    <p className="mt-1 text-xs text-on-surface-variant">
+                      You are in <span className="font-bold text-on-surface">{sessionDisplayName}</span>.
+                    </p>
+                    <p className="mt-2 text-xs text-on-surface-variant">
+                      Code: <span className="font-bold uppercase text-on-surface">{active?.code ?? '—'}</span>
+                    </p>
+                  </div>
                   <button
                     type="button"
-                    onClick={() => void createRoom()}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-primary px-4 py-3 text-sm font-extrabold text-white"
+                    onClick={exitRoom}
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-surface-container-high px-4 py-3 text-sm font-extrabold text-on-surface"
                   >
-                    <Plus className="h-4 w-4" />
-                    Create
+                    <LogOut className="h-4 w-4" />
+                    Exit room
                   </button>
                 </div>
-                <div className="flex gap-2">
-                  <input
-                    value={joinCode}
-                    onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                    placeholder="Enter room code"
-                    className="w-full rounded-2xl bg-surface px-4 py-3 text-sm uppercase outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => void joinByCode()}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-surface-container-high px-4 py-3 text-sm font-extrabold text-on-surface"
-                  >
-                    <LogIn className="h-4 w-4" />
-                    Join
-                  </button>
+              ) : (
+                <div className="grid grid-cols-1 gap-3">
+                  <div>
+                    <h3 className="font-headline text-base font-extrabold text-on-surface">Meetup room</h3>
+                    <p className="mt-1 text-xs text-on-surface-variant">Create a room or join instantly with a code.</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      value={roomName}
+                      onChange={(e) => setRoomName(e.target.value)}
+                      placeholder="Room name"
+                      className="w-full rounded-2xl bg-surface px-4 py-3 text-sm outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => void createRoom()}
+                      className="inline-flex items-center gap-2 rounded-2xl bg-primary px-4 py-3 text-sm font-extrabold text-white"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Create
+                    </button>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      value={joinCode}
+                      onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+                      placeholder="Enter room code"
+                      className="w-full rounded-2xl bg-surface px-4 py-3 text-sm uppercase outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => void joinByCode()}
+                      className="inline-flex items-center gap-2 rounded-2xl bg-surface-container-high px-4 py-3 text-sm font-extrabold text-on-surface"
+                    >
+                      <LogIn className="h-4 w-4" />
+                      Join
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </section>
 
             <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-slate-200/60 bg-white shadow-sm">
@@ -610,36 +633,6 @@ export default function SocialHub() {
               </div>
             </section>
 
-            <section className="rounded-[28px] border border-white/70 bg-surface-container-lowest p-5 shadow-float">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h3 className="font-headline text-base font-extrabold text-on-surface">Session controls</h3>
-                  <p className="mt-1 text-xs text-on-surface-variant">Quick actions for the live meetup room.</p>
-                </div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-primary">
-                  <Bell className="h-4 w-4" />
-                  <span className="text-xs font-extrabold">Live</span>
-                </div>
-              </div>
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => void ping()}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-surface-container-low px-4 py-3 text-sm font-extrabold text-on-surface transition-colors hover:bg-surface-container-high"
-                >
-                  <MessageCircle className="h-4 w-4 text-primary" />
-                  Notify
-                </button>
-                <button
-                  type="button"
-                  onClick={() => void join()}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-4 py-3 text-sm font-extrabold text-white transition-colors hover:bg-primary/90"
-                >
-                  <LocateFixed className="h-4 w-4" />
-                  Share live
-                </button>
-              </div>
-            </section>
           </div>
         </div>
 

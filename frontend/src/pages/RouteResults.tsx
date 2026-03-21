@@ -41,7 +41,8 @@ function stopTone(index: number) {
   return tones[index % tones.length];
 }
 
-function stopBadge(poi: Poi) {
+function stopBadge(poi?: Poi) {
+  if (!poi) return 'Direct route';
   if (poi.badges?.length) return poi.badges[0];
   if (poi.category) return poi.category;
   return 'Curated stop';
@@ -61,31 +62,39 @@ function normalizeTikTokUrl(value?: string) {
   return undefined;
 }
 
-function getTikTokUrl(poi: Poi) {
+function getTikTokUrl(poi?: Poi) {
+  if (!poi) return undefined;
   const normalizedUrl = normalizeTikTokUrl(poi.videoUrl);
   if (normalizedUrl) return normalizedUrl;
   if (poi.videoId) return `https://www.tiktok.com/@vibemap/video/${poi.videoId}`;
   return undefined;
 }
 
-function getTikTokEmbedUrl(poi: Poi) {
+function getTikTokEmbedUrl(poi?: Poi) {
+  if (!poi) return undefined;
   if (!poi.videoId) return undefined;
   return `https://www.tiktok.com/embed/v3/${poi.videoId}`;
 }
 
-function getTikTokThumbnailUrl(poi: Poi) {
+function getTikTokThumbnailUrl(poi?: Poi) {
   const videoUrl = getTikTokUrl(poi);
   if (!videoUrl) return undefined;
   return `https://www.tiktok.com/oembed?url=${encodeURIComponent(videoUrl)}`;
 }
 
-function videoLabel(poi: Poi) {
+function videoLabel(poi?: Poi) {
+  if (!poi) return 'No stop selected';
   if (getTikTokUrl(poi)) return 'TikTok ready';
   if (poi.videoId) return `TikTok clip ${poi.videoId}`;
   return 'TikTok preview pending';
 }
 
-function fallbackThumbnailUrl(poi: Poi) {
+function fallbackThumbnailUrl(poi?: Poi) {
+  if (!poi) {
+    return `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
+      'Ho Chi Minh City direct route map preview, minimal modern navigation illustration, clean streets and river composition, realistic travel app cover'
+    )}&image_size=portrait_16_9`;
+  }
   if (poi.videoUrl) {
     return `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
       `${poi.name}, Ho Chi Minh City TikTok travel video thumbnail, vertical social media cover, cinematic street food and nightlife, vibrant neon lighting, realistic mobile video still`
@@ -236,9 +245,7 @@ export default function RouteResults() {
                       : 'Tap a stop on the map or itinerary to inspect it.'}
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
-                      {stopBadge(activePoi ?? route.pois[0])}
-                    </span>
+                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">{stopBadge(activePoi)}</span>
                     {activePoi?.rating ? (
                       <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface">
                         {activePoi.rating.toFixed(1)} rating
@@ -253,47 +260,53 @@ export default function RouteResults() {
                     <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Stops</span>
                   </div>
                   <div className="mt-4 space-y-3">
-                    {route.pois.map((poi, idx) => {
-                      const active = poi.id === activePoi?.id;
-                      return (
-                        <button
-                          key={poi.id}
-                          type="button"
-                          onClick={() => {
-                            setActivePoiId(poi.id);
-                            setActiveLegIndex(Math.min(idx, Math.max(route.legs.length - 1, 0)));
-                            setPanelMode('tiktok');
-                          }}
-                          className={cn(
-                            'w-full rounded-[24px] border p-4 text-left transition-all',
-                            active
-                              ? 'border-primary/20 bg-primary/5 shadow-sm'
-                              : 'border-surface-container bg-surface-container-lowest hover:bg-surface-container-low'
-                          )}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className={cn('flex h-10 w-10 items-center justify-center rounded-2xl text-xs font-black', stopTone(idx))}>
-                              {idx + 1}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="truncate text-sm font-extrabold text-on-surface">{poi.name}</div>
-                              <div className="mt-1 truncate text-xs text-on-surface-variant">
-                                {poi.address ?? poi.city ?? poi.category ?? 'Curated stop'}
+                    {route.pois.length === 0 ? (
+                      <div className="rounded-[24px] border border-surface-container bg-surface-container-lowest px-4 py-4 text-sm text-on-surface-variant">
+                        This is a direct A→B route with no intermediate stops.
+                      </div>
+                    ) : (
+                      route.pois.map((poi, idx) => {
+                        const active = poi.id === activePoi?.id;
+                        return (
+                          <button
+                            key={poi.id}
+                            type="button"
+                            onClick={() => {
+                              setActivePoiId(poi.id);
+                              setActiveLegIndex(Math.min(idx, Math.max(route.legs.length - 1, 0)));
+                              setPanelMode('tiktok');
+                            }}
+                            className={cn(
+                              'w-full rounded-[24px] border p-4 text-left transition-all',
+                              active
+                                ? 'border-primary/20 bg-primary/5 shadow-sm'
+                                : 'border-surface-container bg-surface-container-lowest hover:bg-surface-container-low'
+                            )}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={cn('flex h-10 w-10 items-center justify-center rounded-2xl text-xs font-black', stopTone(idx))}>
+                                {idx + 1}
                               </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="truncate text-sm font-extrabold text-on-surface">{poi.name}</div>
+                                <div className="mt-1 truncate text-xs text-on-surface-variant">
+                                  {poi.address ?? poi.city ?? poi.category ?? 'Curated stop'}
+                                </div>
+                              </div>
+                              <ChevronRight className="h-4 w-4 text-on-surface-variant" />
                             </div>
-                            <ChevronRight className="h-4 w-4 text-on-surface-variant" />
-                          </div>
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            <span className="rounded-full bg-surface-container-low px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
-                              {stopBadge(poi)}
-                            </span>
-                            <span className="rounded-full bg-surface-container-low px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
-                              TikTok panel
-                            </span>
-                          </div>
-                        </button>
-                      );
-                    })}
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <span className="rounded-full bg-surface-container-low px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
+                                {stopBadge(poi)}
+                              </span>
+                              <span className="rounded-full bg-surface-container-low px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
+                                TikTok panel
+                              </span>
+                            </div>
+                          </button>
+                        );
+                      })
+                    )}
                   </div>
                 </div>
 
@@ -397,7 +410,7 @@ export default function RouteResults() {
                         aria-label={`Open TikTok video for ${selectedPoi?.name ?? 'selected stop'}`}
                       >
                         <img
-                          src={shouldUseFallbackThumbnail ? fallbackThumbnailUrl(selectedPoi ?? route.pois[0]) : selectedThumbnailUrl}
+                          src={shouldUseFallbackThumbnail ? fallbackThumbnailUrl(selectedPoi) : selectedThumbnailUrl}
                           alt={`${selectedPoi?.name ?? 'Selected stop'} TikTok thumbnail`}
                           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                           onError={() => {
@@ -415,7 +428,7 @@ export default function RouteResults() {
                         <div className="absolute left-4 right-4 top-4 flex items-center justify-between gap-3">
                           <div className="inline-flex items-center gap-2 rounded-full bg-black/35 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
                             <Sparkles className="h-3.5 w-3.5" />
-                            {videoLabel(selectedPoi ?? route.pois[0])}
+                            {videoLabel(selectedPoi)}
                           </div>
                           <div className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
                             <ExternalLink className="h-3.5 w-3.5" />
@@ -486,9 +499,7 @@ export default function RouteResults() {
                     </div>
                   </div>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
-                      {stopBadge(activePoi ?? route.pois[0])}
-                    </span>
+                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">{stopBadge(activePoi)}</span>
                     {activePoi?.rating ? (
                       <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface">
                         {activePoi.rating.toFixed(1)} rating

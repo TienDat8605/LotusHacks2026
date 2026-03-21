@@ -20,7 +20,9 @@ async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
 
 function decodeEventPayload(raw: string): SocialEvent | null {
   try {
-    const json = atob(raw);
+    const binary = atob(raw);
+    const bytes = Uint8Array.from(binary, (ch) => ch.charCodeAt(0));
+    const json = new TextDecoder().decode(bytes);
     return JSON.parse(json) as SocialEvent;
   } catch {
     return null;
@@ -32,7 +34,10 @@ export function createRealApiClient(): ApiClient {
   const aiBase = (import.meta.env.VITE_AI_API_BASE_URL as string | undefined) ?? base;
 
   return {
+    searchLocations: (query, limit = 5) =>
+      jsonFetch(`${base}/api/geocode/search?q=${encodeURIComponent(query)}&limit=${encodeURIComponent(String(limit))}`),
     planRoute: (req) => jsonFetch(`${base}/api/routes/plan`, { method: 'POST', body: JSON.stringify(req) }),
+    planNormalRoute: (req) => jsonFetch(`${base}/api/routes/normal`, { method: 'POST', body: JSON.stringify(req) }),
     sendAssistantMessage: (threadId, text) =>
       jsonFetch(`${aiBase}/api/assistant/messages`, {
         method: 'POST',
