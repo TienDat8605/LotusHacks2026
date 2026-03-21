@@ -44,10 +44,12 @@ services:
     restart: unless-stopped
 
   backend:
-    image: golang:1.22
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    image: lotus-hacks-backend:dev
     init: true
     working_dir: /workspace/backend
-    command: sh -lc "go run ./cmd/api"
     environment:
       PORT: "8080"
       CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173

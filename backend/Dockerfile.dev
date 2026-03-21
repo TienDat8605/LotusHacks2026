@@ -1,0 +1,8 @@
+FROM golang:1.22.12-bookworm
+
+WORKDIR /workspace/backend
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+CMD ["/usr/local/go/bin/go", "run", "./cmd/api"]
