@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import type { LatLng, Poi, RoutePlan } from '@/api/types';
 
 const legColors = ['#004be3', '#b90037', '#006763', '#7c3aed', '#ea580c', '#0ea5e9'];
+const defaultCenter: [number, number] = [10.7757, 106.7008];
 
 function toLatLng(p: LatLng): [number, number] {
   return [p.lat, p.lng];
@@ -77,9 +78,10 @@ export function MapCanvas(props: {
   onPoiClick?: (poi: Poi) => void;
 }) {
   const route = props.route;
-  const pois = route?.pois ?? [];
   const origin = route?.origin?.location;
   const destination = route?.destination?.location;
+
+  const pois = useMemo(() => route?.pois ?? [], [route]);
 
   const fitPoints = useMemo(() => {
     const pts = [] as LatLng[];
@@ -91,7 +93,7 @@ export function MapCanvas(props: {
 
   const center: [number, number] = useMemo(() => {
     if (fitPoints.length > 0) return toLatLng(fitPoints[0]);
-    return [10.7757, 106.7008];
+    return defaultCenter;
   }, [fitPoints]);
 
   return (

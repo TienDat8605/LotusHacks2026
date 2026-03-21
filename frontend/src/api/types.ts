@@ -74,3 +74,19 @@ export type AssistantResponse = {
   suggestedPlan?: Partial<RoutePlanRequest>;
   followUps?: string[];
 };
+
+export type UploadLocationRequest = {
+  file: File;
+  pointOfInterest: string;
+  city: string;
+  address: string;
+  shortDescription?: string;
+  atmosphere?: string;
+};
+
+export type UploadLocationResponse = {
+  jobId: string;
+  videoId: string;
+  status: 'queued' | 'processing' | 'completed' | 'failed';
+  createdAt: string;
+};
