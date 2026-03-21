@@ -26,6 +26,16 @@ type Suggestion struct {
 	Location api.LatLng `json:"location"`
 }
 
+const (
+	hcmcMinLat = 10.20
+	hcmcMaxLat = 11.25
+	hcmcMinLng = 106.30
+	hcmcMaxLng = 107.20
+
+	hcmcCenterLat = 10.776889
+	hcmcCenterLng = 106.700806
+)
+
 func NewClient(orsKey, vietmapKey string) *Client {
 	return &Client{
 		orsKey:     strings.TrimSpace(orsKey),
@@ -68,8 +78,8 @@ func (c *Client) geocodeORS(ctx context.Context, text string) (api.LatLng, error
 	q := url.Values{}
 	q.Set("api_key", c.orsKey)
 	q.Set("text", text)
-	q.Set("boundary.country", "VN")
-	q.Set("size", "1")
+	q.Set("size", "6")
+	setORSHCMCBoundary(q)
 
 	reqURL := "https://api.openrouteservice.org/geocode/search?" + q.Encode()
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, nil)
@@ -95,11 +105,19 @@ func (c *Client) geocodeORS(ctx context.Context, text string) (api.LatLng, error
 	if err := json.NewDecoder(res.Body).Decode(&parsed); err != nil {
 		return api.LatLng{}, err
 	}
-	if len(parsed.Features) == 0 || len(parsed.Features[0].Geometry.Coordinates) < 2 {
+	if len(parsed.Features) == 0 {
 		return api.LatLng{}, fmt.Errorf("ors geocode no result")
 	}
-	coords := parsed.Features[0].Geometry.Coordinates
-	return api.LatLng{Lat: coords[1], Lng: coords[0]}, nil
+	for _, feature := range parsed.Features {
+		if len(feature.Geometry.Coordinates) < 2 {
+			continue
+		}
+		point := api.LatLng{Lat: feature.Geometry.Coordinates[1], Lng: feature.Geometry.Coordinates[0]}
+		if isWithinHCMC(point) {
+			return point, nil
+		}
+	}
+	return api.LatLng{}, fmt.Errorf("ors geocode no result in hcmc")
 }
 
 func (c *Client) geocodeVietmap(ctx context.Context, text string) (api.LatLng, error) {
@@ -160,6 +178,9 @@ func (c *Client) SearchVietmap(ctx context.Context, text string, limit int) ([]S
 
 		location, err := c.vietmapPlaceByRefID(ctx, refID)
 		if err != nil {
+			continue
+		}
+		if !isWithinHCMC(location) {
 			continue
 		}
 
@@ -226,6 +247,14 @@ func (c *Client) Search(ctx context.Context, text string, limit int) ([]Suggesti
 }
 
 func (c *Client) searchORS(ctx context.Context, text string, limit int) ([]Suggestion, error) {
+	out, err := c.searchORSEndpoint(ctx, text, limit, "autocomplete")
+	if err == nil && len(out) > 0 {
+		return out, nil
+	}
+	return c.searchORSEndpoint(ctx, text, limit, "search")
+}
+
+func (c *Client) searchORSEndpoint(ctx context.Context, text string, limit int, endpoint string) ([]Suggestion, error) {
 	if c.orsKey == "" {
 		return nil, fmt.Errorf("missing ORS_API_KEY")
 	}
@@ -239,10 +268,10 @@ func (c *Client) searchORS(ctx context.Context, text string, limit int) ([]Sugge
 	q := url.Values{}
 	q.Set("api_key", c.orsKey)
 	q.Set("text", text)
-	q.Set("boundary.country", "VN")
 	q.Set("size", strconv.Itoa(limit))
+	setORSHCMCBoundary(q)
 
-	reqURL := "https://api.openrouteservice.org/geocode/search?" + q.Encode()
+	reqURL := "https://api.openrouteservice.org/geocode/" + endpoint + "?" + q.Encode()
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, nil)
 	if err != nil {
 		return nil, err
@@ -253,7 +282,7 @@ func (c *Client) searchORS(ctx context.Context, text string, limit int) ([]Sugge
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("ors search status %d", res.StatusCode)
+		return nil, fmt.Errorf("ors %s status %d", endpoint, res.StatusCode)
 	}
 
 	var parsed struct {
@@ -282,6 +311,10 @@ func (c *Client) searchORS(ctx context.Context, text string, limit int) ([]Sugge
 		if len(feature.Geometry.Coordinates) < 2 {
 			continue
 		}
+		location := api.LatLng{Lat: feature.Geometry.Coordinates[1], Lng: feature.Geometry.Coordinates[0]}
+		if !isWithinHCMC(location) {
+			continue
+		}
 		name := strings.TrimSpace(feature.Properties.Name)
 		address := strings.TrimSpace(feature.Properties.Label)
 		if name == "" && address != "" {
@@ -293,14 +326,14 @@ func (c *Client) searchORS(ctx context.Context, text string, limit int) ([]Sugge
 			name = text
 		}
 		out = append(out, Suggestion{
-			RefID:    fmt.Sprintf("ors:%d", i),
+			RefID:    fmt.Sprintf("ors:%s:%d", endpoint, i),
 			Name:     name,
 			Address:  address,
-			Location: api.LatLng{Lat: feature.Geometry.Coordinates[1], Lng: feature.Geometry.Coordinates[0]},
+			Location: location,
 		})
 	}
 	if len(out) == 0 {
-		return nil, fmt.Errorf("ors search no result")
+		return nil, fmt.Errorf("ors %s no result", endpoint)
 	}
 	return out, nil
 }
@@ -381,6 +414,8 @@ func (c *Client) searchOSM(ctx context.Context, text string, limit int) ([]Sugge
 	q.Set("addressdetails", "1")
 	q.Set("countrycodes", "vn")
 	q.Set("dedupe", "1")
+	q.Set("viewbox", fmt.Sprintf("%.6f,%.6f,%.6f,%.6f", hcmcMinLng, hcmcMaxLat, hcmcMaxLng, hcmcMinLat))
+	q.Set("bounded", "1")
 
 	reqURL := "https://nominatim.openstreetmap.org/search?" + q.Encode()
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, nil)
@@ -423,6 +458,10 @@ func (c *Client) searchOSM(ctx context.Context, text string, limit int) ([]Sugge
 		if err1 != nil || err2 != nil {
 			continue
 		}
+		location := api.LatLng{Lat: lat, Lng: lng}
+		if !isWithinHCMC(location) {
+			continue
+		}
 		name := strings.TrimSpace(item.Name)
 		display := strings.TrimSpace(item.DisplayName)
 		if name == "" {
@@ -438,11 +477,27 @@ func (c *Client) searchOSM(ctx context.Context, text string, limit int) ([]Sugge
 			RefID:    fmt.Sprintf("osm:%d", item.PlaceID),
 			Name:     name,
 			Address:  display,
-			Location: api.LatLng{Lat: lat, Lng: lng},
+			Location: location,
 		})
 	}
 	if len(out) == 0 {
 		return nil, fmt.Errorf("osm search no result")
 	}
 	return out, nil
+}
+
+func setORSHCMCBoundary(q url.Values) {
+	q.Set("boundary.rect.min_lat", fmt.Sprintf("%.6f", hcmcMinLat))
+	q.Set("boundary.rect.max_lat", fmt.Sprintf("%.6f", hcmcMaxLat))
+	q.Set("boundary.rect.min_lon", fmt.Sprintf("%.6f", hcmcMinLng))
+	q.Set("boundary.rect.max_lon", fmt.Sprintf("%.6f", hcmcMaxLng))
+	q.Set("focus.point.lat", fmt.Sprintf("%.6f", hcmcCenterLat))
+	q.Set("focus.point.lon", fmt.Sprintf("%.6f", hcmcCenterLng))
+}
+
+func isWithinHCMC(location api.LatLng) bool {
+	return location.Lat >= hcmcMinLat &&
+		location.Lat <= hcmcMaxLat &&
+		location.Lng >= hcmcMinLng &&
+		location.Lng <= hcmcMaxLng
 }

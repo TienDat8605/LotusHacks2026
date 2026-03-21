@@ -9,8 +9,20 @@ from dotenv import load_dotenv
 
 def _load_env() -> None:
     here = Path(__file__).resolve()
-    load_dotenv(here.parents[1] / ".env")
-    load_dotenv(here.parents[2] / ".env")
+    candidates = [
+        Path.cwd() / ".env",
+        here.parents[0] / ".env",
+        here.parents[1] / ".env",
+        here.parents[2] / ".env",
+        here.parents[3] / ".env",
+    ]
+    seen: set[Path] = set()
+    for candidate in candidates:
+        path = candidate.resolve()
+        if path in seen or not path.exists():
+            continue
+        load_dotenv(path, override=False)
+        seen.add(path)
 
 
 def _optional(name: str) -> str | None:
@@ -19,6 +31,14 @@ def _optional(name: str) -> str | None:
         return None
     value = raw.strip()
     return value or None
+
+
+def _optional_any(*names: str) -> str | None:
+    for name in names:
+        value = _optional(name)
+        if value:
+            return value
+    return None
 
 
 @dataclass(frozen=True)
@@ -47,7 +67,7 @@ class Settings:
         cors_origins = [part.strip() for part in cors_raw.split(",") if part.strip()]
 
         return cls(
-            openai_api_key=_optional("OPENAI_API_KEY"),
+            openai_api_key=_optional_any("OPENAI_API_KEY", "OPENAI_KEY", "OPENAI_APIKEY"),
             openai_chat_model=os.getenv("OPENAI_CHAT_MODEL", "gpt-4o-mini"),
             openai_embedding_model=os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"),
             review_data_path=(service_dir / review_data).resolve(),

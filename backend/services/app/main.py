@@ -14,8 +14,16 @@ from .openai_client import OpenAIService
 from .zilliz_store import ZillizStore
 
 
-settings = Settings.from_env()
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("assistant")
+settings = Settings.from_env()
+logger.info(
+    "Assistant config loaded: openai_key_set=%s zilliz_uri_set=%s zilliz_token_set=%s review_data_path=%s",
+    bool(settings.openai_api_key),
+    bool(settings.zilliz_uri),
+    bool(settings.zilliz_token),
+    settings.review_data_path,
+)
 app = FastAPI(title="Kompas Backend Services")
 app.add_middleware(
     CORSMiddleware,
@@ -31,11 +39,15 @@ def build_assistant_service() -> AssistantChatService | RuleBasedAssistantServic
         logger.warning("Assistant mode=fallback (missing OPENAI_API_KEY)")
         return RuleBasedAssistantService.from_review_file(settings.review_data_path, settings.zilliz_top_k)
 
-    openai_service = OpenAIService(
-        api_key=settings.openai_api_key,
-        embed_model=settings.openai_embedding_model,
-        chat_model=settings.openai_chat_model,
-    )
+    try:
+        openai_service = OpenAIService(
+            api_key=settings.openai_api_key,
+            embed_model=settings.openai_embedding_model,
+            chat_model=settings.openai_chat_model,
+        )
+    except Exception:
+        logger.exception("Assistant mode=fallback (failed to initialize OpenAI client)")
+        return RuleBasedAssistantService.from_review_file(settings.review_data_path, settings.zilliz_top_k)
 
     # If vector DB is not configured, still run live OpenAI chat using local review retrieval.
     if not settings.zilliz_uri or not settings.zilliz_token:
@@ -46,12 +58,20 @@ def build_assistant_service() -> AssistantChatService | RuleBasedAssistantServic
             openai_service=openai_service,
         )
     logger.info("Assistant mode=openai-zilliz (OPENAI_API_KEY + Zilliz set)")
-    zilliz_store = ZillizStore(
-        uri=settings.zilliz_uri,
-        token=settings.zilliz_token,
-        collection_name=settings.zilliz_collection,
-        db_name=settings.zilliz_db_name,
-    )
+    try:
+        zilliz_store = ZillizStore(
+            uri=settings.zilliz_uri,
+            token=settings.zilliz_token,
+            collection_name=settings.zilliz_collection,
+            db_name=settings.zilliz_db_name,
+        )
+    except Exception:
+        logger.exception("Assistant mode=openai-local-retrieval (failed to initialize Zilliz client)")
+        return RuleBasedAssistantService.from_review_file(
+            settings.review_data_path,
+            settings.zilliz_top_k,
+            openai_service=openai_service,
+        )
     return AssistantChatService(openai_service, zilliz_store, settings.zilliz_top_k)
 
 
