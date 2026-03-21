@@ -7,16 +7,11 @@ import (
 )
 
 type Config struct {
-	Port                     string
-	CorsOrigins              []string
-	OrsAPIKey                string
-	VietmapAPIKey            string
-	OpenAIAPIKey             string
-	OpenAIChatModel          string
-	OpenAIEmbeddingModel     string
-	PoiDataPath              string
-	ReviewDataPath           string
-	ReviewEmbeddingCachePath string
+	Port          string
+	CorsOrigins   []string
+	OrsAPIKey     string
+	VietmapAPIKey string
+	PoiDataPath   string
 }
 
 func Load() (*Config, error) {
@@ -41,37 +36,12 @@ func Load() (*Config, error) {
 		poiPath = "../data/data.json"
 	}
 
-	reviewPath := strings.TrimSpace(os.Getenv("REVIEW_DATA_PATH"))
-	if reviewPath == "" {
-		reviewPath = poiPath
-	}
-
-	reviewCachePath := strings.TrimSpace(os.Getenv("REVIEW_EMBEDDING_CACHE_PATH"))
-	if reviewCachePath == "" {
-		reviewCachePath = "../data/review-embeddings-cache.json"
-	}
-
-	chatModel := strings.TrimSpace(os.Getenv("OPENAI_CHAT_MODEL"))
-	if chatModel == "" {
-		chatModel = "gpt-4o-mini"
-	}
-
-	embeddingModel := strings.TrimSpace(os.Getenv("OPENAI_EMBEDDING_MODEL"))
-	if embeddingModel == "" {
-		embeddingModel = "text-embedding-3-small"
-	}
-
 	cfg := &Config{
-		Port:                     port,
-		CorsOrigins:              origins,
-		OrsAPIKey:                strings.TrimSpace(os.Getenv("ORS_API_KEY")),
-		VietmapAPIKey:            strings.TrimSpace(os.Getenv("VIETMAP_API_KEY")),
-		OpenAIAPIKey:             strings.TrimSpace(os.Getenv("OPENAI_API_KEY")),
-		OpenAIChatModel:          chatModel,
-		OpenAIEmbeddingModel:     embeddingModel,
-		PoiDataPath:              poiPath,
-		ReviewDataPath:           reviewPath,
-		ReviewEmbeddingCachePath: reviewCachePath,
+		Port:          port,
+		CorsOrigins:   origins,
+		OrsAPIKey:     strings.TrimSpace(os.Getenv("ORS_API_KEY")),
+		VietmapAPIKey: strings.TrimSpace(os.Getenv("VIETMAP_API_KEY")),
+		PoiDataPath:   poiPath,
 	}
 
 	if cfg.Port == "" {

@@ -19,11 +19,12 @@ async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
 
 export function createRealApiClient(): ApiClient {
   const base = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '';
+  const aiBase = (import.meta.env.VITE_AI_API_BASE_URL as string | undefined) ?? base;
 
   return {
     planRoute: (req) => jsonFetch(`${base}/api/routes/plan`, { method: 'POST', body: JSON.stringify(req) }),
     sendAssistantMessage: (threadId, text) =>
-      jsonFetch(`${base}/api/assistant/messages`, {
+      jsonFetch(`${aiBase}/api/assistant/messages`, {
         method: 'POST',
         body: JSON.stringify({ threadId, text }),
       }),

@@ -10,7 +10,6 @@ import (
 	"vibemap/backend/internal/api"
 	"vibemap/backend/internal/config"
 	"vibemap/backend/internal/pois"
-	"vibemap/backend/internal/reviews"
 	"vibemap/backend/internal/social"
 )
 
@@ -18,12 +17,10 @@ func TestPlanRoute(t *testing.T) {
 	cfg := &config.Config{Port: "8080"}
 	poiRepo := pois.NewRepository("../data/pois.json")
 	_ = poiRepo.Load()
-	reviewRepo := reviews.NewRepository("../../data/data.json")
-	_ = reviewRepo.Load()
 	socialStore := social.NewStore()
 	socialStore.SeedDefault()
 
-	h := NewHandler(cfg, poiRepo, reviewRepo, socialStore)
+	h := NewHandler(cfg, poiRepo, socialStore)
 	srv := httptest.NewServer(h.Router())
 	t.Cleanup(srv.Close)
 
@@ -60,12 +57,10 @@ func TestSocialSessions(t *testing.T) {
 	cfg := &config.Config{Port: "8080"}
 	poiRepo := pois.NewRepository("../data/pois.json")
 	_ = poiRepo.Load()
-	reviewRepo := reviews.NewRepository("../../data/data.json")
-	_ = reviewRepo.Load()
 	socialStore := social.NewStore()
 	socialStore.SeedDefault()
 
-	h := NewHandler(cfg, poiRepo, reviewRepo, socialStore)
+	h := NewHandler(cfg, poiRepo, socialStore)
 	srv := httptest.NewServer(h.Router())
 	t.Cleanup(srv.Close)
 
@@ -83,12 +78,10 @@ func TestSocialParticipantsAndRecommendations(t *testing.T) {
 	cfg := &config.Config{Port: "8080"}
 	poiRepo := pois.NewRepository("../data/data.json")
 	_ = poiRepo.Load()
-	reviewRepo := reviews.NewRepository("../../data/data.json")
-	_ = reviewRepo.Load()
 	socialStore := social.NewStore()
 	socialStore.SeedDefault()
 
-	h := NewHandler(cfg, poiRepo, reviewRepo, socialStore)
+	h := NewHandler(cfg, poiRepo, socialStore)
 	srv := httptest.NewServer(h.Router())
 	t.Cleanup(srv.Close)
 
@@ -152,12 +145,10 @@ func TestCorsEchoOrigin(t *testing.T) {
 	cfg := &config.Config{Port: "8080"}
 	poiRepo := pois.NewRepository("../data/pois.json")
 	_ = poiRepo.Load()
-	reviewRepo := reviews.NewRepository("../../data/data.json")
-	_ = reviewRepo.Load()
 	socialStore := social.NewStore()
 	socialStore.SeedDefault()
 
-	h := NewHandler(cfg, poiRepo, reviewRepo, socialStore)
+	h := NewHandler(cfg, poiRepo, socialStore)
 	r := httptest.NewRequest(http.MethodGet, "/healthz", nil)
 	r.Header.Set("Origin", "http://localhost:5175")
 	w := httptest.NewRecorder()
@@ -165,48 +156,5 @@ func TestCorsEchoOrigin(t *testing.T) {
 
 	if got := w.Header().Get("Access-Control-Allow-Origin"); got != "*" {
 		t.Fatalf("expected allow-origin header, got %q", got)
-	}
-}
-
-func TestAssistantChatFallback(t *testing.T) {
-	cfg := &config.Config{Port: "8080"}
-	poiRepo := pois.NewRepository("../data/data.json")
-	_ = poiRepo.Load()
-	reviewRepo := reviews.NewRepository("../../data/data.json")
-	_ = reviewRepo.Load()
-	socialStore := social.NewStore()
-	socialStore.SeedDefault()
-
-	h := NewHandler(cfg, poiRepo, reviewRepo, socialStore)
-	srv := httptest.NewServer(h.Router())
-	t.Cleanup(srv.Close)
-
-	body := []byte(`{"query":"I want a chill coffeeshop","topK":3}`)
-	res, err := http.Post(srv.URL+"/api/assistant/chat", "application/json", bytes.NewReader(body))
-	if err != nil {
-		t.Fatalf("assistant chat: %v", err)
-	}
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		t.Fatalf("assistant chat status: %d", res.StatusCode)
-	}
-
-	var resp struct {
-		Reply        string `json:"reply"`
-		UsedFallback bool   `json:"usedFallback"`
-		Results      []struct {
-			Poi struct {
-				Name string `json:"name"`
-			} `json:"poi"`
-		} `json:"results"`
-	}
-	if err := json.NewDecoder(res.Body).Decode(&resp); err != nil {
-		t.Fatalf("assistant chat decode: %v", err)
-	}
-	if resp.Reply == "" {
-		t.Fatalf("expected reply")
-	}
-	if len(resp.Results) == 0 {
-		t.Fatalf("expected assistant results")
 	}
 }
