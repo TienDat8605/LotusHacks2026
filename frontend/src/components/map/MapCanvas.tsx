@@ -50,26 +50,30 @@ function pinIcon(label: string, tone: 'start' | 'end') {
   const palette =
     tone === 'start'
       ? {
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.96), rgba(236,253,245,0.88))',
-          border: 'rgba(16,185,129,0.22)',
-          dot: 'linear-gradient(135deg, rgba(16,185,129,0.95), rgba(45,212,191,0.9))',
-          text: '#047857',
-          shadow: '0 14px 28px rgba(16,185,129,0.18)',
+          pin: 'linear-gradient(160deg, #10b981, #0ea5a4)',
+          chipBackground: 'rgba(240,253,250,0.95)',
+          chipBorder: 'rgba(16,185,129,0.35)',
+          chipText: '#065f46',
+          shadow: '0 12px 24px rgba(16,185,129,0.28)',
+          pointer: '#059669',
+          glyph: `<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.25v7.5l6-3.75z" fill="white"/></svg>`,
         }
       : {
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,241,242,0.9))',
-          border: 'rgba(244,63,94,0.22)',
-          dot: 'linear-gradient(135deg, rgba(244,63,94,0.95), rgba(251,113,133,0.9))',
-          text: '#be123c',
-          shadow: '0 14px 28px rgba(244,63,94,0.18)',
+          pin: 'linear-gradient(160deg, #ef4444, #db2777)',
+          chipBackground: 'rgba(255,241,242,0.96)',
+          chipBorder: 'rgba(244,63,94,0.35)',
+          chipText: '#9f1239',
+          shadow: '0 12px 24px rgba(244,63,94,0.28)',
+          pointer: '#e11d48',
+          glyph: `<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5v9" stroke="white" stroke-width="1.4" stroke-linecap="round"/><path d="M3.6 2h5L7.35 4.2 8.6 6.4H3.6z" fill="white"/></svg>`,
         };
 
   return L.divIcon({
     className: '',
-    html: `<div style="width:58px;height:34px;border-radius:9999px;background:${palette.background};border:1px solid ${palette.border};backdrop-filter:blur(12px);box-shadow:${palette.shadow};display:flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;font-family:ui-sans-serif;"><span style="width:10px;height:10px;border-radius:9999px;background:${palette.dot};box-shadow:0 0 0 3px rgba(255,255,255,0.72);"></span><span style="font-size:10px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:${palette.text};">${label}</span></div>`,
-    iconSize: [58, 34],
-    iconAnchor: [29, 17],
-    popupAnchor: [0, -20],
+    html: `<div style="display:flex;flex-direction:column;align-items:center;transform:translateY(-6px);"><div style="position:relative;width:28px;height:36px;"><div style="position:absolute;left:2px;top:0;width:24px;height:24px;border-radius:9999px;background:${palette.pin};box-shadow:${palette.shadow};display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.95);">${palette.glyph}</div><div style="position:absolute;left:11px;top:22px;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:10px solid ${palette.pointer};"></div></div><div style="margin-top:3px;padding:2px 7px;border-radius:999px;background:${palette.chipBackground};border:1px solid ${palette.chipBorder};font-family:ui-sans-serif;font-size:10px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:${palette.chipText};">${label}</div></div>`,
+    iconSize: [70, 56],
+    iconAnchor: [35, 42],
+    popupAnchor: [0, -34],
   });
 }
 

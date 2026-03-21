@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import L from 'leaflet';
-import { MapContainer, Marker, TileLayer, Tooltip } from 'react-leaflet';
+import { MapContainer, Marker, TileLayer, Tooltip, useMap } from 'react-leaflet';
 import type { Poi, SocialParticipant } from '@/api/types';
 import { cn } from '@/lib/utils';
 
@@ -13,16 +13,6 @@ function userIcon(seed: string, highlighted: boolean) {
     html: `<div style="width:34px;height:34px;border-radius:9999px;background:${color};color:white;display:flex;align-items:center;justify-content:center;font-weight:900;font-family:ui-sans-serif;font-size:11px;box-shadow:${ring};border:4px solid rgba(255,255,255,0.92);">${label}</div>`,
     iconSize: [34, 34],
     iconAnchor: [17, 17],
-  });
-}
-
-function pulseIcon(seed: string) {
-  const color = seedColor(seed);
-  return L.divIcon({
-    className: '',
-    html: `<div style="position:relative;width:72px;height:72px;display:flex;align-items:center;justify-content:center;"><span style="position:absolute;width:72px;height:72px;border-radius:9999px;background:${color};opacity:0.16;animation:vibemap-pulse 1.8s ease-out infinite;"></span><span style="position:absolute;width:52px;height:52px;border-radius:9999px;background:${color};opacity:0.22;animation:vibemap-pulse 1.8s ease-out 0.35s infinite;"></span><span style="position:relative;width:24px;height:24px;border-radius:9999px;background:${color};border:6px solid rgba(255,255,255,0.96);box-shadow:0 18px 36px rgba(0,0,0,0.22);"></span></div>`,
-    iconSize: [72, 72],
-    iconAnchor: [36, 36],
   });
 }
 
@@ -56,6 +46,30 @@ function seedColor(seed: string) {
   return `hsl(${hue}, 78%, 48%)`;
 }
 
+function ParticipantBounds(props: { points: Array<{ lat: number; lng: number }>; fallback: { lat: number; lng: number } }) {
+  const map = useMap();
+  const pointsKey = useMemo(
+    () => props.points.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join('|'),
+    [props.points]
+  );
+  const fallbackKey = `${props.fallback.lat.toFixed(5)},${props.fallback.lng.toFixed(5)}`;
+
+  useEffect(() => {
+    if (!props.points.length) {
+      map.setView([props.fallback.lat, props.fallback.lng], 14, { animate: true });
+      return;
+    }
+    if (props.points.length === 1) {
+      map.setView([props.points[0].lat, props.points[0].lng], Math.max(14, map.getZoom()), { animate: true });
+      return;
+    }
+    const bounds = L.latLngBounds(props.points.map((point) => [point.lat, point.lng] as [number, number]));
+    map.fitBounds(bounds.pad(0.3), { animate: true, maxZoom: 15 });
+  }, [map, pointsKey, fallbackKey]);
+
+  return null;
+}
+
 export function SocialMap(props: {
   center: { lat: number; lng: number };
   participants: SocialParticipant[];
@@ -69,12 +83,34 @@ export function SocialMap(props: {
     () => props.participants.filter((p) => typeof p.lat === 'number' && typeof p.lng === 'number'),
     [props.participants]
   );
+  const pinnedParticipants = useMemo(() => {
+    const pins = liveParticipants.map((participant) => ({
+      ...participant,
+      lat: participant.lat as number,
+      lng: participant.lng as number,
+    }));
+    if (!props.currentParticipantId || !props.currentLocation) return pins;
+    if (pins.some((participant) => participant.id === props.currentParticipantId)) return pins;
+    const fallback = props.participants.find((participant) => participant.id === props.currentParticipantId);
+    return [
+      ...pins,
+      {
+        id: props.currentParticipantId,
+        displayName: fallback?.displayName ?? 'You',
+        avatarSeed: fallback?.avatarSeed ?? props.currentParticipantId,
+        lastSeen: fallback?.lastSeen ?? new Date().toISOString(),
+        lat: props.currentLocation.lat,
+        lng: props.currentLocation.lng,
+      },
+    ];
+  }, [liveParticipants, props.currentLocation, props.currentParticipantId, props.participants]);
   const currentParticipant = useMemo(
-    () => liveParticipants.find((p) => p.id === props.currentParticipantId),
-    [liveParticipants, props.currentParticipantId]
+    () => pinnedParticipants.find((p) => p.id === props.currentParticipantId),
+    [pinnedParticipants, props.currentParticipantId]
   );
-  const pulsePosition = props.currentLocation ?? (
-    currentParticipant ? { lat: currentParticipant.lat as number, lng: currentParticipant.lng as number } : null
+  const participantPoints = useMemo(
+    () => pinnedParticipants.map((participant) => ({ lat: participant.lat, lng: participant.lng })),
+    [pinnedParticipants]
   );
 
   useEffect(() => {
@@ -86,7 +122,6 @@ export function SocialMap(props: {
 
   return (
     <div className={cn('h-64 w-full overflow-hidden rounded-[28px] border border-white/70 shadow-float', props.className)}>
-      <style>{'@keyframes vibemap-pulse { 0% { transform: scale(0.45); opacity: 0.45; } 70% { transform: scale(1); opacity: 0; } 100% { transform: scale(1); opacity: 0; } }'}</style>
       <MapContainer
         center={[props.center.lat, props.center.lng]}
         zoom={14}
@@ -99,27 +134,16 @@ export function SocialMap(props: {
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
+        <ParticipantBounds points={participantPoints} fallback={props.center} />
 
-        {pulsePosition && (
-          <Marker
-            key="current_user_pulse"
-            position={[pulsePosition.lat, pulsePosition.lng]}
-            icon={pulseIcon((currentParticipant?.avatarSeed || currentParticipant?.displayName || props.currentParticipantId || 'me'))}
-          >
-            <Tooltip direction="top" offset={[0, -18]} opacity={1}>
-              You are here
-            </Tooltip>
-          </Marker>
-        )}
-
-        {liveParticipants.map((p) => (
+        {pinnedParticipants.map((p) => (
           <Marker
             key={p.id}
-            position={[p.lat as number, p.lng as number]}
+            position={[p.lat, p.lng]}
             icon={userIcon(p.avatarSeed || p.displayName, p.id === currentParticipant?.id)}
           >
             <Tooltip direction="top" offset={[0, -12]} opacity={1}>
-              {p.displayName}
+              {p.id === props.currentParticipantId ? 'You' : p.displayName}
             </Tooltip>
           </Marker>
         ))}
