@@ -1,0 +1,74 @@
+name: lotus-hacks
+
+services:
+  ai-service:
+    image: python:3.11-slim
+    working_dir: /workspace/backend/services
+    command: >
+      sh -lc "pip install --no-cache-dir -r requirements.txt &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8090"
+    environment:
+      PYTHONUNBUFFERED: "1"
+      AI_SERVICE_HOST: 0.0.0.0
+      AI_SERVICE_PORT: "8090"
+      AI_CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+      AI_REVIEW_DATA_PATH: ../../data/data.json
+      AI_EMBEDDED_REVIEW_PATH: ../../data/review_embeddings.json
+      UGC_DATASET_PATH: ../../data/data.json
+      UGC_STORAGE_PATH: ../../data/ugc_videos
+      UGC_JOBS_PATH: ../../data/ugc_jobs
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./:/workspace
+      - pip-cache:/root/.cache/pip
+    restart: unless-stopped
+
+  backend:
+    image: golang:1.22
+    working_dir: /workspace/backend
+    command: >
+      sh -lc "go mod download &&
+      go run ./cmd/api"
+    environment:
+      PORT: "8080"
+      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+      POI_DATA_PATH: ../data/data.json
+      UGC_SERVICE_URL: http://ai-service:8090
+    depends_on:
+      - ai-service
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/workspace
+      - go-mod-cache:/go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
+    restart: unless-stopped
+
+  frontend:
+    image: node:20
+    working_dir: /workspace/frontend
+    command: >
+      sh -lc "npm ci &&
+      npm run dev -- --host 0.0.0.0 --port 5173"
+    environment:
+      VITE_API_MODE: real
+      VITE_API_BASE_URL: http://localhost:8080
+      VITE_AI_API_BASE_URL: http://localhost:8090
+      VITE_UGC_API_BASE_URL: http://localhost:8090
+      CHOKIDAR_USEPOLLING: "true"
+    depends_on:
+      - backend
+      - ai-service
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/workspace
+      - frontend-node-modules:/workspace/frontend/node_modules
+    restart: unless-stopped
+
+volumes:
+  pip-cache:
+  go-mod-cache:
+  go-build-cache:
+  frontend-node-modules:
