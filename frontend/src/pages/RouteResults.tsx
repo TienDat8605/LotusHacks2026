@@ -247,7 +247,8 @@ export default function RouteResults() {
                   Edit
                 </Link>
                 <Link
-                  to={activePoi ? `/results/${encodeURIComponent(route.id)}/vibe/${encodeURIComponent(activePoi.id)}` : `/results/${encodeURIComponent(route.id)}`}
+                  to="/assistant"
+                  state={activePoi ? { source: 'vibe-check', focusPoi: activePoi } : undefined}
                   className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-container px-3 py-2 text-[11px] font-headline font-extrabold text-white shadow-lg transition-transform active:scale-95"
                 >
                   <Eye className="h-3.5 w-3.5" />
