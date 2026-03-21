@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VibeMap - Social &amp; Live Session</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#819bff",
+                        "surface-container": "#e6e8ea",
+                        "tertiary-fixed": "#ff9099",
+                        "error": "#b41340",
+                        "on-background": "#2c2f30",
+                        "surface-container-highest": "#dadddf",
+                        "on-primary-fixed-variant": "#002376",
+                        "tertiary-container": "#ff9099",
+                        "surface-container-low": "#eff1f2",
+                        "tertiary-fixed-dim": "#ff7986",
+                        "surface-tint": "#004be3",
+                        "primary-fixed": "#819bff",
+                        "on-secondary": "#bdfffa",
+                        "on-surface-variant": "#595c5d",
+                        "inverse-surface": "#0c0f10",
+                        "primary-dim": "#0041c8",
+                        "surface-bright": "#f5f6f7",
+                        "primary": "#004be3",
+                        "on-error": "#ffefef",
+                        "primary-fixed-dim": "#6c8cff",
+                        "on-error-container": "#510017",
+                        "secondary-container": "#29fcf3",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffefef",
+                        "on-tertiary-fixed-variant": "#780021",
+                        "secondary": "#006763",
+                        "inverse-primary": "#6889ff",
+                        "error-container": "#f74b6d",
+                        "tertiary-dim": "#a20030",
+                        "error-dim": "#a70138",
+                        "inverse-on-surface": "#9b9d9e",
+                        "on-secondary-fixed": "#004845",
+                        "outline-variant": "#abadae",
+                        "surface": "#f5f6f7",
+                        "on-tertiary-fixed": "#39000b",
+                        "secondary-dim": "#005a56",
+                        "on-surface": "#2c2f30",
+                        "on-primary-container": "#001b61",
+                        "on-tertiary-container": "#68001b",
+                        "surface-variant": "#dadddf",
+                        "on-secondary-container": "#005c59",
+                        "on-secondary-fixed-variant": "#006763",
+                        "surface-dim": "#d1d5d7",
+                        "on-primary-fixed": "#000000",
+                        "background": "#f5f6f7",
+                        "surface-container-high": "#e0e3e4",
+                        "secondary-fixed-dim": "#00ede5",
+                        "on-primary": "#f2f1ff",
+                        "tertiary": "#b90037",
+                        "outline": "#757778",
+                        "secondary-fixed": "#29fcf3"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .pulse-tertiary {
+            box-shadow: 0 0 0 0 rgba(185, 0, 55, 0.7);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(185, 0, 55, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(185, 0, 55, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(185, 0, 55, 0); }
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 px-6 py-4 flex items-center justify-between bg-white/85 dark:bg-slate-900/85 backdrop-blur-md shadow-xl shadow-blue-900/5 rounded-b-3xl">
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<div class="flex flex-col">
+<span class="text-xl font-extrabold tracking-tight text-blue-700 dark:text-blue-300">VibeMap</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-tertiary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary pulse-tertiary"></span>
+                    Live Session: District 1 Meetup
+                </span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary overflow-hidden shadow-md">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="Close up of a smiling woman profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXtFBuB6sth6x1rC236_A-hKBOEKbB6K479gehz9ZFsGmxIb-ziDS5qDA0J9_EJyUNGTcR7XXjLVNgMpGxeHwcmn4UJIFPMadJo9BG2KwLPqkeYelYDwc5CgoHd4oi9sQTCC4IPykEC_PJXZpG6B3-XETdrLlKocpEQfXER5PahnEsC7V5Q64uTIiHG_4W0czavr3yhyKR1nuJILYCwCsVoYdDeqV5iAoXabTVFZ9wIHuyodvCDh__QCMkt9Uw_vh-XWZWevOAgBEd"/>
+</div>
+</header>
+<main class="pt-24 px-4 space-y-6 max-w-2xl mx-auto">
+<!-- Live Map Fragment -->
+<section class="relative h-[397px] rounded-xl overflow-hidden shadow-2xl shadow-primary/10 group">
+<div class="absolute inset-0 bg-surface-container-high" data-location="Ho Chi Minh City District 1" style="">
+<img alt="Map View" class="w-full h-full object-cover opacity-80 mix-blend-multiply" data-alt="Top down city map with colorful neon accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB3m4l_CjQFtuRLyuH8k9H_QA09mfkGX7efFP51ho_HmvgP0m3X-Vu0vTzDliY1u_9AeAQsJTtWnIfFwb8WyRlRT067gD93CfOTzS5eEWO5qPYKjy_2m03W-IibMSANaFOZ9rKzk81erfyWGyIzNwxnle1TwYl4EOPt-I2zTVItW1UAu4UVNID97Q2cLiuCYmkrSsFTNJhpSaUlkVRSOn1pVQSQ6cMiKYwOODYZWBIXT5TC1Q0Vc9b4QuXGVfLTtnmnYmimsGfroX7"/>
+<!-- Mock Map Overlays -->
+<div class="absolute top-1/2 left-1/3 transform -translate-x-1/2 -translate-y-1/2">
+<div class="relative">
+<div class="w-12 h-12 rounded-full border-4 border-white shadow-lg overflow-hidden ring-4 ring-primary/30">
+<img alt="Friend" class="w-full h-full object-cover" data-alt="Smiling man portrait map marker" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTISgTdYOac2TGYChQ78E0pApHL7EvKT8Z3DWdcw3sb1v6K3OndVCtNo7tINFMM9_RusfW6mat3ldD4kxJvf8Mik1Q2l8JI4bOcqLQlSVYZ7Mo2xhKY6c70hnCU7F4DIKHC4oxgv-NnDvZS5Nfj7fv8DCsETm3XUqc3Hy7zhSCIUiRRLIDbLWHuflGqQ4-3AMn99K3bzbLb_GcX-TrYX6m9eIB2L4Bf6EmOzBdoikOgpbGJOlYIr6yzb__2VEZjYdYhGLBnRXyUpQj"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold">5m</div>
+</div>
+</div>
+<div class="absolute top-1/3 right-1/4 transform -translate-x-1/2 -translate-y-1/2">
+<div class="relative">
+<div class="w-10 h-10 rounded-full border-4 border-white shadow-lg overflow-hidden ring-4 ring-tertiary/30">
+<img alt="Friend" class="w-full h-full object-cover" data-alt="Woman laughing portrait map marker" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJpGPtLi5Sr_n81CJsT44iofsXyEqMPU4AQGHDtFtaLUW_Pg1Lc4K4L78y7gjreh5LkLpjh31f8nEgpfutphHD7cuH3DQaL4qrqN6T_IgJcMt1-bZBhVIbCoEhRNz7HSv1LkuuKzYV72SvCcTjFCn2MeCcnF03V73Doa7jfRsKYAycYkX6v0qK95OqO203LypGCVDzuOmmyCn4jOCqRh8cQrkX7x-Y6of4XRqDBva7RDOZDdNenGi5iCwbUgHfgy5HYYhdw53GV05s"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-tertiary text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold">2m</div>
+</div>
+</div>
+<!-- Trending Pulse -->
+<div class="absolute bottom-1/4 left-1/2 w-4 h-4 bg-secondary rounded-full border-2 border-white pulse-tertiary"></div>
+</div>
+<!-- Floating Controls -->
+<div class="absolute top-4 right-4 flex flex-col gap-2">
+<button class="glass-panel w-10 h-10 rounded-lg flex items-center justify-center text-on-surface shadow-lg hover:bg-white transition-colors">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</button>
+<button class="glass-panel w-10 h-10 rounded-lg flex items-center justify-center text-on-surface shadow-lg hover:bg-white transition-colors">
+<span class="material-symbols-outlined" data-icon="my_location">my_location</span>
+</button>
+</div>
+<!-- Map Caption Overlay -->
+<div class="absolute bottom-4 left-4 right-4 glass-panel p-4 rounded-lg flex items-center justify-between shadow-xl">
+<div>
+<h3 class="font-bold text-primary text-sm">Nguyen Hue Walking Street</h3>
+<p class="text-xs text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="group">group</span>
+                        12 people joined the session
+                    </p>
+</div>
+<button class="bg-primary text-white px-4 py-2 rounded-full font-bold text-xs shadow-md active:scale-95 transition-transform">
+                    View Live Feed
+                </button>
+</div>
+</section>
+<!-- Quick Actions Bento Grid -->
+<section class="grid grid-cols-2 gap-4">
+<button class="bg-primary-container/20 border border-primary/10 p-4 rounded-lg flex flex-col items-start gap-3 hover:bg-primary-container/30 transition-colors">
+<div class="w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+</div>
+<div class="text-left">
+<span class="block font-bold text-primary">Send Ping</span>
+<span class="text-xs text-on-surface-variant">Alert nearby friends</span>
+</div>
+</button>
+<button class="bg-secondary-container/20 border border-secondary/10 p-4 rounded-lg flex flex-col items-start gap-3 hover:bg-secondary-container/30 transition-colors">
+<div class="w-10 h-10 bg-secondary text-on-secondary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<div class="text-left">
+<span class="block font-bold text-secondary">Join Session</span>
+<span class="text-xs text-on-surface-variant">Sync your location</span>
+</div>
+</button>
+</section>
+<!-- Active Participants List -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-extrabold text-on-surface">Active Participants</h2>
+<span class="text-xs font-bold text-tertiary bg-tertiary-container/20 px-2 py-1 rounded-full uppercase">Live Now</span>
+</div>
+<div class="space-y-3">
+<!-- Participant 1 -->
+<div class="bg-surface-container-low p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Alex" class="w-12 h-12 rounded-full object-cover" data-alt="Portrait of a young man with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1nJG0B3fnCBrsOZ0hc7NhFKXSpUHlQfus3XATbL-l4qRwkb3MpgfUoLmHziqUSaI2jqfOhi-Km1ilO-axYNFdgOSTq9hol_6AmiZd-eoa80aezdRmos_o3iSaqXEf3NTWjzYY-sj7atH9zQ4ZytUY_Ox4yzi7ybU3pANyc1eeIs2DvVppQm8_pKdZ3K4jGZ7xC1hgU-qERBrCcjHVQfLvCeGLQVbiiM5EwVQALYSSmHDjLmOAnfKU6OoZff0MCGdFeK6EeQEQYTIT"/>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Alex Nguyen</h4>
+<p class="text-xs text-on-surface-variant">Arriving in <span class="text-primary font-bold">5 mins away</span></p>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-primary-dim hover:bg-primary-container/20">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</button>
+</div>
+<!-- Participant 2 -->
+<div class="bg-surface-container-low p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Sarah" class="w-12 h-12 rounded-full object-cover" data-alt="Portrait of a woman with curly hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJfdT_XEaTz5J0ZtnkyhFWzQ9AcDrhPKmldeXBwYb6rQiqHLP5-eXVWS7oKA8Ub2d7x_obpeBZpZZy0KjPHEWjRuINWEG-L91g8kOk-oDl86-UjQ5_eke5mbD6-yuD4ZJCPt1NRDGOF-L87z7J9ApvBrhLGYE0Gty6bDK7hX97Af1rfgfifqsdJXmRjna21xikMcHaX2mNm3aMXIGbbIqzlSguBROvKyrXh1HAQMXnmzazqOV1GBUUsOasSQIyAPO847q_fC6UMzOK"/>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Sarah Lee</h4>
+<p class="text-xs text-on-surface-variant"><span class="text-secondary font-bold">Already here</span> • At Starbucks</p>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-primary-dim hover:bg-primary-container/20">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</button>
+</div>
+<!-- Participant 3 -->
+<div class="bg-surface-container-low p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="John" class="w-12 h-12 rounded-full object-cover" data-alt="Portrait of a smiling young man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtVa9pFl5WMMSpUtI2OSswDkJmbgiD3QIZFpMejw-CaWAUgkSwaygA5Pae3IWH0n5BPK5Nu0whw8uIjbz5CelGnJ5sjF2QC3z_K50u294eIWrg2dU5jb6xiSfVyAtQSWNQJ4q6kAiSHy3Wvrm46dErwbIvNBzDYs_GpJykHmDrOeXhYY5jYBSPNb0P4284EnljcFphDVnTEgkOQzvul29BA8i0-rV72yq4BbvKLsm1QXfd9Nui1aeEnUFIkpQ8MgLz-aec1Nr9xlvv"/>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-amber-500 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Minh Tran</h4>
+<p class="text-xs text-on-surface-variant">Stuck in traffic • <span class="text-error font-bold">12 mins away</span></p>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-primary-dim hover:bg-primary-container/20">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Main Action CTA -->
+<section class="pt-4">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary py-5 rounded-lg font-extrabold text-lg shadow-2xl shadow-primary/30 flex items-center justify-center gap-3 active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="celebration">celebration</span>
+                Start Meetup
+            </button>
+<p class="text-center text-xs text-on-surface-variant mt-4 px-8">
+                By starting the meetup, everyone in the session will be notified of your exact arrival.
+            </p>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-[0_-8px_30px_rgb(0,0,0,0.04)] rounded-t-[2.5rem]">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px]">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px]">Discovery</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-200 rounded-full px-5 py-2 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px]">Social</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:text-blue-500 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px]">Profile</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Urban Pulse - Route Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-surface": "#0c0f10",
+              "on-tertiary-fixed": "#39000b",
+              "surface-dim": "#d1d5d7",
+              "on-secondary-fixed-variant": "#006763",
+              "primary-container": "#819bff",
+              "error-dim": "#a70138",
+              "surface-container-low": "#eff1f2",
+              "on-primary": "#f2f1ff",
+              "on-secondary-fixed": "#004845",
+              "inverse-on-surface": "#9b9d9e",
+              "surface-container": "#e6e8ea",
+              "secondary-dim": "#005a56",
+              "on-primary-fixed-variant": "#002376",
+              "on-error": "#ffefef",
+              "on-tertiary-fixed-variant": "#780021",
+              "on-surface": "#2c2f30",
+              "on-tertiary": "#ffefef",
+              "on-secondary-container": "#005c59",
+              "on-primary-fixed": "#000000",
+              "on-error-container": "#510017",
+              "on-primary-container": "#001b61",
+              "primary": "#004be3",
+              "surface-container-highest": "#dadddf",
+              "on-background": "#2c2f30",
+              "primary-dim": "#0041c8",
+              "error-container": "#f74b6d",
+              "secondary-fixed": "#29fcf3",
+              "secondary": "#006763",
+              "tertiary-fixed": "#ff9099",
+              "surface": "#f5f6f7",
+              "outline": "#757778",
+              "secondary-container": "#29fcf3",
+              "surface-bright": "#f5f6f7",
+              "outline-variant": "#abadae",
+              "tertiary-dim": "#a20030",
+              "tertiary-container": "#ff9099",
+              "secondary-fixed-dim": "#00ede5",
+              "background": "#f5f6f7",
+              "tertiary-fixed-dim": "#ff7986",
+              "surface-tint": "#004be3",
+              "on-tertiary-container": "#68001b",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-high": "#e0e3e4",
+              "primary-fixed-dim": "#6c8cff",
+              "tertiary": "#b90037",
+              "surface-variant": "#dadddf",
+              "inverse-primary": "#6889ff",
+              "on-secondary": "#bdfffa",
+              "on-surface-variant": "#595c5d",
+              "error": "#b41340",
+              "primary-fixed": "#819bff",
+              "neon-teal": "#00f5e1",
+              "bright-pink": "#ff33a8",
+              "soft-purple": "#a855f7"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .map-container {
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background antialiased overflow-hidden h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/85 backdrop-blur-md shadow-sm flex items-center justify-between px-6 h-16 w-full">
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-blue-600 hover:bg-slate-100 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline text-lg font-bold tracking-tight text-slate-900">Urban Pulse</h1>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-blue-600 hover:bg-slate-100 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
+</header>
+<!-- Main Map Canvas -->
+<main class="flex-grow relative mt-16 pb-24">
+<div class="absolute inset-0 z-0 bg-surface-container overflow-hidden" data-location="Ho Chi Minh City">
+<!-- Simulated Map Visual -->
+<svg class="w-full h-full opacity-60" viewbox="0 0 400 800" xmlns="http://www.w3.org/2000/svg">
+<path d="M0,100 L400,120 M0,250 L400,280 M150,0 L180,800 M280,0 L260,800" fill="none" stroke="#abadae" stroke-width="1.5"></path>
+<!-- Multi-segment Route -->
+<!-- Segment 1: Origin to POI 1 (Blue) -->
+<path d="M50,150 L100,200" fill="none" stroke="#004be3" stroke-linecap="round" stroke-width="6"></path>
+<!-- Segment 2: POI 1 to POI 2 (Pink) -->
+<path d="M100,200 L200,350" fill="none" stroke="#ff33a8" stroke-linecap="round" stroke-width="6"></path>
+<!-- Segment 3: POI 2 to POI 3 (Teal) -->
+<path d="M200,350 L280,450" fill="none" stroke="#00f5e1" stroke-linecap="round" stroke-width="6"></path>
+<!-- Segment 4: POI 3 to Destination (Purple) -->
+<path d="M280,450 L350,550" fill="none" stroke="#a855f7" stroke-linecap="round" stroke-width="6"></path>
+</svg>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/40"></div>
+</div>
+<!-- Waypoint Markers -->
+<!-- Origin -->
+<div class="absolute top-[18.5%] left-[12%] z-10 -translate-x-1/2 -translate-y-1/2">
+<div class="w-3 h-3 bg-slate-800 rounded-full border-2 border-white"></div>
+</div>
+<!-- POI 1 (The Workshop) -->
+<div class="absolute top-[25%] left-[25%] z-20 -translate-x-1/2 -translate-y-1/2">
+<div class="relative flex flex-col items-center">
+<div class="bg-surface-container-lowest px-2 py-1 rounded-lg shadow-lg flex items-center gap-2 mb-1 animate-bounce">
+<div class="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-[10px] text-white font-bold">1</div>
+<span class="text-[10px] font-bold font-headline">The Workshop</span>
+</div>
+<div class="w-3 h-3 bg-primary rounded-full border-2 border-white shadow-sm"></div>
+</div>
+</div>
+<!-- POI 2 (Intermediate) -->
+<div class="absolute top-[43.75%] left-[50%] z-20 -translate-x-1/2 -translate-y-1/2">
+<div class="relative flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-bright-pink flex items-center justify-center text-[10px] text-white font-bold border-2 border-white shadow-md">2</div>
+</div>
+</div>
+<!-- POI 3 (Social Club) -->
+<div class="absolute top-[56%] left-[70%] z-20 -translate-x-1/2 -translate-y-1/2">
+<div class="relative flex flex-col items-center">
+<div class="bg-surface-container-lowest px-2 py-1 rounded-lg shadow-lg flex items-center gap-2 mb-1">
+<div class="w-5 h-5 rounded-full bg-neon-teal flex items-center justify-center text-[10px] text-white font-bold">3</div>
+<span class="text-[10px] font-bold font-headline pr-1">Social Club</span>
+</div>
+<div class="w-3 h-3 bg-neon-teal rounded-full border-2 border-white shadow-sm"></div>
+</div>
+</div>
+<!-- Destination -->
+<div class="absolute top-[68.75%] left-[87.5%] z-10 -translate-x-1/2 -translate-y-1/2">
+<div class="w-4 h-4 bg-soft-purple rounded-full border-2 border-white shadow-lg"></div>
+</div>
+<!-- Social Proof Overlays -->
+<div class="absolute top-8 right-6 flex flex-col gap-3 z-20">
+<div class="bg-tertiary-container/90 backdrop-blur-md px-4 py-2 rounded-full shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-on-tertiary-container text-sm" data-icon="local_fire_department" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="text-[10px] font-bold text-on-tertiary-container uppercase tracking-wider">Trending on TikTok</span>
+</div>
+<div class="bg-secondary-container/90 backdrop-blur-md px-4 py-2 rounded-full shadow-sm flex items-center gap-2 self-end">
+<div class="flex -space-x-2">
+<div class="w-5 h-5 rounded-full border border-white bg-slate-300 overflow-hidden">
+<img alt="" class="w-full h-full object-cover" data-alt="User profile picture 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAv_d9liNtnr3YVkKqvk5o7b7HM1iVT1bGIFHr8CwsyPZDLzRYAQRSER6iprtUYBpzvz1PMcxQ7OIA5N511j9Slvlj6TzpxtS4sNI-Iki2Lhf_2xTKbZHCMDUh7iNcF2t2CtZ_A-bQI1S-iopwZlgAC2x0YzdlsD4CeD1btCrcGb2e8QRtCRgX708otymu_GIUmBTeVZDya_un9F715KtisLoUMOj7_KGX5xSU-NATmZDiYstpNkivWvGuovpNtFYYLeZFJxhmbbQkP"/>
+</div>
+<div class="w-5 h-5 rounded-full border border-white bg-slate-300 overflow-hidden">
+<img alt="" class="w-full h-full object-cover" data-alt="User profile picture 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWMga2j5JtUC80hiTmN3wv5O0we5rejHY1PQzSCLUeI7VjIVAsmBNIxjb9YsMIr8MjLc-PxXfC0QCuJqWV-BraXghkp7jBnddQg0a-r0C-RHHAmdT2Pzwl_R0rzyomvxlF6NsUWKVXbslGvMTzMgNRijL51CwFXhxsIy-RMZQ3nF-fpiB7CElKHaPKNFLlXqRS13mGU8JdAX0Pp2r39JlvjNvXuRdFEgPXDDYTuT8D634Ky5IKjGir7qSMOExa9Ak29qBZ6bA3bWgy"/>
+</div>
+</div>
+<span class="text-[10px] font-bold text-on-secondary-container uppercase tracking-wider">4 Friends Nearby</span>
+</div>
+</div>
+<!-- Bottom Sheet Summary -->
+<div class="absolute bottom-6 left-6 right-6 z-30">
+<div class="bg-white/95 backdrop-blur-xl rounded-lg p-6 shadow-xl space-y-6 border border-white/20">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-headline text-2xl font-extrabold text-on-surface leading-tight">City Pulse Route</h2>
+<div class="flex items-center gap-2 mt-1">
+<p class="text-on-surface-variant text-sm font-medium">District 1 → District 3</p>
+<!-- Multi-segment visual legend -->
+<div class="flex gap-0.5 h-1 w-16 rounded-full overflow-hidden">
+<div class="flex-1 bg-primary"></div>
+<div class="flex-1 bg-bright-pink"></div>
+<div class="flex-1 bg-neon-teal"></div>
+<div class="flex-1 bg-soft-purple"></div>
+</div>
+</div>
+</div>
+<div class="bg-primary/10 px-3 py-1 rounded-full">
+<span class="text-primary font-bold text-xs uppercase tracking-tighter">Fastest</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="bg-surface-container-low rounded-lg p-4 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary mb-1" data-icon="schedule">schedule</span>
+<span class="text-lg font-bold font-headline block">45 mins</span>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Total</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-secondary mb-1" data-icon="straighten">straighten</span>
+<span class="text-lg font-bold font-headline block">2.4km</span>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Distance</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 flex flex-col items-center justify-center text-center">
+<div class="flex -space-x-1 mb-1">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-bright-pink"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-neon-teal"></div>
+</div>
+<span class="text-lg font-bold font-headline block">3 stops</span>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Vibes</span>
+</div>
+</div>
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 rounded-full font-headline font-bold text-lg shadow-lg active:scale-[0.98] transition-all">
+                    Start Exploration
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-xl rounded-t-lg z-50 shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-all active:scale-90 duration-300 px-5 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-headline text-[11px] font-semibold">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-blue-100 text-blue-700 rounded-full px-5 py-2 active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="directions_run" style="font-variation-settings: 'FILL' 1;">directions_run</span>
+<span class="font-headline text-[11px] font-semibold">Routes</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-all active:scale-90 duration-300 px-5 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="local_fire_department">local_fire_department</span>
+<span class="font-headline text-[11px] font-semibold">Trending</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-blue-500 transition-all active:scale-90 duration-300 px-5 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-headline text-[11px] font-semibold">Profile</span>
+</a>
+</nav>
+</body></html>

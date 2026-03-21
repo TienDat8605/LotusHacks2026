@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VibeMap Meetup Session</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-container": "#29fcf3",
+              "secondary": "#006763",
+              "on-secondary": "#bdfffa",
+              "on-error": "#ffefef",
+              "error-container": "#f74b6d",
+              "background": "#f5f6f7",
+              "tertiary-dim": "#a20030",
+              "on-tertiary": "#ffefef",
+              "on-surface-variant": "#595c5d",
+              "on-error-container": "#510017",
+              "tertiary-container": "#ff9099",
+              "inverse-surface": "#0c0f10",
+              "secondary-dim": "#005a56",
+              "surface-container-high": "#e0e3e4",
+              "on-tertiary-container": "#68001b",
+              "tertiary-fixed-dim": "#ff7986",
+              "on-primary-fixed": "#000000",
+              "tertiary-fixed": "#ff9099",
+              "surface-dim": "#d1d5d7",
+              "primary": "#004be3",
+              "secondary-fixed": "#29fcf3",
+              "primary-dim": "#0041c8",
+              "surface-bright": "#f5f6f7",
+              "inverse-on-surface": "#9b9d9e",
+              "surface-container": "#e6e8ea",
+              "error": "#b41340",
+              "primary-container": "#819bff",
+              "on-tertiary-fixed": "#39000b",
+              "primary-fixed": "#819bff",
+              "surface-tint": "#004be3",
+              "surface-container-highest": "#dadddf",
+              "on-primary": "#f2f1ff",
+              "surface-container-low": "#eff1f2",
+              "outline": "#757778",
+              "surface-container-lowest": "#ffffff",
+              "tertiary": "#b90037",
+              "on-surface": "#2c2f30",
+              "outline-variant": "#abadae",
+              "error-dim": "#a70138",
+              "on-background": "#2c2f30",
+              "secondary-fixed-dim": "#00ede5",
+              "primary-fixed-dim": "#6c8cff",
+              "on-primary-fixed-variant": "#002376",
+              "on-primary-container": "#001b61",
+              "on-secondary-container": "#005c59",
+              "surface": "#f5f6f7",
+              "on-secondary-fixed-variant": "#006763",
+              "surface-variant": "#dadddf",
+              "on-tertiary-fixed-variant": "#780021",
+              "inverse-primary": "#6889ff",
+              "on-secondary-fixed": "#004845"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-surface antialiased overflow-hidden h-screen w-screen flex flex-col">
+<!-- TopAppBar from Shared Components JSON -->
+<header class="bg-white/85 dark:bg-slate-900/85 backdrop-blur-md rounded-full mt-4 mx-4 px-4 h-14 sticky top-0 z-50 no-border shadow-[0_4px_24px_rgba(0,0,0,0.04)] flex justify-between items-center w-auto">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="User profile avatar showing a smiling person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9-Zxijcg2M0cC4mdyBFUVV2lw99YCzxrvloWW25HcqYdpaA-50Br5HNRd3vQKd2kMuTLipvg94s8hmNQPKw9C9GyrMllq6Z2Vi25zrHUVD8zf_PeyegIexa1XH8NyXj_6iy5cABWdRyx5GCEE08q-bFg3zVMPz3v5aXrayz63-j0simq0RDyNaCfSbm9XEtFpdo5ZqvefK4O26-0lJ3rMiqYrVDgN-lpRs6gPm8HY23sqpHASOKxhPkptYr2M31X86I0mVnoIMHqa"/>
+</div>
+<h1 class="text-blue-600 dark:text-blue-400 font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight">VibeMap</h1>
+</div>
+<button class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-200 p-2 rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Map Canvas Layer -->
+<main class="flex-grow relative overflow-hidden mt-2">
+<!-- Interactive Map Background -->
+<div class="absolute inset-0 z-0">
+<img alt="Map of Ho Chi Minh City" class="w-full h-full object-cover opacity-90" data-alt="High angle view map of urban city streets" data-location="Ho Chi Minh City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZylM6_AdsAYlhDBwGPyzdozWkX9GwMSnlI67-DwGboL_M_SztrhjQb89Tga2Ym2wY6UvfXItAnN-J2FXE8wzZMW_PsRAQNmTOeGULoZ4TEz3oRJWl_mlQ_J_O3oxwJBl0BOH70QrDiq_a_i_YZjmdkPykJRuEAGhAu_pg_k4yCyP6KG8273exUSA9AZ86aklXd8_ofjMKPVmzspKIdiWYjPn56_Ej8skrUT0iimAk6gYn4wdisdOWsYcLQjeY3rfu2fsSQ1IK8Krh"/>
+<!-- Map Overlay Gradients -->
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/40"></div>
+<!-- Group Centroid Indicator (Urban Pulse Design) -->
+<div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+<div class="relative flex items-center justify-center">
+<div class="absolute w-24 h-24 bg-primary/20 rounded-full animate-ping"></div>
+<div class="absolute w-16 h-16 bg-primary/30 rounded-full"></div>
+<div class="relative w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">groups</span>
+</div>
+</div>
+<div class="mt-2 px-3 py-1 bg-white rounded-full shadow-sm border border-outline-variant/15 text-[10px] font-bold tracking-widest uppercase text-center">Meetup Point</div>
+</div>
+<!-- Participant Pins -->
+<div class="absolute top-[45%] left-[30%] z-10">
+<div class="w-8 h-8 rounded-full border-2 border-white shadow-md overflow-hidden bg-secondary">
+<img alt="Participant" class="w-full h-full object-cover" data-alt="Avatar of participant on map" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDZq04htqXGSTyvtsd_vPI9uFGdGAb83Tkl7a4ttrTP9Q5vo-rXXUrjJv3VnTpl9wvMSjD07h70JP6_rjAQXnidf9fmoXwudWeMOVKZLlE7yQdVZZsoGcN69bPOaNZYeRHI8SD71w8bqLkPh3WEhOhvc4EmgJsAUmZlNBDMGNWw04YyzjeqaqTAFI_B-vECVNwH-ArEbsw39_8sKjCV8MOEpLMmiSLMeyDbAPlV9G5GxGU_iRHBbKGYP-dKgSGN6Or9cE21NlTg7O9"/>
+</div>
+</div>
+<div class="absolute top-[38%] left-[65%] z-10">
+<div class="w-8 h-8 rounded-full border-2 border-white shadow-md overflow-hidden bg-tertiary">
+<img alt="Participant" class="w-full h-full object-cover" data-alt="Avatar of male participant on map" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbgy8lhVbOEXW9aewyYfhzMmEXWoJ2A-gOowdx1BMHzK0Bdo8AwdHpt2S-P80ZLlBiGugvBCN3c0-jHidk22ixolzkZafxILM1y5NEJpqf2VnBZzHfbethdzWhKMXxBG-CvHP7x4vGEEAyYX0wvF3bOWr8VVd4L7cYZo3_ODeJ5PvvbsrFKnpSCN5G96eyge9bLvi8ZBBQrumJkthFE-U_8X_mAhK0WzTjFWdhKW5WhYF4JNQ4vmcae7hAxpkmOWgOdFb5gqDeXD4B"/>
+</div>
+</div>
+</div>
+<!-- High Bottom Sheet Collaborative Panel -->
+<div class="absolute inset-x-0 bottom-0 z-20 glass-panel rounded-t-xl shadow-2xl flex flex-col max-h-[663px]">
+<!-- Handle -->
+<div class="w-full flex justify-center py-3">
+<div class="w-10 h-1.5 bg-outline-variant/30 rounded-full"></div>
+</div>
+<div class="overflow-y-auto no-scrollbar pb-10 px-6">
+<!-- Session Header -->
+<div class="flex items-start justify-between mb-8">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="inline-block w-2 h-2 bg-secondary rounded-full"></span>
+<span class="font-['Plus_Jakarta_Sans'] font-extrabold text-2xl tracking-tighter">Vibe Session</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-surface-container-highest rounded text-[11px] font-mono font-bold text-on-surface tracking-widest uppercase">XJ-902-L</span>
+<span class="text-on-surface-variant text-xs font-medium">Expires in 42m</span>
+</div>
+</div>
+<button class="w-10 h-10 bg-surface-container-low rounded-full flex items-center justify-center text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+<!-- Participant List -->
+<section class="mb-10">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline font-bold text-lg">Hanging out (4)</h3>
+<span class="text-xs font-semibold text-primary">Live</span>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<!-- Participant Item -->
+<div class="flex items-center justify-between bg-surface-container-low/50 p-3 rounded-lg">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User" class="w-full h-full object-cover" data-alt="User avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJ_-nw8oP0jJRzVVWjBuwHAz9IN2gGmbU7cUj0GYkdEdDHHe0cUlrPd2HTk-Xu5mzNtoy-yJO7WjDvJ6nNj9zQycS0tjKnDE5ATJIzI6BOO-41RUZJSQbjc7i3R219Q6Zxb93h_KVhP2rm6UvdxKN-hv_P8eTuxpJzKg4R34crvlggVVAgeA0Hp1q6LbiyT5B28d4axZAunUqLIVM4loC7u43GkuN1HD06f9wpn7BrpOg1x23dbbABoo_XRflm4GeHWib2xV8jn61k"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-secondary rounded-full border-2 border-white"></div>
+</div>
+<div>
+<p class="font-bold text-sm">Alex Chen <span class="text-[10px] text-on-surface-variant font-normal">(You)</span></p>
+<p class="text-xs text-secondary font-medium">At group point</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="text-right">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-wider">Speed</p>
+<p class="text-xs font-bold">0 km/h</p>
+</div>
+</div>
+</div>
+<!-- Participant Item -->
+<div class="flex items-center justify-between p-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-outline-variant/20">
+<img alt="User" class="w-full h-full object-cover" data-alt="Female user avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9-OZmxPktZNR4yyhVPQMSR1dHGZkgA6QGGgyXkZyXB8v-SSvpvZn2Uc_qsoZx-5h8ctBdKFRL60qLNeCpSBFjtlpXVJneI_WB-lvhWkEe-LpYMlZHEi0oYwdgYGDGiXKG-tPvjgmuJtEC6XU3FewnmuTfQJ1ZXdzTtQoUTnOs5_pdNcu9pS2IX0tZvtuUmbQmzuY4bt13VzUy_aV4V2ka6BjcFEGM7Jr-Z5Gl0Amlx1EK0QjJWCFup4M4VrEBLah1ywXiI1NDcnUP"/>
+</div>
+<div>
+<p class="font-bold text-sm">Maya Vo</p>
+<p class="text-xs text-on-surface-variant">Moving • 4 min away</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">navigation</span>
+</div>
+<!-- Participant Item -->
+<div class="flex items-center justify-between p-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-outline-variant/20">
+<img alt="User" class="w-full h-full object-cover" data-alt="Male user avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLGFhTCHTHu_nAO3bdt7Ps44suazyokOJzlzTcPLetccgZXv7nTpSX1QwAPEao9VvBsIm-FgGvtlRTYdO3h41xiyyFjdx_C1Drymiw4OUrR0brhaXhSulNK4ZwjrKpLy2bNy9gs6Fn9NOv6-ltz6-qVbTMGTK092wLzigyEcMxBsyiCKMBCgC2IP9eq_IzVdmmgaROy4jH899_7UyxJ7u8yA_itLtz5DwSo25AkazKOwXZp4-siYDopjTVlUy5ly84XlSQ-ME1EY7K"/>
+</div>
+<div>
+<p class="font-bold text-sm">Liam Nguyen</p>
+<p class="text-xs text-on-surface-variant">Stationary • 200m</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">pin_drop</span>
+</div>
+</div>
+</section>
+<!-- Venue Suggestions -->
+<section class="mb-10">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline font-bold text-lg">Nearby Vibes</h3>
+<button class="text-primary text-xs font-bold uppercase tracking-widest">See all</button>
+</div>
+<div class="flex gap-4 overflow-x-auto no-scrollbar -mx-6 px-6">
+<!-- Venue Card -->
+<div class="flex-shrink-0 w-64 bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm border border-outline-variant/10">
+<div class="relative h-32">
+<img alt="Cocktail Bar" class="w-full h-full object-cover" data-alt="A trendy dimly lit cocktail bar interior" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWh8sM6y7MEd8atSh2QFlynskK6vswaPXZSLXfhHGOjG3-tZGF3Y-94iFIpDdehyDJLVr_9mZOlcZu4xI3ZSHyvo8CkrQhe9YO1KE_ZeWwuo4l6WZ5sxX3koK4uRuHUpWwUt1nlsgE4TTGY4BYTNX_2ks4Iuaxo2PJ1Lf0rjtINGOje5WBT4STtLtNbeXLgJtx0fY47WvbwI5diEO4WPl52V9Yc0i5Y08GBckXaKJDkcOcSNoHyolteqdAG49jkJyJz74CztbaxV72"/>
+<div class="absolute top-2 right-2 px-2 py-1 bg-tertiary text-white rounded-md text-[10px] font-bold uppercase tracking-wider">9.2 Vibe</div>
+</div>
+<div class="p-4">
+<h4 class="font-bold text-base mb-1">Rabbit Hole</h4>
+<div class="flex items-center gap-2 mb-3">
+<span class="text-[10px] text-on-surface-variant uppercase font-semibold">District 1</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="text-[10px] text-on-surface-variant uppercase font-semibold">Speakeasy</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-2 bg-primary text-on-primary rounded-full text-xs font-bold active:scale-95 transition-transform">Suggest</button>
+<button class="p-2 bg-surface-container-high rounded-full">
+<span class="material-symbols-outlined text-sm">directions</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Venue Card -->
+<div class="flex-shrink-0 w-64 bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm border border-outline-variant/10">
+<div class="relative h-32">
+<img alt="Coffee Shop" class="w-full h-full object-cover" data-alt="Modern coffee shop with plants and wood textures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABGgjBI8pEg3JIqPEAJZiXJ38dQHsRKHk4WKlmXUd-whX3hEcI6OPdq2w2dd3VB31ihPuOSoO4n_ewH3I96_NJsIvjsmc_xvJZBFAnlcZ0V0yYX3fm2leVZviNHSl758cty5gaDkBzZLqZdf4gJJn2_FjKgftxZFgEBWX5Kt3JUZjDJutTm-1nfSGAY9FNTP6D0P6HLesgPwepaZd38lzSQGGIXkOrUQq40dA4RuIMBkBMVulED4PRAPIuEvIIwD6PmwgJVRP6Ovlm"/>
+<div class="absolute top-2 right-2 px-2 py-1 bg-secondary text-white rounded-md text-[10px] font-bold uppercase tracking-wider">Trending</div>
+</div>
+<div class="p-4">
+<h4 class="font-bold text-base mb-1">The Workshop</h4>
+<div class="flex items-center gap-2 mb-3">
+<span class="text-[10px] text-on-surface-variant uppercase font-semibold">District 3</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="text-[10px] text-on-surface-variant uppercase font-semibold">Craft Coffee</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-2 bg-primary text-on-primary rounded-full text-xs font-bold active:scale-95 transition-transform">Suggest</button>
+<button class="p-2 bg-surface-container-high rounded-full">
+<span class="material-symbols-outlined text-sm">directions</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Location Controls -->
+<div class="bg-surface-container rounded-lg p-5 mb-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">my_location</span>
+</div>
+<div>
+<p class="font-bold text-sm">Share my location</p>
+<p class="text-xs text-on-surface-variant">Live updates enabled</p>
+</div>
+</div>
+<!-- Toggle Switch -->
+<button class="w-12 h-6 bg-primary rounded-full relative transition-colors">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</button>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="flex flex-col gap-3">
+<button class="w-full py-4 bg-error text-on-error rounded-lg font-bold text-sm tracking-wide active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-error/10">
+<span class="material-symbols-outlined text-lg">logout</span>
+                        Leave Session
+                    </button>
+<p class="text-center text-[10px] text-on-surface-variant font-medium opacity-60">This session will automatically end for everyone at 2:00 AM</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Map Floating FABs (Contextual Map Controls) -->
+<div class="fixed right-6 top-[20%] flex flex-col gap-3 z-10">
+<button class="w-12 h-12 bg-white/90 backdrop-blur rounded-full shadow-md flex items-center justify-center text-on-surface active:scale-90 transition-transform">
+<span class="material-symbols-outlined">layers</span>
+</button>
+<button class="w-12 h-12 bg-white/90 backdrop-blur rounded-full shadow-md flex items-center justify-center text-on-surface active:scale-90 transition-transform">
+<span class="material-symbols-outlined">center_focus_weak</span>
+</button>
+</div>
+</body></html>

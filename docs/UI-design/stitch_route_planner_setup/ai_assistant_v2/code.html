@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-container": "#29fcf3",
+                        "secondary": "#006763",
+                        "on-secondary": "#bdfffa",
+                        "on-error": "#ffefef",
+                        "error-container": "#f74b6d",
+                        "background": "#f5f6f7",
+                        "tertiary-dim": "#a20030",
+                        "on-tertiary": "#ffefef",
+                        "on-surface-variant": "#595c5d",
+                        "on-error-container": "#510017",
+                        "tertiary-container": "#ff9099",
+                        "inverse-surface": "#0c0f10",
+                        "secondary-dim": "#005a56",
+                        "surface-container-high": "#e0e3e4",
+                        "on-tertiary-container": "#68001b",
+                        "tertiary-fixed-dim": "#ff7986",
+                        "on-primary-fixed": "#000000",
+                        "tertiary-fixed": "#ff9099",
+                        "surface-dim": "#d1d5d7",
+                        "primary": "#004be3",
+                        "secondary-fixed": "#29fcf3",
+                        "primary-dim": "#0041c8",
+                        "surface-bright": "#f5f6f7",
+                        "inverse-on-surface": "#9b9d9e",
+                        "surface-container": "#e6e8ea",
+                        "error": "#b41340",
+                        "primary-container": "#819bff",
+                        "on-tertiary-fixed": "#39000b",
+                        "primary-fixed": "#819bff",
+                        "surface-tint": "#004be3",
+                        "surface-container-highest": "#dadddf",
+                        "on-primary": "#f2f1ff",
+                        "surface-container-low": "#eff1f2",
+                        "outline": "#757778",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#b90037",
+                        "on-surface": "#2c2f30",
+                        "outline-variant": "#abadae",
+                        "error-dim": "#a70138",
+                        "on-background": "#2c2f30",
+                        "secondary-fixed-dim": "#00ede5",
+                        "primary-fixed-dim": "#6c8cff",
+                        "on-primary-fixed-variant": "#002376",
+                        "on-primary-container": "#001b61",
+                        "on-secondary-container": "#005c59",
+                        "surface": "#f5f6f7",
+                        "on-secondary-fixed-variant": "#006763",
+                        "surface-variant": "#dadddf",
+                        "on-tertiary-fixed-variant": "#780021",
+                        "inverse-primary": "#6889ff",
+                        "on-secondary-fixed": "#004845"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
+<!-- Map Background -->
+<div class="fixed inset-0 z-0 overflow-hidden">
+<img class="w-full h-full object-cover opacity-60 grayscale-[20%] contrast-125" data-alt="Stylized modern map of Ho Chi Minh City" data-location="Ho Chi Minh City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvE3ovs0PTDyaE7URKZTkIxxEf_Wj_LWMNkdFOMJwf_vCVFHS1lJ-EuuVL1DtsZJdU0PLbdmFlbqUTQW6av1KjhNfOODI7YUmTeJwOZMR4yDKcGb5LWnVH25udLRM02cINors0dL_jE1iMHCmQ03beOj2rdjERxpZ5a6ThZLktjaWCncTXAKhQ-T67mWvT_htZPAwMa4qS4Ppv2VJZOQY5XSvZ5Ikitticb2TuRHkQ1vvRagVZr5irjD2VxLoqfNVqiAMG7Rpe7XUS"/>
+<!-- Map Markers -->
+<div class="absolute top-[35%] left-[45%] group">
+<div class="relative flex items-center justify-center">
+<div class="absolute w-8 h-8 bg-tertiary/20 rounded-full animate-ping"></div>
+<div class="relative bg-tertiary text-white p-2 rounded-full shadow-lg">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+</div>
+</div>
+<div class="absolute top-[52%] left-[60%] group">
+<div class="relative bg-primary text-white p-2 rounded-full shadow-lg">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">local_cafe</span>
+</div>
+</div>
+</div>
+<!-- TopAppBar Shell -->
+<header class="bg-white/85 dark:bg-slate-900/85 backdrop-blur-md rounded-full mt-4 mx-4 px-4 h-14 sticky top-0 z-50 shadow-[0_4px_24px_rgba(0,0,0,0.04)] flex justify-between items-center w-auto">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary/20">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="User profile avatar circular portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLpN2VTxFZspINZpBoOcX9XnDxPmHD3X6G_yCcF6vypk9KpZyax_wEeIA0MfNL-ectDfeVzT_NyIQIAtmsGjAqVORWc-koX1A4dU5DNV4eb0X679u1lOAcQ0aOYnk-CEJUqRo8kI49waCdimxaVrm7Oy5wwu7zzn0sWyxzIiqeftN0fnUF_V9EUOGa8OpOZoBRj2XQpUCVJDDJZ7sA2LHARENEI--9uopPSv6qb0jh52RXvKdNw8pBvLXV9YSbMpL9MMbVRGcOuI_F"/>
+</div>
+<span class="text-blue-600 dark:text-blue-400 font-['Plus_Jakarta_Sans'] font-extrabold tracking-tighter text-lg">VibeMap</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</header>
+<!-- Floating AI Panel Container -->
+<main class="relative z-10 h-[calc(100vh-80px)] flex flex-col justify-end pointer-events-none">
+<!-- The Floating Sheet -->
+<div class="bg-surface-container-low/95 backdrop-blur-2xl rounded-t-lg mx-2 pointer-events-auto shadow-[0_-8px_40px_rgba(0,0,0,0.12)] border-t border-white/20 h-[707px] flex flex-col transition-all duration-500">
+<!-- Handle & Tabs -->
+<div class="flex flex-col items-center pt-3 pb-4">
+<div class="w-10 h-1 bg-surface-container-highest rounded-full mb-6"></div>
+<!-- Mode Tabs -->
+<div class="bg-surface-container-highest/50 p-1 rounded-full flex gap-1 w-[90%]">
+<button class="flex-1 py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 bg-white text-primary shadow-sm">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+                        Ask POI
+                    </button>
+<button class="flex-1 py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">route</span>
+                        Plan Route
+                    </button>
+</div>
+</div>
+<!-- Chat Content Area -->
+<div class="flex-1 overflow-y-auto px-6 space-y-8 hide-scrollbar pb-32">
+<!-- AI Message Bubble -->
+<div class="flex flex-col items-start gap-3">
+<div class="bg-white p-5 rounded-lg rounded-tl-sm shadow-sm max-w-[90%] border border-surface-container">
+<p class="text-on-surface leading-relaxed text-[15px]">
+                            District 1 is buzzing tonight! Since you're looking for a <span class="text-tertiary font-bold">"Hidden Gem"</span> vibe with great cocktails, I've found two spots that perfectly match the current HCMC mood.
+                        </p>
+</div>
+</div>
+<!-- POI Editorial Cards (Asymmetric Grid) -->
+<div class="grid grid-cols-12 gap-4">
+<!-- POI Card 1 -->
+<div class="col-span-11 bg-white rounded-lg overflow-hidden shadow-sm border border-surface-container">
+<div class="relative h-40">
+<img class="w-full h-full object-cover" data-alt="Interior of a moody cocktail bar in Saigon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjX1u3OS3Dz1QdQ6-JFbZq2jVUR-MwiOYKFD5TpEyZiO-4R5FPjkktk39HcBKtoWnhy7Kg6eH5cPP8649OcjWpRiqQDVLaZyiaoBZlYSLPHxn7b6HspOTaAgStcJSNCiSo3_UuY_1RUHp1YqHj4spkhloM2k80bx6wqgz6m-3C0T-x0ZZMqumRrYDr0WdxCcwoYstVIyae-pZZ52ZZQManhGJotsEdnySiJ0nISFyx84zG3zMWl2jzMgNfK9vkpMAjZBQvjeLX2C0X"/>
+<div class="absolute top-3 left-3 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+                                Trending on TikTok
+                            </div>
+</div>
+<div class="p-4">
+<h3 class="font-headline font-bold text-lg text-on-surface">The Rabbit Hole</h3>
+<p class="text-on-surface-variant text-sm mt-1 mb-4">Speakeasy with a 1920s jazz atmosphere. Perfect for late night conversations.</p>
+<button class="w-full py-3 rounded-full bg-primary text-on-primary font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]">directions</span>
+                                Plan route here
+                            </button>
+</div>
+</div>
+<!-- POI Card 2 (Asymmetric Offset) -->
+<div class="col-span-11 col-start-2 bg-white rounded-lg overflow-hidden shadow-sm border border-surface-container mt-2">
+<div class="flex p-3 gap-3">
+<div class="w-24 h-24 rounded-md overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Modern rooftop cafe view of Saigon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7ntMrsCz6j16ZN8P6xolisK5ut1Y11mMwkEyWDPGL17-0dMKfC85NhVN66HoZJVa905aE3U_-Y08L2TWZnrN8-R_mdgy42gV39mHlw8O3AljNW0k3PvlXmAai6ooYCT1v2dgBX_K3yb2w4N2l0U9vIdvvef_oAzG6P5zIJI3mA4qMpWa7gBjlwEWEnQaLmhi2KcRk7LaOeOdgrtgH4kEbmcer129grgvl7p84sBTKRybZGwb1fyoBXp3fauMOOct45ADyDjkZEdoV"/>
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<h3 class="font-headline font-bold text-on-surface">Twilight Loft</h3>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-secondary text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold">4.9</span>
+<span class="text-xs text-on-surface-variant ml-1">(240+ reviews)</span>
+</div>
+</div>
+<button class="text-primary text-sm font-bold flex items-center gap-1 hover:gap-2 transition-all">
+                                    Plan route here
+                                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Follow up Prompt -->
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full border border-outline-variant/30 text-sm font-medium text-on-surface-variant bg-surface-container-lowest active:scale-95 transition-all">
+                        "What's the dress code?"
+                    </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant/30 text-sm font-medium text-on-surface-variant bg-surface-container-lowest active:scale-95 transition-all">
+                        "Show me more rooftops"
+                    </button>
+</div>
+</div>
+<!-- Input Bar -->
+<div class="absolute bottom-0 left-0 right-0 p-4 pb-10 bg-gradient-to-t from-surface-container-low via-surface-container-low to-transparent">
+<div class="bg-surface-container-lowest rounded-full p-2 flex items-center gap-2 shadow-lg border border-white">
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/50 font-medium" placeholder="Where to next, explorer?" type="text"/>
+<button class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center shadow-md active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="arrow_upward">arrow_upward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 py-4 pb-safe bg-white dark:bg-slate-900 shadow-[0_-4px_24px_rgba(0,0,0,0.04)] rounded-t-[2rem]">
+<div class="flex items-center justify-center text-slate-400 dark:text-slate-500 w-12 h-12 hover:text-blue-500 transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</div>
+<!-- Active Tab: Smart Toy (AI Assistant) -->
+<div class="flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full w-12 h-12 active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="smart_toy" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="flex items-center justify-center text-slate-400 dark:text-slate-500 w-12 h-12 hover:text-blue-500 transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+</div>
+<div class="flex items-center justify-center text-slate-400 dark:text-slate-500 w-12 h-12 hover:text-blue-500 transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</div>
+</nav>
+</body></html>

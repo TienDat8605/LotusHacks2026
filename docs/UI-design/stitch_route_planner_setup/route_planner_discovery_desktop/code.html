@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f6f7;
+            color: #2c2f30;
+        }
+        h1, h2, h3, .font-headline {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dadddf;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#004be3",
+              "outline-variant": "#abadae",
+              "secondary": "#006763",
+              "primary-fixed": "#819bff",
+              "on-tertiary-fixed": "#39000b",
+              "surface-container-low": "#eff1f2",
+              "on-primary": "#f2f1ff",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-container": "#68001b",
+              "tertiary": "#b90037",
+              "surface": "#f5f6f7",
+              "on-secondary": "#bdfffa",
+              "surface-variant": "#dadddf",
+              "secondary-fixed-dim": "#00ede5",
+              "error-dim": "#a70138",
+              "on-primary-container": "#001b61",
+              "inverse-surface": "#0c0f10",
+              "inverse-primary": "#6889ff",
+              "inverse-on-surface": "#9b9d9e",
+              "tertiary-container": "#ff9099",
+              "primary-dim": "#0041c8",
+              "surface-container-high": "#e0e3e4",
+              "on-background": "#2c2f30",
+              "on-error": "#ffefef",
+              "surface-container-highest": "#dadddf",
+              "on-surface-variant": "#595c5d",
+              "error": "#b41340",
+              "secondary-fixed": "#29fcf3",
+              "on-secondary-fixed-variant": "#006763",
+              "tertiary-fixed": "#ff9099",
+              "on-primary-fixed-variant": "#002376",
+              "on-primary-fixed": "#000000",
+              "tertiary-fixed-dim": "#ff7986",
+              "surface-dim": "#d1d5d7",
+              "on-error-container": "#510017",
+              "background": "#f5f6f7",
+              "surface-tint": "#004be3",
+              "surface-container": "#e6e8ea",
+              "secondary-container": "#29fcf3",
+              "error-container": "#f74b6d",
+              "primary-container": "#819bff",
+              "on-secondary-container": "#005c59",
+              "outline": "#757778",
+              "on-tertiary": "#ffefef",
+              "secondary-dim": "#005a56",
+              "surface-bright": "#f5f6f7",
+              "primary-fixed-dim": "#6c8cff",
+              "on-surface": "#2c2f30",
+              "on-secondary-fixed": "#004845",
+              "tertiary-dim": "#a20030",
+              "on-tertiary-fixed-variant": "#780021"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface text-on-surface overflow-hidden">
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 bg-slate-50 border-r border-slate-200 flex flex-col py-8 px-4 font-body font-medium">
+<div class="mb-10 px-4">
+<h1 class="text-2xl font-black tracking-tighter text-primary">VibeMap</h1>
+<p class="text-[10px] uppercase tracking-widest text-outline mt-1 font-bold">HCMC Edition</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Active Tab: Map/Discovery context -->
+<a class="flex items-center gap-3 py-3 px-4 bg-primary-container/20 text-primary font-bold rounded-xl transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="text-sm">Map</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 text-slate-600 hover:text-primary hover:bg-slate-100 rounded-xl transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="text-sm">Discovery</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 text-slate-600 hover:text-primary hover:bg-slate-100 rounded-xl transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-sm">Social</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 text-slate-600 hover:text-primary hover:bg-slate-100 rounded-xl transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="person_outline">person_outline</span>
+<span class="text-sm">Profile</span>
+</a>
+</nav>
+<div class="mt-auto space-y-2 border-t border-slate-200 pt-6">
+<button class="w-full bg-gradient-to-r from-primary to-primary-fixed text-white py-4 rounded-full font-bold text-sm shadow-sm active:scale-95 transition-transform mb-6">
+                Plan New Route
+            </button>
+<a class="flex items-center gap-3 py-2 px-4 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="settings">settings</span>
+<span class="text-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 py-2 px-4 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="help_outline">help_outline</span>
+<span class="text-sm">Help</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 h-screen flex overflow-hidden">
+<!-- Left Half: Route Planner -->
+<section class="w-[450px] h-full bg-white flex flex-col border-r border-surface-container overflow-y-auto custom-scrollbar">
+<div class="p-8">
+<header class="mb-10">
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface mb-2">The Curator</h2>
+<p class="text-on-surface-variant text-sm">Design your perfect Ho Chi Minh City experience.</p>
+</header>
+<div class="space-y-8">
+<!-- Origin & Destination -->
+<div class="space-y-4">
+<div class="relative">
+<label class="text-[11px] font-bold text-outline uppercase tracking-wider mb-1 block ml-4">Start Point</label>
+<div class="flex items-center bg-surface-container-low rounded-xl px-4 py-3 border border-transparent focus-within:border-primary/30 transition-all">
+<span class="material-symbols-outlined text-primary mr-3" data-icon="my_location">my_location</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-medium w-full text-on-surface" type="text" value="District 1, Ben Thanh"/>
+</div>
+</div>
+<div class="relative flex justify-center -my-2 z-10">
+<div class="bg-white p-2 rounded-full shadow-md border border-surface-container">
+<span class="material-symbols-outlined text-slate-400 rotate-90" data-icon="sync_alt">sync_alt</span>
+</div>
+</div>
+<div class="relative">
+<label class="text-[11px] font-bold text-outline uppercase tracking-wider mb-1 block ml-4">Destination</label>
+<div class="flex items-center bg-surface-container-low rounded-xl px-4 py-3 border border-transparent focus-within:border-primary/30 transition-all">
+<span class="material-symbols-outlined text-tertiary mr-3" data-icon="location_on">location_on</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-medium w-full text-on-surface" placeholder="Where to?" type="text"/>
+</div>
+</div>
+</div>
+<!-- Time Budget Slider -->
+<div>
+<div class="flex justify-between items-end mb-4">
+<label class="text-sm font-bold text-on-surface">Time Budget</label>
+<span class="text-primary font-black text-xl">2.5 hrs</span>
+</div>
+<input class="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary" max="10" min="1" step="0.5" type="range"/>
+<div class="flex justify-between mt-2 text-[10px] font-bold text-outline uppercase">
+<span>Quick Bite</span>
+<span>Full Day</span>
+</div>
+</div>
+<!-- Transport Mode Icons -->
+<div>
+<label class="text-sm font-bold text-on-surface mb-4 block">Transport Mode</label>
+<div class="grid grid-cols-4 gap-3">
+<button class="flex flex-col items-center justify-center p-4 rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 transition-all">
+<span class="material-symbols-outlined mb-1" data-icon="motorcycle" style="font-variation-settings: 'FILL' 1;">motorcycle</span>
+<span class="text-[10px] font-bold uppercase">Bike</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 rounded-2xl bg-surface-container text-outline hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined mb-1" data-icon="directions_car">directions_car</span>
+<span class="text-[10px] font-bold uppercase">Car</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 rounded-2xl bg-surface-container text-outline hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined mb-1" data-icon="directions_walk">directions_walk</span>
+<span class="text-[10px] font-bold uppercase">Walk</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 rounded-2xl bg-surface-container text-outline hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined mb-1" data-icon="directions_bus">directions_bus</span>
+<span class="text-[10px] font-bold uppercase">Bus</span>
+</button>
+</div>
+</div>
+<!-- TikTok Trending Toggle -->
+<div class="bg-surface-container-low p-6 rounded-2xl flex items-center justify-between border border-primary/5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-black flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="trending_up">trending_up</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">TikTok Trending</h4>
+<p class="text-[11px] text-on-surface-variant">Prioritize viral locations</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-12 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<button class="w-full bg-on-background text-white py-5 rounded-xl font-extrabold text-base tracking-tight hover:bg-black active:scale-[0.98] transition-all shadow-xl shadow-black/5 mt-4">
+                        Generate Best Route
+                    </button>
+</div>
+</div>
+</section>
+<!-- Right Half: Discovery Grid -->
+<section class="flex-1 h-full bg-surface relative overflow-y-auto p-12 custom-scrollbar">
+<!-- Background Map Visual Placeholder -->
+<div class="absolute inset-0 z-0 opacity-10 pointer-events-none">
+<img class="w-full h-full object-cover" data-alt="Stylized map pattern of Saigon streets" data-location="Ho Chi Minh City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC87IH81gMc5A2mgARIglQHrAnkyYLcsUOF3Td5Kfb6ATMAuRp-1Y8qCsG_tH38-M-k96DhX2PfWqiSVYUGEGpUw_g-WiEa5miEYOOpAer1PasFiXv7a78gWHzzhofgHo4TQm413FRsg7tkTnnTyQvR3X117SVQ2CZ8K7B672TjGhUss10wpOKCH6W6sYpdzkdUrc5Xt9eGJYfwVD61fEREimsNwNhLewY7oz9qYW1zA5QPtP7ZTHrzdF6Ve2k2SRyTBiBVDaPQ8fi3"/>
+</div>
+<div class="relative z-10 max-w-5xl mx-auto">
+<div class="flex justify-between items-end mb-12">
+<div>
+<span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest mb-4 inline-block">Live Feed</span>
+<h3 class="text-4xl font-extrabold text-on-surface tracking-tight">Trending Venues</h3>
+</div>
+<div class="flex gap-2">
+<button class="p-3 rounded-full bg-white shadow-sm hover:shadow-md transition-shadow">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
+<button class="p-3 rounded-full bg-white shadow-sm hover:shadow-md transition-shadow">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</button>
+</div>
+</div>
+<!-- Bento-style Discovery Grid -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Major Trending Venue -->
+<div class="col-span-12 md:col-span-8 group relative h-[400px] overflow-hidden rounded-lg">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Modern rooftop bar with neon lights overlooking city skyline" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6_EjVM6iVUpZQvgIjiJZRPJuRgik7tvUft5q3z7vAzWbBuCT9Ql_z1CM6SPAbQY2jxD2XpBbc1kyCh7zte5I-MO8_nGZWqyEC91TVv-bn0O8uW3pY3lvGuzx27FFSHfo0Eiboh4d41LMsPnahYHxhiZS0fJ-NIBFc5bq9CZkbKL7-yyklh6jciKwWWuw1zN8lUxXaj8lQWsNNXyWGXzSf5tISX6TvXBx74QT7kBZI8zwsPq5Jnm-otoL0Exuc6vHOn3joVTnFIPkc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute top-6 left-6 flex gap-2">
+<span class="bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">Hot Tonight</span>
+<span class="bg-white/20 text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">District 1</span>
+</div>
+<div class="absolute bottom-8 left-8 right-8">
+<div class="flex items-center gap-3 mb-3">
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-black" data-alt="User avatar small" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEAg8n7v6xBQBSGtQzL5NO0YC7sC5EFJfhZDo6KOojjIz6PMDy8Oig8HTES7SHtmAFWZ6ivdgqDw5Vp82VuAuwWXUzSe2NEvUc-t_RN4x01YgOsVrakvI78JR--IxZivQxrEHv8_S0VRxo8znkk--7x4-hu1Gmwwf-2c3CIxdJYf036gEtttgFBsm5tJsvUyVO0lSLetLM9fy5TetyaP0qJWZPRYUbVQQmYQv2o0KtVZOJ4xNmfKr2bq2qF7NspTWMorGQmy3Nmw6d"/>
+<img class="w-8 h-8 rounded-full border-2 border-black" data-alt="User avatar small" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYseRy1GbCrjx3H_U-2oRATYF26vb2cV1d_jbx5wU4XfmJZjg37aqQrWYwXU51yusqnUr6aDnQnm09yDHafrdftQK8Nj_iS_50urH-44CnUX9d_B_04MzPuq_i02X1xCpjCd00S9g_07I5GtbMS1zewyIxyDt9mCbrfCeSs7c87or9-QztRR14PTkws8_wHwV29CmdcEYEixy9ANWx7d_jCNLbkOpOiIi9XizX8CGRgm9uArYYD6WMhAhfbUCuiYx6VJkumLwXcBUx"/>
+<img class="w-8 h-8 rounded-full border-2 border-black" data-alt="User avatar small" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIEiuII3GiIL7-Y_PPW26k3wGZMxsDcVtzSP3Hs3UsbDN1srvkMwR97aVQPtyq-ayBJxX90FKdfCT3ReUtAcHfKEAsYTfbgJCXCL_JxW9M607Pp4mZGMRIvPnLoFoPKp8e8h9oJEZNEUhof4ELa--gzLVVnk-dFADRVhIgAOP1sn898El85azdpS7OmrsbwxZyAGlpcLHskCnyrdjce7ffLkCMuo2XyHVywEMkUsJiAwkFJM7Isl7fDb6TVQb9lRr9nJ0sVXz8U4zh"/>
+</div>
+<span class="text-white/80 text-xs font-medium">24 friends have visited this month</span>
+</div>
+<h4 class="text-3xl font-black text-white mb-2">The Social Club Rooftop</h4>
+<div class="flex items-center gap-4">
+<div class="flex items-center text-secondary-fixed font-bold text-sm">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="play_circle" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+                                    1.2M views on TikTok
+                                </div>
+<div class="flex items-center text-white/70 text-sm">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="schedule">schedule</span>
+                                    Open until 2AM
+                                </div>
+</div>
+</div>
+</div>
+<!-- Hidden Gem Badge -->
+<div class="col-span-12 md:col-span-4 group relative h-[400px] overflow-hidden rounded-lg bg-tertiary-container/10 border border-tertiary/10">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Small atmospheric coffee shop tucked in an alleyway" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHBk_SC-yfKKW8k9sp6i7X1fdMAUEKjApilIAxzCUdH2wYXNL0YR6MC5sv3aJDiP9cj4WaZHlfqhTNtM_YouUjUCNp1rMeVpBVZcx3IVDxp3XTKNJQTIDGXOQtKF_VGBpC2A5QeYQukgoPbCs8dV8BGEuffGC2ouS7n2vNmDOdvvDRLaWLWRiryd323xvMTyvvxW7aTKZs_d8zLckqcrvnX9b9H3FOGg1fEPRtRwCopA97DmgOdbbWAS6pr1z8-uK5UoHDp01e0cY_"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-tertiary-container/90 to-transparent"></div>
+<div class="absolute top-6 left-6">
+<div class="flex items-center gap-2 bg-tertiary text-on-tertiary px-4 py-2 rounded-full shadow-lg">
+<span class="material-symbols-outlined text-base" data-icon="diamond" style="font-variation-settings: 'FILL' 1;">diamond</span>
+<span class="text-[10px] font-black uppercase tracking-widest">Hidden Gem</span>
+</div>
+</div>
+<div class="absolute bottom-8 left-8 right-8">
+<h4 class="text-2xl font-black text-on-tertiary mb-2">Secret Garden Cafe</h4>
+<p class="text-on-tertiary/70 text-sm mb-4 line-clamp-2">An oasis of plants and vintage Vietnamese architecture hidden in a D1 alley.</p>
+<div class="flex items-center justify-between">
+<span class="text-on-tertiary font-bold text-xs">98% Match for you</span>
+<span class="material-symbols-outlined text-on-tertiary" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Grid Item 3 -->
+<div class="col-span-12 md:col-span-4 group relative h-[300px] overflow-hidden rounded-lg">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Traditional street food stall with colorful plastic chairs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4N4ifA52k2W5pQCmYjD7z6_gPTUUKrFtyp8G10d6heWP26u-y6xPiGNk7KrFmmfidKJhO5vuJkef0AAMJ8sM5M3xc0swrUtFEVBO73nBgChQ-FrXys9_MUgzwlTqeZFC_sP7Q9f14QpR5As8TegbkpCLaIyAlMwClYvZ7JKhwmfQ2t_xZXrOK8VO1Dgwc_o9fBLNdHTHnV57CNpO8Rk7hBJ5aE_dLOlR8zSAdM-gnMmYPX2rfKisDyHlPQkPxNtNBN2LbdPYkQWfC"/>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-6">
+<h5 class="text-white font-black text-xl mb-1">Banh Mi Huynh Hoa</h5>
+<p class="text-white/70 text-xs font-bold uppercase tracking-widest">Street Food Elite</p>
+</div>
+</div>
+<!-- Grid Item 4 -->
+<div class="col-span-12 md:col-span-4 group relative h-[300px] overflow-hidden rounded-lg">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Contemporary art gallery interior with white walls" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlZuDbYB052sTDvtZ9W5z9LVfrF23xH9z5sdfJjqYnbS2skEAkTRIk02hEj9KruLRJi9xq52aX0jGwgBR2jgqKI3TWpcyYFduHMYNKdpkE6hXKKAEDxfxaIx62ztCw4YweMEMzLfATe-yfOzwK0ONOFoni_kNn4HNVi_rb5SkwbazwdBCQq2aVxT9QzYhEP-icF7LVPZW_YYCLQb8YWa95xU2-OTyG89icOTh2FTjpNRxFl_Lb7m1whYhxR4HYFeQW2dnTkRgIFv7-"/>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-6">
+<h5 class="text-white font-black text-xl mb-1">The Factory Contemporary</h5>
+<p class="text-white/70 text-xs font-bold uppercase tracking-widest">Arts &amp; Culture</p>
+</div>
+</div>
+<!-- Grid Item 5 -->
+<div class="col-span-12 md:col-span-4 group relative h-[300px] overflow-hidden rounded-lg">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Busy evening night market scene" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxlCdz4_qXLlxORE_uwzGGsyCtFdal2MxXoK3RHRQkAfhS3U9l1sEFzOugHHxGTqklmd2rCfJoj8SvWN-gpSzlpXglS8y32uR5GqYHQQcRVQsFzaAda3VLcQzBUpMXTXXQxomh_S4JXHkohZsdp4OWR82Kbc3Nzqe7xkmcBU2A_-5MOgGlT3D6r_iB23-ZND47dymc607yiHIc9NGrdxRzenIf7nI5DUsf1CMGZvXUdpswRSS4EhHrLgglrR-HqAo7FOpd-819iJHc"/>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-6">
+<h5 class="text-white font-black text-xl mb-1">Ben Thanh Market</h5>
+<p class="text-white/70 text-xs font-bold uppercase tracking-widest">Late Night Shopping</p>
+</div>
+</div>
+</div>
+<!-- Trending Social Proof Section -->
+<div class="mt-16 p-8 bg-white/50 backdrop-blur-xl rounded-xl border border-white/40 shadow-sm flex items-center justify-between">
+<div>
+<p class="text-sm font-bold text-on-surface mb-1">Local Vibe Level</p>
+<div class="flex items-center gap-2">
+<div class="flex gap-1">
+<div class="w-8 h-2 rounded-full bg-secondary"></div>
+<div class="w-8 h-2 rounded-full bg-secondary"></div>
+<div class="w-8 h-2 rounded-full bg-secondary"></div>
+<div class="w-8 h-2 rounded-full bg-secondary"></div>
+<div class="w-8 h-2 rounded-full bg-surface-container"></div>
+</div>
+<span class="text-secondary font-black text-sm">Electric</span>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="text-center">
+<span class="block text-2xl font-black text-primary">84k</span>
+<span class="text-[10px] font-bold text-outline uppercase tracking-widest">Active Explorers</span>
+</div>
+<div class="text-center">
+<span class="block text-2xl font-black text-tertiary">12</span>
+<span class="text-[10px] font-bold text-outline uppercase tracking-widest">Viral Events</span>
+</div>
+<button class="bg-primary hover:bg-primary-dim text-white px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-primary/20 transition-all">
+                            View Live Map
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button - Only for specific context -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-on-background text-white rounded-full flex items-center justify-center shadow-2xl z-50 hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add_comment">add_comment</span>
+</button>
+</body></html>

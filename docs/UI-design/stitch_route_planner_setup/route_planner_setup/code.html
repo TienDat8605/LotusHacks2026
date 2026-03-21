@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VibeMap - Route Planner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#819bff",
+                        "surface-container": "#e6e8ea",
+                        "tertiary-fixed": "#ff9099",
+                        "error": "#b41340",
+                        "on-background": "#2c2f30",
+                        "surface-container-highest": "#dadddf",
+                        "on-primary-fixed-variant": "#002376",
+                        "tertiary-container": "#ff9099",
+                        "surface-container-low": "#eff1f2",
+                        "tertiary-fixed-dim": "#ff7986",
+                        "surface-tint": "#004be3",
+                        "primary-fixed": "#819bff",
+                        "on-secondary": "#bdfffa",
+                        "on-surface-variant": "#595c5d",
+                        "inverse-surface": "#0c0f10",
+                        "primary-dim": "#0041c8",
+                        "surface-bright": "#f5f6f7",
+                        "primary": "#004be3",
+                        "on-error": "#ffefef",
+                        "primary-fixed-dim": "#6c8cff",
+                        "on-error-container": "#510017",
+                        "secondary-container": "#29fcf3",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffefef",
+                        "on-tertiary-fixed-variant": "#780021",
+                        "secondary": "#006763",
+                        "inverse-primary": "#6889ff",
+                        "error-container": "#f74b6d",
+                        "tertiary-dim": "#a20030",
+                        "error-dim": "#a70138",
+                        "inverse-on-surface": "#9b9d9e",
+                        "on-secondary-fixed": "#004845",
+                        "outline-variant": "#abadae",
+                        "surface": "#f5f6f7",
+                        "on-tertiary-fixed": "#39000b",
+                        "secondary-dim": "#005a56",
+                        "on-surface": "#2c2f30",
+                        "on-primary-container": "#001b61",
+                        "on-tertiary-container": "#68001b",
+                        "surface-variant": "#dadddf",
+                        "on-secondary-container": "#005c59",
+                        "on-secondary-fixed-variant": "#006763",
+                        "surface-dim": "#d1d5d7",
+                        "on-primary-fixed": "#000000",
+                        "background": "#f5f6f7",
+                        "surface-container-high": "#e0e3e4",
+                        "secondary-fixed-dim": "#00ede5",
+                        "on-primary": "#f2f1ff",
+                        "tertiary": "#b90037",
+                        "outline": "#757778",
+                        "secondary-fixed": "#29fcf3"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 px-6 py-4 flex items-center justify-between bg-white/85 backdrop-blur-md rounded-b-3xl shadow-xl shadow-blue-900/5">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-blue-50 transition-colors">
+<span class="material-symbols-outlined text-blue-600" data-icon="search">search</span>
+</button>
+<h1 class="font-headline font-bold text-lg text-blue-700 tracking-tight">Route Planner</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden border-2 border-primary/10">
+<img alt="User Profile" data-alt="User profile avatar close up photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAN9P0873Kz7n47EQ4GKn6tUzgxDRW2n2Nae9X-6VMRmNhcdBT_fbz806KJF5yX4z_laHwjItkH8eNsKPVuiiyc8O_Tir6slIk9hRNZ_CWzjQOtIUzb4LREt2IFYyUpW8ACKoJFkHjr8mSXsxvi0ARRvCvk25csKYDLBN1XseLOCBmCVs5SzxyzJeMsi48GD3TddHg4Z3DcAkK38sg6vqzXB2eXtlYApAyTIb9PPUFvTFoHoUbVhgicKKewfXufDv2JEGoEMqkcQP6v"/>
+</div>
+</header>
+<main class="pt-28 pb-32 px-6 max-w-2xl mx-auto space-y-8">
+<!-- Map Background Glimpse (Asymmetric/Glass Overlay) -->
+<div class="relative w-full h-48 rounded-lg overflow-hidden shadow-sm">
+<img alt="Ho Chi Minh City Map" class="w-full h-full object-cover grayscale opacity-40" data-location="Ho Chi Minh City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyQH-33b2NzhhMugyZbdkWiia3zaDi4kSsONWizyf96hI4wOCZ-Yvwacw-yr1ea947LsFZf7ODVOGxKLlNW9-auwKvdPUn3dSPb5hfaiT-hg1oHEtVQTXqDXP8g9P46j_54XYXXIJnpR56eKoSOLwo4B-7mLrJz3e3pqsToFoYsCKQx-nIcYiRK2hh08yHlcJYw-OQ3EvnaaFL2p3mC7ZUe7ovaGCydD8wMytSbBtKcDco_pyeNqDr5bVrt3Y5irXMDEd446qfRZyy"/>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-background"></div>
+<div class="absolute bottom-4 left-4 flex items-center gap-2 bg-white/90 px-3 py-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="location_on">location_on</span>
+<span class="text-xs font-semibold text-on-surface">District 1, HCMC</span>
+</div>
+</div>
+<!-- Input Section -->
+<section class="space-y-4">
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm space-y-4">
+<div class="flex items-start gap-4">
+<div class="flex flex-col items-center gap-1 mt-3">
+<div class="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(0,75,227,0.4)]"></div>
+<div class="w-0.5 h-10 bg-surface-container-highest rounded-full"></div>
+<span class="material-symbols-outlined text-tertiary text-lg" data-icon="push_pin">push_pin</span>
+</div>
+<div class="flex-1 space-y-3">
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider px-1">Origin</label>
+<input class="w-full bg-surface-container-low border-none rounded-md px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Enter starting point" type="text" value="Ben Thanh Market, District 1"/>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider px-1">Destination</label>
+<input class="w-full bg-surface-container-low border-none rounded-md px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Enter destination" type="text" value="Landmark 81, Binh Thanh"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Transport Modes -->
+<section class="space-y-4">
+<h3 class="font-headline font-bold text-on-surface text-base px-2">Transport Mode</h3>
+<div class="flex items-center p-1.5 bg-surface-container-low rounded-full">
+<button class="flex-1 flex flex-col items-center justify-center py-4 bg-surface-container-lowest rounded-full shadow-sm text-primary">
+<span class="material-symbols-outlined" data-icon="pedal_bike">pedal_bike</span>
+<span class="text-[10px] font-bold mt-1">Bike</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center py-4 text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="directions_car">directions_car</span>
+<span class="text-[10px] font-bold mt-1">Car</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center py-4 text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="directions_walk">directions_walk</span>
+<span class="text-[10px] font-bold mt-1">Walk</span>
+</button>
+</div>
+</section>
+<!-- Time Budget -->
+<section class="space-y-6">
+<div class="flex justify-between items-center px-2">
+<h3 class="font-headline font-bold text-on-surface text-base">Time Budget</h3>
+<span class="text-primary font-bold bg-primary/10 px-3 py-1 rounded-full text-sm">2h 30m</span>
+</div>
+<div class="px-2">
+<input class="w-full h-2 bg-surface-container-highest rounded-full appearance-none cursor-pointer accent-primary" max="4" min="1" step="0.5" type="range"/>
+<div class="flex justify-between mt-3 px-1 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+<span>1h</span>
+<span>2h</span>
+<span>3h</span>
+<span>4h</span>
+</div>
+</div>
+</section>
+<!-- Social Integration Toggle -->
+<section class="bg-surface-container-lowest p-6 rounded-lg shadow-sm border-l-4 border-tertiary-container">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-tertiary-container/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="trending_up">trending_up</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-sm text-on-surface">Trending on TikTok</h4>
+<p class="text-xs text-on-surface-variant">Include viral photogenic spots</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
+</label>
+</div>
+</section>
+<!-- CTA Button -->
+<div class="pt-4">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-white py-5 rounded-full font-headline font-extrabold text-lg shadow-xl shadow-primary/20 active:scale-95 transition-transform">
+                Let's Go
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-xl rounded-t-[2.5rem] shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+<a class="flex flex-col items-center justify-center bg-blue-100 text-blue-700 rounded-full px-5 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px]">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-blue-500 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px]">Discovery</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-blue-500 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px]">Social</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-blue-500 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px]">Profile</span>
+</a>
+</nav>
+</body></html>

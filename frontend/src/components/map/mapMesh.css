@@ -1,0 +1,11 @@
+.map-mesh {
+  background-image: radial-gradient(#d1d5d7 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+

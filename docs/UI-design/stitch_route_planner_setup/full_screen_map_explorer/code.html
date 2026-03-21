@@ -1,0 +1,302 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Urban Pulse | HCMC VibeMap Explorer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-dim": "#005a56",
+              "on-surface": "#2c2f30",
+              "on-primary-container": "#001b61",
+              "on-tertiary-container": "#68001b",
+              "surface-variant": "#dadddf",
+              "on-secondary-container": "#005c59",
+              "surface-dim": "#d1d5d7",
+              "on-secondary-fixed-variant": "#006763",
+              "surface-container-high": "#e0e3e4",
+              "background": "#f5f6f7",
+              "on-primary-fixed": "#000000",
+              "tertiary": "#b90037",
+              "secondary-fixed-dim": "#00ede5",
+              "on-primary": "#f2f1ff",
+              "outline": "#757778",
+              "secondary-fixed": "#29fcf3",
+              "inverse-primary": "#6889ff",
+              "secondary": "#006763",
+              "tertiary-dim": "#a20030",
+              "error-container": "#f74b6d",
+              "error-dim": "#a70138",
+              "inverse-on-surface": "#9b9d9e",
+              "on-secondary-fixed": "#004845",
+              "surface": "#f5f6f7",
+              "outline-variant": "#abadae",
+              "on-tertiary-fixed": "#39000b",
+              "inverse-surface": "#0c0f10",
+              "surface-bright": "#f5f6f7",
+              "primary-dim": "#0041c8",
+              "primary": "#004be3",
+              "on-error": "#ffefef",
+              "primary-fixed-dim": "#6c8cff",
+              "secondary-container": "#29fcf3",
+              "on-error-container": "#510017",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#780021",
+              "on-tertiary": "#ffefef",
+              "surface-container": "#e6e8ea",
+              "primary-container": "#819bff",
+              "error": "#b41340",
+              "tertiary-fixed": "#ff9099",
+              "on-background": "#2c2f30",
+              "surface-container-highest": "#dadddf",
+              "tertiary-container": "#ff9099",
+              "on-primary-fixed-variant": "#002376",
+              "surface-container-low": "#eff1f2",
+              "tertiary-fixed-dim": "#ff7986",
+              "primary-fixed": "#819bff",
+              "surface-tint": "#004be3",
+              "on-secondary": "#bdfffa",
+              "on-surface-variant": "#595c5d"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    vertical-align: middle
+    }
+.map-bg {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCkZK3t9TZzDz2fSTcepg4CWoEoMsYkrcgbEJrisUY9DqKnrJtj7GsgV3m_-KAX4oUb64gn3XWQDl1jN8wIxnhPajIDh5N0ZtvZ4k_N7cpdflDrvSA1YFalkgwJQORRwWIsL-mfHX1iuk58reNjgSnN4vwrJzakcCQzYpT4UsatxuS403E3Vt3Wyaqxs7NK1d5IpWdvA_07lZoconSohkBmpUwMdSCoZ9E6IXzlfWL_q0RqsBQxgxH4mkYF3Z17ZoIPLxFYZH3NtpBe);
+    background-size: cover;
+    background-position: center
+    }
+.glass-panel {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px)
+    }
+@keyframes pulse-ring {
+    0% {
+        transform: scale(.33);
+        opacity: 1;
+        } 80%, 100% {
+        transform: scale(1.5);
+        opacity: 0;
+        }
+    }
+.pulse-marker::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: inherit;
+    animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite
+    }</style>
+</head>
+<body class="bg-background font-body text-on-surface overflow-hidden">
+<!-- TopNavBar Shared Component -->
+<header class="fixed top-0 w-full z-40 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl shadow-sm dark:shadow-none">
+<div class="flex justify-between items-center h-16 px-6 w-full">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black text-blue-700 dark:text-blue-500 italic font-['Plus_Jakarta_Sans']" style="">Urban Pulse</span>
+<nav class="hidden md:flex items-center gap-6 font-['Plus_Jakarta_Sans'] font-semibold tracking-tight">
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-500 transition-colors" href="#" style="">Open Now</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-500 transition-colors" href="#" style="">Top Rated</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-500 transition-colors" href="#" style="">TikTok Trending</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-95 duration-200" style="">
+<span class="material-symbols-outlined text-on-surface-variant" style="">notifications</span>
+</button>
+<button class="p-2 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-95 duration-200" style="">
+<span class="material-symbols-outlined text-on-surface-variant" style="">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container border-2 border-white">
+<img alt="User profile avatar" data-alt="User profile avatar headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoklwIxvlRBol_hDk0_-7OdFMmRkEmGXL5A1RRHeliPJ4shlD7mQNL08ZweRCCsTCqTtqqNC6ojDV_oaEP3QVpNypl61kT7t79ecQvIEKyp-FCn6cjSEp6pIU1Uo3VZagXtRzlGJ0MZTz12hnaDOU364zAPwJEqB7fpkXnWKG7dgRLJUuX5y3Qxw_-W4rrrYVdm8GtsxO4bc8-hBNa7DeOj3TcJMLDa09mvkGWMCh9lf1R8RZn-SDKsrJtfuoW6AAORJzROBHZzHrT" class="" style="">
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar Shared Component -->
+<aside class="h-full w-64 fixed left-0 top-0 z-50 bg-slate-50 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 shadow-xl dark:shadow-none flex flex-col p-4">
+<div class="mb-8 px-4 pt-4">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm" style="">map</span>
+</div>
+<h2 class="text-xl font-bold text-slate-900 dark:text-slate-100 font-['Plus_Jakarta_Sans']" style="">VibeMap</h2>
+</div>
+<p class="text-xs text-slate-500 font-medium tracking-wide" style="">HCMC Edition</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-xl font-bold px-4 py-3 mb-2 flex items-center gap-3 transition-transform active:translate-x-1 font-['Plus_Jakarta_Sans'] text-sm" href="#" style="">
+<span class="material-symbols-outlined" data-icon="explore" style="">explore</span>
+<span class="" style="">Explore</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 px-4 py-3 mb-2 flex items-center gap-3 transition-all hover:bg-blue-50/50 dark:hover:bg-blue-900/10 rounded-xl font-['Plus_Jakarta_Sans'] text-sm" href="#" style="">
+<span class="material-symbols-outlined" data-icon="bookmark" style="">bookmark</span>
+<span class="" style="">Saved</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 px-4 py-3 mb-2 flex items-center gap-3 transition-all hover:bg-blue-50/50 dark:hover:bg-blue-900/10 rounded-xl font-['Plus_Jakarta_Sans'] text-sm" href="#" style="">
+<span class="material-symbols-outlined" data-icon="directions_railway" style="">directions_railway</span>
+<span class="" style="">Routes</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 px-4 py-3 mb-2 flex items-center gap-3 transition-all hover:bg-blue-50/50 dark:hover:bg-blue-900/10 rounded-xl font-['Plus_Jakarta_Sans'] text-sm" href="#" style="">
+<span class="material-symbols-outlined" data-icon="history" style="">history</span>
+<span class="" style="">History</span>
+</a>
+</nav>
+<button class="mt-4 mb-8 bg-gradient-to-r from-primary to-primary-container text-white py-3 px-4 rounded-full font-bold text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all active:scale-95" style="">
+            Plan New Trip
+        </button>
+<div class="mt-auto border-t border-slate-200 dark:border-slate-800 pt-4">
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 px-4 py-2 mb-1 flex items-center gap-3 font-['Plus_Jakarta_Sans'] text-sm" href="#" style="">
+<span class="material-symbols-outlined" data-icon="help_outline" style="">help_outline</span>
+<span class="" style="">Help</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-blue-500 px-4 py-2 flex items-center gap-3 font-['Plus_Jakarta_Sans'] text-sm" href="#" style="">
+<span class="material-symbols-outlined" data-icon="chat_bubble_outline" style="">chat_bubble_outline</span>
+<span class="" style="">Feedback</span>
+</a>
+</div>
+</aside>
+<!-- Main Map Canvas -->
+<main class="ml-64 pt-16 h-screen relative overflow-hidden">
+<!-- Leaflet-Style Map Placeholder -->
+<div class="absolute inset-0 map-bg grayscale-[0.2] contrast-[1.1]" data-location="Ho Chi Minh City" style=""></div>
+<!-- Map Overlay Content -->
+<div class="absolute inset-0 pointer-events-none">
+<!-- Left Side Controls: Search & Filters -->
+<div class="absolute top-6 left-6 w-96 flex flex-col gap-6 pointer-events-auto">
+<!-- Floating Search Bar -->
+<div class="glass-panel bg-surface-container-lowest/85 rounded-lg shadow-xl p-2 flex items-center gap-3">
+<div class="flex-1 flex items-center gap-3 px-3">
+<span class="material-symbols-outlined text-primary" style="">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface font-medium w-full placeholder:text-outline" placeholder="Explore HCMC vibes..." type="text">
+</div>
+<div class="w-px h-8 bg-outline-variant/30"></div>
+<button class="p-2 hover:bg-surface-container-low rounded-md transition-colors" style="">
+<span class="material-symbols-outlined text-on-surface-variant" style="">tune</span>
+</button>
+</div>
+<!-- Quick Filter Chips -->
+<div class="flex flex-wrap gap-2">
+<button class="glass-panel bg-tertiary/10 text-tertiary border border-tertiary/20 px-4 py-2 rounded-full text-xs font-extrabold tracking-wider flex items-center gap-2 shadow-sm hover:bg-tertiary/20 transition-all" style="">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: &quot;FILL&quot; 1;">trending_up</span>
+                        TIKTOK TRENDING
+                    </button>
+<button class="glass-panel bg-secondary-container/20 text-secondary-dim border border-secondary-container/30 px-4 py-2 rounded-full text-xs font-extrabold tracking-wider flex items-center gap-2 shadow-sm hover:bg-secondary-container/40 transition-all" style="">
+<span class="material-symbols-outlined text-sm" style="">star</span>
+                        HIDDEN GEMS
+                    </button>
+<button class="glass-panel bg-surface-container-lowest/90 text-on-surface px-4 py-2 rounded-full text-xs font-extrabold tracking-wider flex items-center gap-2 shadow-sm border border-outline-variant/20 hover:bg-surface-container transition-all" style="">
+<span class="material-symbols-outlined text-sm" style="">verified</span>
+                        SOCIAL PROOF
+                    </button>
+</div>
+</div>
+<!-- Right Side: Map Controls -->
+<div class="absolute top-6 right-6 flex flex-col gap-3 pointer-events-auto">
+<div class="flex flex-col rounded-xl overflow-hidden shadow-lg border border-outline-variant/10">
+<button class="glass-panel bg-surface-container-lowest/90 p-3 hover:bg-surface-container transition-colors border-b border-outline-variant/10" style="">
+<span class="material-symbols-outlined" style="">add</span>
+</button>
+<button class="glass-panel bg-surface-container-lowest/90 p-3 hover:bg-surface-container transition-colors" style="">
+<span class="material-symbols-outlined" style="">remove</span>
+</button>
+</div>
+<button class="glass-panel bg-surface-container-lowest/90 p-3 rounded-xl shadow-lg border border-outline-variant/10 hover:bg-surface-container transition-colors" style="">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">my_location</span>
+</button>
+<button class="glass-panel bg-surface-container-lowest/90 p-3 rounded-xl shadow-lg border border-outline-variant/10 hover:bg-surface-container transition-colors" style="">
+<span class="material-symbols-outlined" style="">layers</span>
+</button>
+</div>
+<!-- Interactive Map Markers (Simulated) -->
+<!-- Trending POI (TikTok Pink) -->
+<div class="absolute top-[40%] left-[30%] pointer-events-auto group">
+<div class="relative flex flex-col items-center">
+<div class="bg-tertiary text-white p-2 rounded-full shadow-2xl pulse-marker scale-125 transition-transform group-hover:scale-150 cursor-pointer">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: &quot;FILL&quot; 1;">local_fire_department</span>
+</div>
+<div class="mt-2 glass-panel bg-white/95 px-3 py-1.5 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
+<p class="text-[10px] font-black text-tertiary uppercase tracking-tighter" style="">TikTok Trending</p>
+<p class="text-xs font-bold whitespace-nowrap" style="">Café Apartments D1</p>
+</div>
+</div>
+</div>
+<!-- Standard Urban Pulse POI -->
+<div class="absolute top-[55%] left-[55%] pointer-events-auto group">
+<div class="relative flex flex-col items-center">
+<div class="bg-primary text-white p-2 rounded-full shadow-2xl transition-transform group-hover:scale-125 cursor-pointer border-2 border-white">
+<span class="material-symbols-outlined text-sm" style="">restaurant</span>
+</div>
+<div class="mt-2 glass-panel bg-white/95 px-3 py-1.5 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
+<p class="text-[10px] font-black text-primary uppercase tracking-tighter" style="">Verified Local</p>
+<p class="text-xs font-bold whitespace-nowrap" style="">Banh Mi Huynh Hoa</p>
+</div>
+</div>
+</div>
+<!-- Another Trending POI -->
+<div class="absolute top-[25%] left-[65%] pointer-events-auto group">
+<div class="relative flex flex-col items-center">
+<div class="bg-tertiary text-white p-2 rounded-full shadow-2xl pulse-marker transition-transform group-hover:scale-125 cursor-pointer">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: &quot;FILL&quot; 1;">nightlife</span>
+</div>
+<div class="mt-2 glass-panel bg-white/95 px-3 py-1.5 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
+<p class="text-[10px] font-black text-tertiary uppercase tracking-tighter" style="">Viral Now</p>
+<p class="text-xs font-bold whitespace-nowrap" style="">Lush Rooftop Bar</p>
+</div>
+</div>
+</div>
+<!-- Standard Urban Pulse POI -->
+<div class="absolute top-[70%] left-[20%] pointer-events-auto group">
+<div class="relative flex flex-col items-center">
+<div class="bg-primary text-white p-2 rounded-full shadow-2xl transition-transform group-hover:scale-125 cursor-pointer border-2 border-white">
+<span class="material-symbols-outlined text-sm" style="">museum</span>
+</div>
+<div class="mt-2 glass-panel bg-white/95 px-3 py-1.5 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
+<p class="text-xs font-bold whitespace-nowrap" style="">War Remnants Museum</p>
+</div>
+</div>
+</div>
+<!-- Bottom Left: Status Info -->
+<div class="absolute bottom-10 left-6 pointer-events-auto">
+<div class="glass-panel bg-surface-container-lowest/80 p-4 rounded-xl shadow-xl border border-outline-variant/20 max-w-xs">
+<div class="flex items-center gap-3 mb-2">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary-dim opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
+</span>
+<h4 class="text-xs font-extrabold uppercase tracking-widest text-on-surface-variant" style="">Real-Time Pulse</h4>
+</div>
+<p class="text-sm font-semibold mb-1" style="">District 1 is "Electric" right now.</p>
+<p class="text-xs text-on-surface-variant leading-relaxed" style="">High social activity detected near Nguyen Hue Walking Street. Perfect time for street food tours.</p>
+</div>
+</div>
+<!-- Floating Action Button (Contextual for Map Explorer) -->
+<div class="absolute bottom-10 right-6 pointer-events-auto">
+<button class="flex items-center gap-3 bg-gradient-to-tr from-primary to-primary-container text-white pl-6 pr-4 py-4 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all group" style="">
+<span class="text-sm font-black uppercase tracking-widest" style="">Start Exploring</span>
+<div class="bg-white/20 p-2 rounded-full">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" style="">arrow_forward_ios</span>
+</div>
+</button>
+</div>
+</div>
+</main>
+</body></html>

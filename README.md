@@ -1,1 +1,0 @@
-# LotusHacks2026

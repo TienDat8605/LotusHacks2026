@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VibeMap - Route Planner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-container": "#29fcf3",
+                        "secondary": "#006763",
+                        "on-secondary": "#bdfffa",
+                        "on-error": "#ffefef",
+                        "error-container": "#f74b6d",
+                        "background": "#f5f6f7",
+                        "tertiary-dim": "#a20030",
+                        "on-tertiary": "#ffefef",
+                        "on-surface-variant": "#595c5d",
+                        "on-error-container": "#510017",
+                        "tertiary-container": "#ff9099",
+                        "inverse-surface": "#0c0f10",
+                        "secondary-dim": "#005a56",
+                        "surface-container-high": "#e0e3e4",
+                        "on-tertiary-container": "#68001b",
+                        "tertiary-fixed-dim": "#ff7986",
+                        "on-primary-fixed": "#000000",
+                        "tertiary-fixed": "#ff9099",
+                        "surface-dim": "#d1d5d7",
+                        "primary": "#004be3",
+                        "secondary-fixed": "#29fcf3",
+                        "primary-dim": "#0041c8",
+                        "surface-bright": "#f5f6f7",
+                        "inverse-on-surface": "#9b9d9e",
+                        "surface-container": "#e6e8ea",
+                        "error": "#b41340",
+                        "primary-container": "#819bff",
+                        "on-tertiary-fixed": "#39000b",
+                        "primary-fixed": "#819bff",
+                        "surface-tint": "#004be3",
+                        "surface-container-highest": "#dadddf",
+                        "on-primary": "#f2f1ff",
+                        "surface-container-low": "#eff1f2",
+                        "outline": "#757778",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#b90037",
+                        "on-surface": "#2c2f30",
+                        "outline-variant": "#abadae",
+                        "error-dim": "#a70138",
+                        "on-background": "#2c2f30",
+                        "secondary-fixed-dim": "#00ede5",
+                        "primary-fixed-dim": "#6c8cff",
+                        "on-primary-fixed-variant": "#002376",
+                        "on-primary-container": "#001b61",
+                        "on-secondary-container": "#005c59",
+                        "surface": "#f5f6f7",
+                        "on-secondary-fixed-variant": "#006763",
+                        "surface-variant": "#dadddf",
+                        "on-tertiary-fixed-variant": "#780021",
+                        "inverse-primary": "#6889ff",
+                        "on-secondary-fixed": "#004845"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .map-mesh {
+            background-image: radial-gradient(circle at 2px 2px, rgba(0, 75, 227, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar Shared Component -->
+<header class="bg-white/85 dark:bg-slate-900/85 backdrop-blur-md rounded-full mt-4 mx-4 px-4 h-14 sticky top-0 z-50 shadow-[0_4px_24px_rgba(0,0,0,0.04)] flex justify-between items-center w-auto">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-primary-container flex items-center justify-center">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="User profile avatar icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHbpWWnrxJ_Tb-Qwx5k-NG5QipsxRc1Z4AUbA08Q203ugS1wShytED7O6mH8GjPd9bEixBBr6e3c5dWwLdxUE3xQxITjKrvC4kB28CZMFJOkwDNGwYlrYENNqohY1_iYQliK-weLUcAnR5DKLdB8FNdkN9u-RSBjl6wTAJ795ICgE7SraaIBqSDuUMVMsBxrG-es-wvNhqJoX0r4VDyPuN1WD4Fx2zthOcGpXljIasxeVnoMZ3j9cNl1JUnwE8wvhly5MH1XScrni4"/>
+</div>
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-blue-600 dark:text-blue-400 font-extrabold tracking-tighter">VibeMap</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-slate-500" data-icon="menu">menu</span>
+</button>
+</header>
+<main class="flex-grow relative px-4 pt-6 pb-24 overflow-hidden">
+<!-- Subtle Map Background -->
+<div class="absolute inset-0 z-0 map-mesh opacity-60">
+<img alt="Map view of Ho Chi Minh City" class="w-full h-full object-cover opacity-10 mix-blend-multiply" data-alt="Soft focused map of Ho Chi Minh City streets" data-location="Ho Chi Minh City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCliwXU28c-Biovz5RYGA5IfU6HB40OV2vCKlA_B0BmzZUnDih46mkKp8HfTylhEUYQE76vr3p8UPidlj8BNdPOlIVqo254_YZMJbZPmEz2OSxtqZ7bVeHu88-5iGjJ9bJHCIIMCrDRn-3z1zO3sOXvgiroCck_drFsiY8-P1ukwOt3zoa438p1SF8BexgNZsmJIdmR7tVd7NHlXMJlOiNzGzMnmLgiTwIH-OayGzQDBV10WE_vEfCvNqx0pNKc4a7ok5SQdHsuExLT"/>
+</div>
+<!-- Floating Route Planner Card -->
+<section class="relative z-10 w-full max-w-md mx-auto">
+<div class="bg-surface-container-lowest/90 backdrop-blur-xl rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.06)] p-6 md:p-8 space-y-8">
+<!-- Header Segment -->
+<div class="space-y-1">
+<h1 class="font-headline font-extrabold text-2xl tracking-tight text-on-surface">Plan Your Pulse</h1>
+<p class="text-on-surface-variant text-sm font-medium">Map out your urban adventure</p>
+</div>
+<!-- Input Group: Origin & Destination -->
+<div class="space-y-4 relative">
+<div class="relative">
+<div class="absolute left-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1 pointer-events-none">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<div class="w-[2px] h-10 bg-surface-container-highest"></div>
+<span class="w-2 h-2 rounded-full border-2 border-tertiary bg-white"></span>
+</div>
+<div class="space-y-2">
+<div class="pl-10 pr-4 py-3 bg-surface-container-low rounded-full flex items-center gap-3">
+<input class="bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline w-full font-medium" placeholder="Current location" type="text" value="District 1, Ben Thanh"/>
+</div>
+<div class="pl-10 pr-4 py-3 bg-surface-container-low rounded-full flex items-center gap-3">
+<input class="bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline w-full font-medium" placeholder="Where to?" type="text"/>
+</div>
+</div>
+<!-- Swap Button -->
+<button class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-surface-container-lowest shadow-md rounded-full flex items-center justify-center text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="swap_vert">swap_vert</span>
+</button>
+</div>
+</div>
+<!-- Transport Mode Selector -->
+<div class="space-y-3">
+<label class="font-headline font-bold text-xs uppercase tracking-widest text-on-surface-variant">Vibe Mode</label>
+<div class="flex p-1 bg-surface-container-low rounded-full gap-1">
+<button class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-surface-container-lowest rounded-full text-primary shadow-sm font-semibold text-sm transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="directions_bike">directions_bike</span>
+<span>Bike</span>
+</button>
+<button class="flex-1 flex items-center justify-center gap-2 py-2.5 text-on-surface-variant hover:text-on-surface font-semibold text-sm transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="directions_walk">directions_walk</span>
+<span>Walk</span>
+</button>
+<button class="flex-1 flex items-center justify-center gap-2 py-2.5 text-on-surface-variant hover:text-on-surface font-semibold text-sm transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="directions_car">directions_car</span>
+<span>Car</span>
+</button>
+</div>
+</div>
+<!-- Time Budget Selector -->
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<label class="font-headline font-bold text-xs uppercase tracking-widest text-on-surface-variant">Time Budget</label>
+<div class="flex items-center gap-1 text-primary">
+<input class="w-12 bg-transparent border-none p-0 text-right focus:ring-0 font-bold text-lg" type="number" value="2.5"/>
+<span class="font-bold text-sm">hrs</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface text-sm font-semibold hover:bg-surface-container-high transition-colors active:scale-95">1h</button>
+<button class="px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container text-sm font-bold shadow-sm active:scale-95">2h</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface text-sm font-semibold hover:bg-surface-container-high transition-colors active:scale-95">3h</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface text-sm font-semibold hover:bg-surface-container-high transition-colors active:scale-95">4h+</button>
+</div>
+</div>
+<!-- CTA Button -->
+<button class="w-full py-5 rounded-full bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-extrabold text-lg shadow-[0_8px_24px_rgba(0,75,227,0.25)] active:scale-95 transition-all flex items-center justify-center gap-3 group">
+<span>Generate Route</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="auto_awesome">auto_awesome</span>
+</button>
+</div>
+<!-- Contextual Insights Card (Bento Style) -->
+<div class="mt-6 grid grid-cols-2 gap-4">
+<div class="bg-white/80 backdrop-blur-md p-4 rounded-lg shadow-sm flex flex-col gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="bolt">bolt</span>
+<div>
+<p class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Weather</p>
+<p class="font-headline font-bold text-on-surface">28°C Clear</p>
+</div>
+</div>
+<div class="bg-white/80 backdrop-blur-md p-4 rounded-lg shadow-sm flex flex-col gap-2">
+<span class="material-symbols-outlined text-tertiary" data-icon="local_fire_department">local_fire_department</span>
+<div>
+<p class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Traffic</p>
+<p class="font-headline font-bold text-on-surface">Heavy Flow</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar Shared Component -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 py-4 pb-safe bg-white dark:bg-slate-900 shadow-[0_-4px_24px_rgba(0,0,0,0.04)] rounded-t-[2rem]">
+<a class="flex items-center justify-center text-slate-400 dark:text-slate-500 w-12 h-12 hover:text-blue-500 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</a>
+<a class="flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full w-12 h-12 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+</a>
+<a class="flex items-center justify-center text-slate-400 dark:text-slate-500 w-12 h-12 hover:text-blue-500 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+</a>
+<a class="flex items-center justify-center text-slate-400 dark:text-slate-500 w-12 h-12 hover:text-blue-500 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>VibeMap - Ho Chi Minh City</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#004be3",
+                "outline-variant": "#abadae",
+                "secondary": "#006763",
+                "primary-fixed": "#819bff",
+                "on-tertiary-fixed": "#39000b",
+                "surface-container-low": "#eff1f2",
+                "on-primary": "#f2f1ff",
+                "surface-container-lowest": "#ffffff",
+                "on-tertiary-container": "#68001b",
+                "tertiary": "#b90037",
+                "surface": "#f5f6f7",
+                "on-secondary": "#bdfffa",
+                "surface-variant": "#dadddf",
+                "secondary-fixed-dim": "#00ede5",
+                "error-dim": "#a70138",
+                "on-primary-container": "#001b61",
+                "inverse-surface": "#0c0f10",
+                "inverse-primary": "#6889ff",
+                "inverse-on-surface": "#9b9d9e",
+                "tertiary-container": "#ff9099",
+                "primary-dim": "#0041c8",
+                "surface-container-high": "#e0e3e4",
+                "on-background": "#2c2f30",
+                "on-error": "#ffefef",
+                "surface-container-highest": "#dadddf",
+                "on-surface-variant": "#595c5d",
+                "error": "#b41340",
+                "secondary-fixed": "#29fcf3",
+                "on-secondary-fixed-variant": "#006763",
+                "tertiary-fixed": "#ff9099",
+                "on-primary-fixed-variant": "#002376",
+                "on-primary-fixed": "#000000",
+                "tertiary-fixed-dim": "#ff7986",
+                "surface-dim": "#d1d5d7",
+                "on-error-container": "#510017",
+                "background": "#f5f6f7",
+                "surface-tint": "#004be3",
+                "surface-container": "#e6e8ea",
+                "secondary-container": "#29fcf3",
+                "error-container": "#f74b6d",
+                "primary-container": "#819bff",
+                "on-secondary-container": "#005c59",
+                "outline": "#757778",
+                "on-tertiary": "#ffefef",
+                "secondary-dim": "#005a56",
+                "surface-bright": "#f5f6f7",
+                "primary-fixed-dim": "#6c8cff",
+                "on-surface": "#2c2f30",
+                "on-secondary-fixed": "#004845",
+                "tertiary-dim": "#a20030",
+                "on-tertiary-fixed-variant": "#780021"
+              },
+              fontFamily: {
+                "headline": ["Plus Jakarta Sans"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .map-mesh {
+            background-image: radial-gradient(#d1d5d7 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background antialiased overflow-hidden h-screen flex">
+<!-- SideNavBar (Shared Component Execution) -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 bg-slate-50 dark:bg-slate-950 flex flex-col py-8 px-4 border-r border-slate-200 dark:border-slate-800 font-headline text-sm font-medium">
+<div class="mb-10 px-4">
+<h1 class="text-2xl font-black tracking-tighter text-primary" style="">VibeMap</h1>
+<div class="mt-4">
+<p class="text-xs uppercase tracking-widest text-outline font-bold" style="">The Curator</p>
+<p class="text-[10px] text-primary/60 font-bold" style="">HCMC Edition</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 py-3 px-4 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-bold rounded-xl hover:translate-x-1 duration-300 transition-all" href="#" style="">
+<span class="material-symbols-outlined" data-icon="map" style="">map</span>
+                Map
+            </a>
+<a class="flex items-center gap-3 py-3 px-4 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all hover:translate-x-1 duration-300" href="#" style="">
+<span class="material-symbols-outlined" data-icon="explore" style="">explore</span>
+                Discovery
+            </a>
+<a class="flex items-center gap-3 py-3 px-4 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all hover:translate-x-1 duration-300" href="#" style="">
+<span class="material-symbols-outlined" data-icon="group" style="">group</span>
+                Social
+            </a>
+<a class="flex items-center gap-3 py-3 px-4 text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all hover:translate-x-1 duration-300" href="#" style="">
+<span class="material-symbols-outlined" data-icon="person_outline" style="">person_outline</span>
+                Profile
+            </a>
+</nav>
+<div class="mt-auto space-y-4 pt-6">
+<button class="w-full bg-primary text-on-primary py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-95 transition-transform" style="">
+<span class="material-symbols-outlined text-sm" data-icon="add" style="">add</span>
+                Plan New Route
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 py-2 px-4 text-slate-500 text-xs hover:text-primary transition-colors" href="#" style="">
+<span class="material-symbols-outlined text-lg" data-icon="settings" style="">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-3 py-2 px-4 text-slate-500 text-xs hover:text-primary transition-colors" href="#" style="">
+<span class="material-symbols-outlined text-lg" data-icon="help_outline" style="">help_outline</span>
+                    Help
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 relative flex flex-col h-full overflow-hidden">
+<!-- TopNavBar (Shared Component Execution) -->
+<header class="fixed top-0 left-64 right-0 z-40 bg-white/85 backdrop-blur-xl border-b border-slate-200/50 flex justify-between items-center h-16 px-8">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative max-w-md w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg" data-icon="search" style="">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Search vibes in District 1..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-500 hover:text-primary cursor-pointer transition-colors" data-icon="notifications" style="">notifications</span>
+<span class="material-symbols-outlined text-slate-500 hover:text-primary cursor-pointer transition-colors" data-icon="tune" style="">tune</span>
+</div>
+<div class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden ring-2 ring-white">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="Portrait of a young smiling man in professional attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcaMrdN1Xo0lH9OfZoko4xllqcpVI4xDGDqlpnVnPMb8iFZBz2pS9t7I-yl3IjSkB1W-hhnTSKuhpH5rO0-fp928BtGSWxQ9ugE7f4MNLnT0L-OB9WH4ZDj7Jntsbt-hAHjT-cUMx6zyPhl8hkr4Ppq9jRkcJn_iklIhmnsi3MwCRHpChgqM-RWUuYr6E9OsiXUx7VNeaPySXxnB4ipKJiPPcszaqDi5vAylZHEPUs54G_pIG8-zrQSXimqCvKre4VShYQ3D9UcydT" style="">
+</div>
+</div>
+</header>
+<!-- Interactive Map Section -->
+<section class="mt-16 relative flex-1 bg-surface-container overflow-hidden map-mesh">
+<!-- Simulated Map Canvas (Visualized as SVG overlays) -->
+<div class="absolute inset-0 z-0 bg-slate-100" data-location="Ho Chi Minh City" style="">
+<!-- Map Background Placeholder -->
+<div class="absolute inset-0 opacity-20 bg-[url('https://api.placeholder.com/1200x800')] bg-cover mix-blend-multiply"></div>
+<!-- SVG Route Overlays -->
+<svg class="absolute inset-0 w-full h-full" fill="none" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<!-- Segments -->
+<path d="M200 400 L350 320" stroke="#004be3" stroke-dasharray="1 12" stroke-linecap="round" stroke-width="6"></path>
+<path d="M350 320 L550 450" stroke="#ff9099" stroke-linecap="round" stroke-width="6"></path>
+<path d="M550 450 L700 300" stroke="#006763" stroke-linecap="round" stroke-width="6"></path>
+<path d="M700 300 L850 350" stroke="#b90037" stroke-linecap="round" stroke-width="6"></path>
+</svg>
+<!-- Custom Map Markers -->
+<!-- Origin -->
+<div class="absolute top-[380px] left-[180px] z-10 flex flex-col items-center">
+<div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center shadow-xl border-4 border-white">
+<span class="material-symbols-outlined text-sm" data-icon="home" style="font-variation-settings: &quot;FILL&quot; 1;">home</span>
+</div>
+</div>
+<!-- POI 1 -->
+<div class="absolute top-[300px] left-[330px] z-10 flex flex-col items-center group cursor-pointer">
+<div class="bg-primary-container text-on-primary-container w-8 h-8 rounded-full flex items-center justify-center shadow-lg font-headline font-bold text-xs ring-4 ring-white/50 group-hover:scale-110 transition-transform" style="">1</div>
+<div class="mt-2 bg-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md border border-slate-100" style="">Bến Thành Street Food</div>
+</div>
+<!-- POI 2 -->
+<div class="absolute top-[430px] left-[530px] z-10 flex flex-col items-center group cursor-pointer">
+<div class="bg-tertiary-container text-on-tertiary-container w-8 h-8 rounded-full flex items-center justify-center shadow-lg font-headline font-bold text-xs ring-4 ring-white/50 group-hover:scale-110 transition-transform" style="">2</div>
+<div class="mt-2 bg-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md border border-slate-100" style="">The Cafe Apartments</div>
+</div>
+<!-- POI 3 -->
+<div class="absolute top-[280px] left-[680px] z-10 flex flex-col items-center group cursor-pointer">
+<div class="bg-secondary-container text-on-secondary-container w-8 h-8 rounded-full flex items-center justify-center shadow-lg font-headline font-bold text-xs ring-4 ring-white/50 group-hover:scale-110 transition-transform" style="">3</div>
+<div class="mt-2 bg-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md border border-slate-100" style="">Hidden Gin Bar</div>
+</div>
+<!-- Destination -->
+<div class="absolute top-[330px] left-[830px] z-10 flex flex-col items-center">
+<div class="bg-tertiary text-white w-10 h-10 rounded-full flex items-center justify-center shadow-xl border-4 border-white animate-pulse">
+<span class="material-symbols-outlined text-sm" data-icon="flag" style="font-variation-settings: &quot;FILL&quot; 1;">flag</span>
+</div>
+</div>
+</div>
+<!-- Map Floating Controls -->
+<div class="absolute top-6 left-6 z-20 space-y-3">
+<div class="bg-white/90 backdrop-blur-md p-1.5 rounded-2xl shadow-xl flex flex-col gap-1 border border-white/40">
+<button class="p-3 hover:bg-slate-100 rounded-xl transition-colors" style=""><span class="material-symbols-outlined text-slate-600" data-icon="layers" style="">layers</span></button>
+<button class="p-3 hover:bg-slate-100 rounded-xl transition-colors text-primary" style=""><span class="material-symbols-outlined" data-icon="explore" style="font-variation-settings: &quot;FILL&quot; 1;">explore</span></button>
+<button class="p-3 hover:bg-slate-100 rounded-xl transition-colors" style=""><span class="material-symbols-outlined text-slate-600" data-icon="visibility" style="">visibility</span></button>
+</div>
+<div class="bg-white/90 backdrop-blur-md p-1.5 rounded-2xl shadow-xl border border-white/40">
+<button class="p-3 hover:bg-slate-100 rounded-xl transition-colors" style=""><span class="material-symbols-outlined text-slate-600" data-icon="my_location" style="">my_location</span></button>
+</div>
+</div>
+<!-- Route Summary Card (Floating Asymmetric Layout) -->
+<div class="absolute bottom-10 left-10 z-20 w-80 bg-white/90 backdrop-blur-2xl rounded-lg p-6 shadow-2xl shadow-primary/10 border border-white/60">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="bg-secondary-container/30 text-on-secondary-container text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded" style="">Current Route</span>
+<h2 class="font-headline text-xl font-extrabold mt-1" style="">Urban Pulse</h2>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="more_horiz" style="">more_horiz</span>
+</div>
+<div class="space-y-6">
+<div class="flex gap-4 relative">
+<div class="absolute left-2 top-8 w-0.5 h-10 bg-slate-200"></div>
+<div class="w-4 h-4 rounded-full bg-primary mt-1 border-2 border-white shadow-sm ring-4 ring-primary/10"></div>
+<div>
+<p class="text-[10px] font-bold text-outline uppercase tracking-tighter" style="">Next Stop</p>
+<p class="text-sm font-bold" style="">Bến Thành Market</p>
+<p class="text-xs text-slate-400" style="">Arrive in 12 mins • 3.2km</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-4 h-4 rounded-full bg-slate-200 mt-1 border-2 border-white"></div>
+<div>
+<p class="text-[10px] font-bold text-outline uppercase tracking-tighter" style="">Then</p>
+<p class="text-sm font-bold text-slate-400" style="">The Cafe Apartments</p>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-slate-100">
+<div class="flex items-center justify-between">
+<div class="flex -space-x-2">
+<img alt="Friend avatar 1" class="w-6 h-6 rounded-full border-2 border-white" data-alt="Close up of a woman's face smiling softly" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6fyH2lh7eeKG5kq-D4sajPmlb2lL0rUcYJUzDi_-Zakwo2TG0WXx4jkXLbEEfc1e8rx04sEhxJ0jEpfXKJVHZU_RyO4VzPhLxLZDsXyQLtY-d3ddehlJnK-TAnT69dUhQE936IcHQ6C_m0wDXUlNMBngVr0jdLhaVKx8JaGEAzRadiQpUcDfxBIWoS7ZULMpj2z0bFynftCDQdFf6KP3TJBp5vaH1Q-22xtbGqlmzSEhThxdsBhAf_X2a30Ibc4t-zCJBjVn20DsL" style="">
+<img alt="Friend avatar 2" class="w-6 h-6 rounded-full border-2 border-white" data-alt="Portrait of a man with short hair looking at camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPhgqs96lZosz-PonEpdA4Be1l1VJgdB52reYXuiXk5o-dYuN9O6avx6j677wa_8SI102XFISBu3f4hzJJWcbVC8clHRytMDv4rtSmjwQwgcbd5gxHCcEBZx5acdowPe5xaew1DRcHT75sflEKvZQCs2crNusi2BpiR8F7QU2JBSxzJxrWkN4Ny5CDkTj3lT0svog3At9F9c6WSRSl46nPhfme3SftNC8RgB1ESZl7-ggfo_gZ7rVvIilUrx6jSFLPN_OHtmfqnPf4" style="">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[8px] font-bold" style="">+3</div>
+</div>
+<p class="text-[10px] font-medium text-slate-500" style="">Shared with friends</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Right Side: VibeBot AI Assistant -->
+<aside class="w-96 h-screen bg-white border-l border-slate-100 flex flex-col z-50">
+<div class="p-6 border-b border-slate-50">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-gradient-to-tr from-primary to-primary-container rounded-2xl flex items-center justify-center shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined text-white" data-icon="smart_toy" style="">smart_toy</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-background" style="">VibeBot</h3>
+<p class="text-[10px] text-secondary font-bold uppercase tracking-wider" style="">AI Discovery Assistant</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-slate-600 transition-colors" style="">
+<span class="material-symbols-outlined" data-icon="close" style="">close</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<!-- AI Message -->
+<div class="flex flex-col gap-2">
+<div class="bg-surface-container-low p-4 rounded-xl rounded-tl-none">
+<p class="text-sm leading-relaxed" style="">Good morning! I've analyzed your route through <strong>District 1</strong>. Since you mentioned liking "hidden" spots, I've added a stop at a Gin Bar hidden inside an old colonial building. Should I find a lunch spot near your second stop?</p>
+</div>
+<span class="text-[10px] text-slate-400 font-medium ml-1" style="">VibeBot • 10:24 AM</span>
+</div>
+<!-- Bento discovery card injected by AI -->
+<div class="grid grid-cols-2 gap-3">
+<div class="col-span-2 relative h-32 rounded-lg overflow-hidden group cursor-pointer">
+<img alt="Street Food" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Variety of colorful Vietnamese street food dishes on a table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6L0qPnAemr_g8nxn_Qe_zyJqgfg7qQ0jIFV-Ht8IT8OCSodsB4rvs0NAQbmr3qFRoU7_2XbVM-CJesB2B3B6tN8iOhU3KuYe91m1jXoQCVQSr1kt0a-xopbzVWWRxz_srXIcc1zij2-x5R0ieIQh-bmQaxl5EWLXZJltJ1MO7OYBd2JfDD0SLvq5HkVBvhFTvF62-ly2ipZDv87rGbjumqSku5N6AQItCipnXz6ahlfuwpLaniL1CycgzNca8C3Rbigw-LOOIcCLL" style="">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-3 left-3">
+<span class="bg-tertiary text-on-tertiary text-[8px] font-bold px-2 py-0.5 rounded-full uppercase" style="">Trending</span>
+<p class="text-white font-headline font-bold text-sm" style="">Best Bún Chả near POI 2</p>
+</div>
+</div>
+<div class="bg-primary/5 p-4 rounded-lg flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-primary mb-1" data-icon="schedule" style="">schedule</span>
+<p class="text-[10px] font-bold" style="">Best Time</p>
+<p class="text-xs text-primary font-bold" style="">12:30 PM</p>
+</div>
+<div class="bg-secondary/5 p-4 rounded-lg flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-secondary mb-1" data-icon="bolt" style="">bolt</span>
+<p class="text-[10px] font-bold" style="">Vibe Level</p>
+<p class="text-xs text-secondary font-bold" style="">Electric</p>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex flex-col items-end gap-2">
+<div class="bg-primary text-white p-4 rounded-xl rounded-tr-none">
+<p class="text-sm" style="">Yes, please! Something with outdoor seating if possible.</p>
+</div>
+<span class="text-[10px] text-slate-400 font-medium mr-1" style="">You • 10:26 AM</span>
+</div>
+<!-- AI Response -->
+<div class="flex flex-col gap-2">
+<div class="bg-surface-container-low p-4 rounded-xl rounded-tl-none">
+<p class="text-sm" style="">Searching for rooftops or garden cafes... Found **The Secret Garden**. It's only 5 mins walk from Stop 2. Would you like to add it?</p>
+</div>
+</div>
+</div>
+<div class="p-6 border-t border-slate-50">
+<div class="relative">
+<input class="w-full bg-surface-container-low border-none rounded-2xl py-4 pl-4 pr-12 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Ask VibeBot anything..." type="text">
+<button class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 active:scale-95 transition-transform" style="">
+<span class="material-symbols-outlined text-sm" data-icon="send" style="">send</span>
+</button>
+</div>
+</div>
+</aside>
+</body></html>

@@ -1,0 +1,49 @@
+import type { ApiClient } from '@/api/client';
+
+async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(url, {
+    ...init,
+    headers: {
+      'content-type': 'application/json',
+      ...(init?.headers ?? {}),
+    },
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(text || `Request failed: ${res.status}`);
+  }
+
+  return (await res.json()) as T;
+}
+
+export function createRealApiClient(): ApiClient {
+  const base = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '';
+
+  return {
+    planRoute: (req) => jsonFetch(`${base}/api/routes/plan`, { method: 'POST', body: JSON.stringify(req) }),
+    sendAssistantMessage: (threadId, text) =>
+      jsonFetch(`${base}/api/assistant/messages`, {
+        method: 'POST',
+        body: JSON.stringify({ threadId, text }),
+      }),
+    listSocialSessions: () => jsonFetch(`${base}/api/social/sessions`),
+    joinSocialSession: (sessionId, displayName) =>
+      jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/join`, {
+        method: 'POST',
+        body: JSON.stringify({ displayName }),
+      }),
+    listSessionMessages: (sessionId) =>
+      jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/messages`),
+    sendSessionMessage: (sessionId, text) =>
+      jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/messages`, {
+        method: 'POST',
+        body: JSON.stringify({ text }),
+      }),
+    sendSessionPing: (sessionId) =>
+      jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/ping`, {
+        method: 'POST',
+      }),
+  };
+}
+

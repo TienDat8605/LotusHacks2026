@@ -1,0 +1,335 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-dim": "#005a56",
+              "on-surface": "#2c2f30",
+              "on-primary-container": "#001b61",
+              "on-tertiary-container": "#68001b",
+              "surface-variant": "#dadddf",
+              "on-secondary-container": "#005c59",
+              "surface-dim": "#d1d5d7",
+              "on-secondary-fixed-variant": "#006763",
+              "surface-container-high": "#e0e3e4",
+              "background": "#f5f6f7",
+              "on-primary-fixed": "#000000",
+              "tertiary": "#b90037",
+              "secondary-fixed-dim": "#00ede5",
+              "on-primary": "#f2f1ff",
+              "outline": "#757778",
+              "secondary-fixed": "#29fcf3",
+              "inverse-primary": "#6889ff",
+              "secondary": "#006763",
+              "tertiary-dim": "#a20030",
+              "error-container": "#f74b6d",
+              "error-dim": "#a70138",
+              "inverse-on-surface": "#9b9d9e",
+              "on-secondary-fixed": "#004845",
+              "surface": "#f5f6f7",
+              "outline-variant": "#abadae",
+              "on-tertiary-fixed": "#39000b",
+              "inverse-surface": "#0c0f10",
+              "surface-bright": "#f5f6f7",
+              "primary-dim": "#0041c8",
+              "primary": "#004be3",
+              "on-error": "#ffefef",
+              "primary-fixed-dim": "#6c8cff",
+              "secondary-container": "#29fcf3",
+              "on-error-container": "#510017",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#780021",
+              "on-tertiary": "#ffefef",
+              "surface-container": "#e6e8ea",
+              "primary-container": "#819bff",
+              "error": "#b41340",
+              "tertiary-fixed": "#ff9099",
+              "on-background": "#2c2f30",
+              "surface-container-highest": "#dadddf",
+              "tertiary-container": "#ff9099",
+              "on-primary-fixed-variant": "#002376",
+              "surface-container-low": "#eff1f2",
+              "tertiary-fixed-dim": "#ff7986",
+              "primary-fixed": "#819bff",
+              "surface-tint": "#004be3",
+              "on-secondary": "#bdfffa",
+              "on-surface-variant": "#595c5d"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #abadae; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #757778; }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface overflow-hidden">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-40 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl shadow-sm dark:shadow-none">
+<div class="flex justify-between items-center h-16 px-6 w-full">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black text-blue-700 dark:text-blue-500 italic font-headline" style="">Urban Pulse</span>
+<nav class="hidden md:flex gap-6">
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-500 transition-colors font-['Plus_Jakarta_Sans'] font-semibold tracking-tight" href="#" style="">Open Now</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-500 transition-colors font-['Plus_Jakarta_Sans'] font-semibold tracking-tight" href="#" style="">Top Rated</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-500 transition-colors font-['Plus_Jakarta_Sans'] font-semibold tracking-tight" href="#" style="">TikTok Trending</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-95 duration-200" style="">
+<span class="material-symbols-outlined text-on-surface-variant" style="">notifications</span>
+</button>
+<button class="p-2 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-95 duration-200" style="">
+<span class="material-symbols-outlined text-on-surface-variant" style="">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant/20">
+<img alt="User profile avatar" data-alt="Close up portrait of a smiling young professional man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHw0q2nQcQQzdIbSjqni7eu_KT-DhttQ3QZYtO-34P3vgBv_oGhwxAvqhUvN7Sg6D-JcUtMzTkA2j_LfHJoNiCVTE9Tr4j1jR6xBFG9FWRoWAsY087OSNUsYxhdxrIm7M3vQAI9u4XftveuUkE1w6R1ryk_qgZGG0pqLruavODDdR_dW4_kfHxIDUx9PttR61J2KLk4eSekL1tCl5wKiGgaBHXcYNU8M8uQos8nLNnL27BP7s7mdLJ1Z8wc9cp8yzz4PwC7nq8MmeB" class="" style="">
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Active: Routes) -->
+<aside class="h-full w-64 fixed left-0 top-0 z-50 bg-slate-50 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 shadow-xl dark:shadow-none flex flex-col p-4">
+<div class="mb-8 px-4 py-6">
+<h1 class="text-xl font-bold text-slate-900 dark:text-slate-100 font-headline" style="">VibeMap</h1>
+<p class="text-xs text-on-surface-variant font-medium opacity-70" style="">HCMC Edition</p>
+</div>
+<nav class="flex-grow">
+<div class="text-slate-600 dark:text-slate-400 hover:text-blue-500 px-4 py-3 mb-2 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 rounded-xl transition-all cursor-pointer flex items-center gap-3 active:translate-x-1 font-['Plus_Jakarta_Sans'] text-sm font-medium" style="">
+<span class="material-symbols-outlined" style="">explore</span> Explore
+            </div>
+<div class="text-slate-600 dark:text-slate-400 hover:text-blue-500 px-4 py-3 mb-2 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 rounded-xl transition-all cursor-pointer flex items-center gap-3 active:translate-x-1 font-['Plus_Jakarta_Sans'] text-sm font-medium" style="">
+<span class="material-symbols-outlined" style="">bookmark</span> Saved
+            </div>
+<div class="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-xl font-bold px-4 py-3 mb-2 flex items-center gap-3 active:translate-x-1 font-['Plus_Jakarta_Sans'] text-sm transition-all" style="">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">directions_railway</span> Routes
+            </div>
+<div class="text-slate-600 dark:text-slate-400 hover:text-blue-500 px-4 py-3 mb-2 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 rounded-xl transition-all cursor-pointer flex items-center gap-3 active:translate-x-1 font-['Plus_Jakarta_Sans'] text-sm font-medium" style="">
+<span class="material-symbols-outlined" style="">history</span> History
+            </div>
+</nav>
+<button class="w-full py-4 px-6 mb-8 bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-full font-bold shadow-lg shadow-primary/20 active:scale-95 transition-all" style="">
+            Plan New Trip
+        </button>
+<div class="pt-4 border-t border-slate-200 dark:border-slate-800">
+<div class="text-slate-600 dark:text-slate-400 hover:text-blue-500 px-4 py-2 mb-1 rounded-xl transition-all cursor-pointer flex items-center gap-3 text-sm" style="">
+<span class="material-symbols-outlined text-sm" style="">help_outline</span> Help
+            </div>
+<div class="text-slate-600 dark:text-slate-400 hover:text-blue-500 px-4 py-2 mb-1 rounded-xl transition-all cursor-pointer flex items-center gap-3 text-sm" style="">
+<span class="material-symbols-outlined text-sm" style="">chat_bubble_outline</span> Feedback
+            </div>
+</div>
+</aside>
+<!-- Main Content Canvas (Split Pane) -->
+<main class="ml-64 mt-16 flex h-[calc(100vh-64px)] overflow-hidden">
+<!-- Left Pane: Step-by-Step Directions -->
+<section class="w-[420px] bg-white dark:bg-slate-900 overflow-y-auto z-10 shadow-2xl relative">
+<div class="p-6 sticky top-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md z-20 border-b border-surface-container">
+<div class="flex items-center gap-4 mb-6">
+<button class="p-2 hover:bg-surface-container rounded-full" style=""><span class="material-symbols-outlined" style="">arrow_back</span></button>
+<div>
+<h2 class="font-headline font-bold text-xl text-on-surface" style="">Curated Art Trail</h2>
+<p class="text-sm text-on-surface-variant" style="">District 1 &amp; 3 • 4.2 km total</p>
+</div>
+</div>
+<!-- Transit Mode Toggles -->
+<div class="flex bg-surface-container-high rounded-full p-1">
+<button class="flex-1 flex items-center justify-center gap-2 py-2 rounded-full bg-surface-container-lowest shadow-sm text-primary font-bold text-sm" style="">
+<span class="material-symbols-outlined text-lg" style="">directions_bike</span> GrabBike
+                    </button>
+<button class="flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-on-surface-variant font-medium text-sm hover:bg-surface-container-low transition-colors" style="">
+<span class="material-symbols-outlined text-lg" style="">directions_car</span> Car
+                    </button>
+<button class="flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-on-surface-variant font-medium text-sm hover:bg-surface-container-low transition-colors" style="">
+<span class="material-symbols-outlined text-lg" style="">directions_walk</span> Walk
+                    </button>
+</div>
+</div>
+<div class="p-6 space-y-12 relative">
+<!-- Vertical Progress Line -->
+<div class="absolute left-[39px] top-12 bottom-12 w-0.5 bg-gradient-to-b from-primary via-secondary to-tertiary rounded-full opacity-30"></div>
+<!-- Step A: Start -->
+<div class="relative flex gap-6">
+<div class="z-10 mt-1">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary ring-4 ring-primary-container shadow-lg">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: &quot;FILL&quot; 1;">my_location</span>
+</div>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-primary uppercase tracking-widest mb-1" style="">Starting Point</p>
+<h3 class="font-headline font-extrabold text-lg" style="">HCMC Fine Arts Museum</h3>
+<p class="text-sm text-on-surface-variant mt-1" style="">97A Pho Duc Chinh, District 1</p>
+</div>
+</div>
+<!-- Segment 1 -->
+<div class="relative flex gap-6">
+<div class="z-10 mt-1">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border-2 border-primary flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-sm" style="">more_vert</span>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-low p-4 rounded-lg">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold text-secondary" style="">6 min • 1.2 km</span>
+<span class="text-[10px] bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter" style="">Low Traffic</span>
+</div>
+<p class="text-sm font-medium" style="">Head north toward Nguyen Thai Binh street</p>
+</div>
+</div>
+<!-- Step 2: Stop 1 -->
+<div class="relative flex gap-6">
+<div class="z-10 mt-1">
+<div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-on-primary ring-4 ring-secondary-container shadow-lg">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: &quot;FILL&quot; 1;">palette</span>
+</div>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-secondary uppercase tracking-widest mb-1" style="">Stop 1</p>
+<h3 class="font-headline font-extrabold text-lg" style="">Salon Saigon</h3>
+<div class="mt-3 overflow-hidden rounded-lg group cursor-pointer relative">
+<img alt="Salon Saigon Interior" class="w-full h-32 object-cover transition-transform group-hover:scale-105" data-alt="Chic modern art gallery interior with minimalist lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjqSlEbj7vjUme0QDRF-PkbppDFnKxk-Ju8FUyFYvbiVbi_m1VxsS_5-E9NFC7Nb33xIRlauaXYwbKnun527zxU1UJOvKSiks2gYK2lE6xOQVveLzpea_T9tKo8r5Ir2IJNf-eFrEA2xdzmkBGmV354PKsUm-zEi4XNZi9_59Ej1FNlNGlNfu5K1cwWmYjHZhQzbdqZ-57doUuShh2W5Ozm7LDF6GLLxYd1yaH9CC1thy7A9PpKYJHzQWXh41uktTyPn2TDQ-SOkvj" style="">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+<span class="text-[10px] text-white font-bold flex items-center gap-1" style="">
+<span class="material-symbols-outlined text-xs text-tertiary" style="">star</span> Vibe Check: Private &amp; Sophisticated
+                                </span>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mt-3" style="">Contemporary art space in a heritage building.</p>
+</div>
+</div>
+<!-- Segment 2 -->
+<div class="relative flex gap-6">
+<div class="z-10 mt-1">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border-2 border-secondary flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-sm" style="">more_vert</span>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-low p-4 rounded-lg">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold text-secondary" style="">12 min • 2.4 km</span>
+<span class="text-[10px] bg-tertiary-container text-on-tertiary-container px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter" style="">Crowded Area</span>
+</div>
+<p class="text-sm font-medium" style="">Take Dien Bien Phu towards District 3</p>
+</div>
+</div>
+<!-- Step 3: Final Destination -->
+<div class="relative flex gap-6">
+<div class="z-10 mt-1">
+<div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-on-primary ring-4 ring-tertiary-container shadow-lg">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: &quot;FILL&quot; 1;">location_on</span>
+</div>
+</div>
+<div class="flex-1 pb-12">
+<p class="text-xs font-bold text-tertiary uppercase tracking-widest mb-1" style="">Destination</p>
+<h3 class="font-headline font-extrabold text-lg" style="">The Workshop Coffee</h3>
+<div class="mt-3 overflow-hidden rounded-lg group cursor-pointer relative">
+<img alt="Specialty Coffee Shop" class="w-full h-32 object-cover transition-transform group-hover:scale-105" data-alt="Loft style coffee shop with industrial decor and large windows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNel9M8vv7WReBPJEmYgj6qe6F0hjaXGhH7Qz901kf9uPR6IFQ_5_rdB9rI_YdGQzXnygDzDcfaafWvg5aTG-cHvtA0cxJ0t_vPxARmFaq6LjxmBzDZz87ZOs8180o6yK1jkBOCjgX2zUbqAKTDVJNC_Hth33deSNCnnHGdYwGzS_GEjcu-YwNHQnRZVcVyed-XZuYcffUPg524raSxsTeavCB48WMEatl8D3BXGeJ-tFWmzaeT76HLhUlAzV3fELwzAljTa1F-po4" style="">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+<span class="text-[10px] text-white font-bold flex items-center gap-1" style="">
+<span class="material-symbols-outlined text-xs text-secondary-fixed" style="">trending_up</span> Trending on TikTok
+                                </span>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mt-3" style="">Final stop for specialty pour-over and industrial vibes.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Pane: Interactive Map -->
+<section class="flex-grow relative bg-surface-container-high overflow-hidden">
+<!-- Simulated Map Background -->
+<div class="absolute inset-0 z-0">
+<img alt="Ho Chi Minh City Map" class="w-full h-full object-cover opacity-80 mix-blend-multiply grayscale" data-location="Ho Chi Minh City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1G9nkZjvwL7sr_ADUQef83QbPyBQSH6aoUw_7QZdOd54A6A9L6s2fnnmcxTZoheq_YjwLzHIEzSCuf8ENYZ5-CssuzgvUSgf_IT3igYrU52llmHLBhYwo-pJg7QOd0iRXIpQCLYyiRqEGE_D-BS9_yGmDdNDWlzBg5FVo1ehb5v7cNLvW4NYM9Yt6jGCIqJ9ry71hwcch9KinG9OxufXsKY6qNZ8qoYUs5j1gnM48s02nK2uSFE3Tzqomr8kC4ztdUnHyAv6AhrfP" style="">
+<!-- Custom Gradient Overlay for "Curator" aesthetic -->
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-background/20 to-secondary/10 pointer-events-none"></div>
+</div>
+<!-- Route Overlay (SVG Path Simulation) -->
+<svg class="absolute inset-0 w-full h-full z-10 pointer-events-none" viewBox="0 0 800 600">
+<path d="M 200 450 Q 300 400 400 350 T 600 200" fill="none" stroke="#004be3" stroke-dasharray="1, 12" stroke-linecap="round" stroke-width="6"></path>
+<path d="M 200 450 Q 300 400 400 350 T 600 200" fill="none" opacity="0.4" stroke="#004be3" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<!-- Map Markers -->
+<!-- Start -->
+<div class="absolute top-[440px] left-[190px] z-20 group">
+<div class="w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-2xl scale-100 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: &quot;FILL&quot; 1;">my_location</span>
+</div>
+<div class="absolute bottom-12 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg shadow-xl border border-outline-variant/30 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+<p class="text-xs font-bold font-headline" style="">HCMC Fine Arts Museum</p>
+</div>
+</div>
+<!-- Stop 1 -->
+<div class="absolute top-[340px] left-[390px] z-20 group">
+<div class="w-10 h-10 bg-secondary text-on-primary rounded-full flex items-center justify-center shadow-2xl scale-100 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: &quot;FILL&quot; 1;">palette</span>
+</div>
+<div class="absolute bottom-12 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg shadow-xl border border-outline-variant/30 opacity-100 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+<p class="text-xs font-bold font-headline" style="">Salon Saigon</p>
+</div>
+<!-- Vibe Pulse Animation -->
+<div class="absolute top-0 left-0 w-10 h-10 bg-secondary rounded-full animate-ping opacity-20 pointer-events-none"></div>
+</div>
+<!-- Stop 2 -->
+<div class="absolute top-[190px] left-[590px] z-20 group">
+<div class="w-10 h-10 bg-tertiary text-on-primary rounded-full flex items-center justify-center shadow-2xl scale-100 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: &quot;FILL&quot; 1;">local_cafe</span>
+</div>
+<div class="absolute bottom-12 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg shadow-xl border border-outline-variant/30 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+<p class="text-xs font-bold font-headline" style="">The Workshop Coffee</p>
+</div>
+</div>
+<!-- Map Controls Floating Glass -->
+<div class="absolute top-6 right-6 z-30 flex flex-col gap-2">
+<div class="bg-surface-container-lowest/85 backdrop-blur-xl p-2 rounded-2xl shadow-xl flex flex-col gap-1 border border-white/20">
+<button class="p-3 hover:bg-surface-container rounded-xl transition-all text-on-surface-variant" style=""><span class="material-symbols-outlined" style="">add</span></button>
+<div class="h-[1px] bg-outline-variant/20 mx-2"></div>
+<button class="p-3 hover:bg-surface-container rounded-xl transition-all text-on-surface-variant" style=""><span class="material-symbols-outlined" style="">remove</span></button>
+</div>
+<button class="p-3 bg-surface-container-lowest/85 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 text-on-surface-variant hover:text-primary transition-colors" style="">
+<span class="material-symbols-outlined" style="">layers</span>
+</button>
+</div>
+<!-- Map Footer Vibe Summary -->
+<div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 w-[480px]">
+<div class="bg-surface-container-lowest/85 backdrop-blur-xl p-6 rounded-lg border border-white/20 shadow-2xl">
+<div class="flex justify-between items-center">
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-xs uppercase font-black text-on-surface-variant tracking-tighter opacity-60" style="">Total Vibe</span>
+<span class="text-lg font-headline font-bold text-on-surface" style="">Artistic &amp; Retro</span>
+</div>
+<div class="w-[1px] bg-outline-variant/30 h-10 self-center"></div>
+<div class="flex flex-col">
+<span class="text-xs uppercase font-black text-on-surface-variant tracking-tighter opacity-60" style="">Est. Time</span>
+<span class="text-lg font-headline font-bold text-on-surface" style="">1h 45m</span>
+</div>
+</div>
+<button class="px-8 py-3 bg-primary text-on-primary rounded-full font-bold hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95" style="">
+                            Start Navigation
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>
