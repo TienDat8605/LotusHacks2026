@@ -6,7 +6,7 @@ services:
     init: true
     environment:
       APP_DOMAIN: "${APP_DOMAIN:-localhost}"
-      CADDY_TLS_MODE: "${CADDY_TLS_MODE:-internal}"
+      CADDY_ACME_CA: "${CADDY_ACME_CA:-https://dv.acme-v02.api.pki.goog/directory}"
     ports:
       - "80:80"
       - "443:443"

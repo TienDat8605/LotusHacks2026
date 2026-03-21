@@ -1,8 +1,9 @@
-{$APP_DOMAIN:localhost} {
-	# Default to internal TLS to avoid ACME rate limits during frequent rebuilds.
-	# Override with CADDY_TLS_MODE="" to re-enable public ACME cert management.
-	tls {$CADDY_TLS_MODE:internal}
+{
+	# Use Google Public CA ACME to avoid Let's Encrypt rate-limit downtime.
+	acme_ca {$CADDY_ACME_CA:https://dv.acme-v02.api.pki.goog/directory}
+}
 
+{$APP_DOMAIN:localhost} {
 	encode zstd gzip
 
 	@assistant path /api/assistant*
