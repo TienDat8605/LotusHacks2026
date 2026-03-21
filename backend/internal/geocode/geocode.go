@@ -208,6 +208,13 @@ func (c *Client) Search(ctx context.Context, text string, limit int) ([]Suggesti
 		limit = 10
 	}
 
+	if c.orsKey != "" {
+		results, err := c.searchORS(ctx, text, limit)
+		if err == nil && len(results) > 0 {
+			return results, nil
+		}
+	}
+
 	if c.vietmapKey != "" {
 		results, err := c.SearchVietmap(ctx, text, limit)
 		if err == nil && len(results) > 0 {
@@ -216,6 +223,86 @@ func (c *Client) Search(ctx context.Context, text string, limit int) ([]Suggesti
 	}
 
 	return c.searchOSM(ctx, text, limit)
+}
+
+func (c *Client) searchORS(ctx context.Context, text string, limit int) ([]Suggestion, error) {
+	if c.orsKey == "" {
+		return nil, fmt.Errorf("missing ORS_API_KEY")
+	}
+	if limit <= 0 {
+		limit = 5
+	}
+	if limit > 10 {
+		limit = 10
+	}
+
+	q := url.Values{}
+	q.Set("api_key", c.orsKey)
+	q.Set("text", text)
+	q.Set("boundary.country", "VN")
+	q.Set("size", strconv.Itoa(limit))
+
+	reqURL := "https://api.openrouteservice.org/geocode/search?" + q.Encode()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	res, err := c.http.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("ors search status %d", res.StatusCode)
+	}
+
+	var parsed struct {
+		Features []struct {
+			Geometry struct {
+				Coordinates []float64 `json:"coordinates"`
+			} `json:"geometry"`
+			Properties struct {
+				Name  string `json:"name"`
+				Label string `json:"label"`
+			} `json:"properties"`
+		} `json:"features"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&parsed); err != nil {
+		return nil, err
+	}
+	if len(parsed.Features) == 0 {
+		return nil, fmt.Errorf("ors search no result")
+	}
+
+	out := make([]Suggestion, 0, limit)
+	for i, feature := range parsed.Features {
+		if len(out) >= limit {
+			break
+		}
+		if len(feature.Geometry.Coordinates) < 2 {
+			continue
+		}
+		name := strings.TrimSpace(feature.Properties.Name)
+		address := strings.TrimSpace(feature.Properties.Label)
+		if name == "" && address != "" {
+			if parts := strings.Split(address, ","); len(parts) > 0 {
+				name = strings.TrimSpace(parts[0])
+			}
+		}
+		if name == "" {
+			name = text
+		}
+		out = append(out, Suggestion{
+			RefID:    fmt.Sprintf("ors:%d", i),
+			Name:     name,
+			Address:  address,
+			Location: api.LatLng{Lat: feature.Geometry.Coordinates[1], Lng: feature.Geometry.Coordinates[0]},
+		})
+	}
+	if len(out) == 0 {
+		return nil, fmt.Errorf("ors search no result")
+	}
+	return out, nil
 }
 
 type vietmapSearchItem struct {

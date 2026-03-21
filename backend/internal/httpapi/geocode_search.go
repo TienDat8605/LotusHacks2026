@@ -28,7 +28,7 @@ func (h *Handler) handleGeocodeSearch(w http.ResponseWriter, r *http.Request) {
 		limit = 10
 	}
 
-	client := geocode.NewClient("", h.cfg.VietmapAPIKey)
+	client := geocode.NewClient(h.cfg.OrsAPIKey, h.cfg.VietmapAPIKey)
 	results, err := client.Search(r.Context(), query, limit)
 	if err != nil {
 		writeError(w, http.StatusBadGateway, "GEOCODE_FAILED", "Could not search locations")
