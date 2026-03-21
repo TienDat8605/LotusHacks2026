@@ -20,10 +20,17 @@ def _is_route_request(text: str) -> bool:
 
 
 class AssistantChatService:
-    def __init__(self, openai_service: OpenAIService, zilliz_store: ZillizStore, top_k: int) -> None:
+    def __init__(
+        self,
+        openai_service: OpenAIService,
+        zilliz_store: ZillizStore,
+        top_k: int,
+        fallback_search_service: "RuleBasedAssistantService | None" = None,
+    ) -> None:
         self._openai = openai_service
         self._zilliz = zilliz_store
         self._top_k = top_k
+        self._fallback_search = fallback_search_service
         self._threads = ThreadStore()
 
     def search_only(self, query: str, top_k: int | None = None) -> list[RetrievedReview]:
@@ -36,14 +43,20 @@ class AssistantChatService:
 
         route_mode = _is_route_request(text)
         results: list[RetrievedReview] = []
-        search_error = False
         try:
             results = self.search_only(text, 12 if route_mode else None)
             if route_mode:
                 results = self._pick_compact_route_results(results, 3)
         except Exception:
-            search_error = True
-            logger.exception("Assistant vector search failed, falling back to local response")
+            logger.exception("Assistant vector search failed")
+            if self._fallback_search:
+                try:
+                    results = self._fallback_search.search_only(text, 12 if route_mode else None)
+                    if route_mode:
+                        results = self._pick_compact_route_results(results, 3)
+                    logger.warning("Assistant switched to local review retrieval after vector search failure")
+                except Exception:
+                    logger.exception("Assistant local retrieval fallback also failed")
 
         contexts = []
         for result in results:
@@ -56,39 +69,33 @@ class AssistantChatService:
                 line += f" | evidence: {result.evidence[:240]}"
             contexts.append(line)
 
-        if search_error and not contexts:
-            answer = (
-                "AI search is temporarily unavailable right now. "
-                "Please retry in a moment or ask with a specific POI name."
-            )
-        else:
-            try:
-                answer = self._openai.chat_with_context(text, contexts)
-            except Exception:
-                logger.exception("Assistant live chat failed, using local evidence fallback")
-                if route_mode:
-                    if results:
-                        listed = ", ".join(item.poi.name for item in results)
-                        answer = (
-                            "AI live model is temporarily unavailable, so I used local review data to build route candidates. "
-                            f"Best nearby stops: {listed}."
-                        )
-                    else:
-                        answer = "AI live model is temporarily unavailable and I could not find enough places for this route yet."
+        try:
+            answer = self._openai.chat_with_context(text, contexts)
+        except Exception:
+            logger.exception("Assistant live chat failed, using local evidence fallback")
+            if route_mode:
+                if results:
+                    listed = ", ".join(item.poi.name for item in results)
+                    answer = (
+                        "AI live model is temporarily unavailable, so I used local review data to build route candidates. "
+                        f"Best nearby stops: {listed}."
+                    )
                 else:
-                    if results:
-                        highlights = []
-                        for item in results[:3]:
-                            detail = item.summary.strip() or "popular on local reviews"
-                            highlights.append(f"- {item.poi.name}: {detail[:160]}")
-                        answer = (
-                            "AI live model is temporarily unavailable. I used local review evidence:\n"
-                            + "\n".join(highlights)
-                        )
-                    else:
-                        answer = (
-                            "AI live model is temporarily unavailable and I could not find matching review evidence for this request yet."
-                        )
+                    answer = "AI live model is temporarily unavailable and I could not find enough places for this route yet."
+            else:
+                if results:
+                    highlights = []
+                    for item in results[:3]:
+                        detail = item.summary.strip() or "popular on local reviews"
+                        highlights.append(f"- {item.poi.name}: {detail[:160]}")
+                    answer = (
+                        "AI live model is temporarily unavailable. I used local review evidence:\n"
+                        + "\n".join(highlights)
+                    )
+                else:
+                    answer = (
+                        "AI live model is temporarily unavailable and I could not find matching review evidence for this request yet."
+                    )
 
         self._threads.add_message(thread_id, "assistant", answer)
 

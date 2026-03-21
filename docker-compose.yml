@@ -54,6 +54,8 @@ services:
     image: lotus-hacks-backend:dev
     init: true
     working_dir: /workspace/backend
+    env_file:
+      - ./backend/.env
     environment:
       PORT: "8080"
       CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173

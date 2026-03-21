@@ -20,6 +20,9 @@ pip install -r requirements.txt
 Copy-Item .env.example .env
 ```
 
+When running with Docker Compose in this repo, put these values in `backend/.env`
+because Compose loads `./backend/.env` for `backend` and `ai-service`.
+
 Fill in:
 
 - `OPENAI_API_KEY`
@@ -45,4 +48,10 @@ uvicorn app.main:app --reload --port 8090
 
 ```powershell
 .\test_assistant.ps1 -BaseUrl http://localhost:8090 -Query "I want a chill coffeeshop"
+```
+
+Assistant runtime diagnostics:
+
+```powershell
+Invoke-RestMethod http://localhost:8090/healthz/assistant
 ```

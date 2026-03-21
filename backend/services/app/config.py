@@ -33,9 +33,27 @@ def _optional(name: str) -> str | None:
     return value or None
 
 
+def _optional_from_file(name: str) -> str | None:
+    file_path = _optional(f"{name}_FILE")
+    if not file_path:
+        return None
+    try:
+        content = Path(file_path).read_text(encoding="utf-8").strip()
+    except OSError:
+        return None
+    return content or None
+
+
+def _optional_secret(name: str) -> str | None:
+    direct = _optional(name)
+    if direct:
+        return direct
+    return _optional_from_file(name)
+
+
 def _optional_any(*names: str) -> str | None:
     for name in names:
-        value = _optional(name)
+        value = _optional_secret(name)
         if value:
             return value
     return None
@@ -72,8 +90,8 @@ class Settings:
             openai_embedding_model=os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"),
             review_data_path=(service_dir / review_data).resolve(),
             embedded_review_path=(service_dir / embedded_path).resolve(),
-            zilliz_uri=_optional("ZILLIZ_URI"),
-            zilliz_token=_optional("ZILLIZ_TOKEN"),
+            zilliz_uri=_optional_secret("ZILLIZ_URI"),
+            zilliz_token=_optional_secret("ZILLIZ_TOKEN"),
             zilliz_db_name=_optional("ZILLIZ_DB_NAME"),
             zilliz_collection=os.getenv("AI_ZILLIZ_COLLECTION", "review_embeddings"),
             zilliz_top_k=max(1, int(os.getenv("AI_ZILLIZ_TOP_K", "5"))),

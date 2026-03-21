@@ -72,7 +72,17 @@ def build_assistant_service() -> AssistantChatService | RuleBasedAssistantServic
             settings.zilliz_top_k,
             openai_service=openai_service,
         )
-    return AssistantChatService(openai_service, zilliz_store, settings.zilliz_top_k)
+    local_fallback = RuleBasedAssistantService.from_review_file(
+        settings.review_data_path,
+        settings.zilliz_top_k,
+        openai_service=openai_service,
+    )
+    return AssistantChatService(
+        openai_service,
+        zilliz_store,
+        settings.zilliz_top_k,
+        fallback_search_service=local_fallback,
+    )
 
 
 assistant_service: AssistantChatService | RuleBasedAssistantService | None = None
@@ -91,3 +101,24 @@ app.include_router(create_assistant_router(get_assistant_service))
 @app.get("/healthz")
 def healthz() -> dict[str, bool]:
     return {"ok": True}
+
+
+@app.get("/healthz/assistant")
+def healthz_assistant() -> dict[str, object]:
+    service = get_assistant_service()
+    if isinstance(service, AssistantChatService):
+        mode = "openai-zilliz"
+    elif settings.openai_api_key:
+        mode = "openai-local-retrieval"
+    else:
+        mode = "fallback"
+    return {
+        "ok": True,
+        "mode": mode,
+        "openai_key_set": bool(settings.openai_api_key),
+        "zilliz_uri_set": bool(settings.zilliz_uri),
+        "zilliz_token_set": bool(settings.zilliz_token),
+        "chat_model": settings.openai_chat_model if settings.openai_api_key else "",
+        "embedding_model": settings.openai_embedding_model if settings.openai_api_key else "",
+        "review_data_path": str(settings.review_data_path),
+    }
