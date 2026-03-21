@@ -306,12 +306,28 @@ export default function SocialHub() {
   }, [selfParticipant, currentLocation]);
 
   useEffect(() => {
+    if (currentLocation) return;
+    if (!('geolocation' in navigator)) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
+        setCurrentLocation({ lat: latitude, lng: longitude });
+      },
+      () => {
+        return;
+      },
+      { enableHighAccuracy: true, maximumAge: 60000, timeout: 12000 }
+    );
+  }, [currentLocation]);
+
+  useEffect(() => {
     if (!participantId || !activeId) return;
     if (!('geolocation' in navigator)) return;
 
     const api = getApiClient();
     const minMoveMeters = 12;
-    const maxAcceptedAccuracyMeters = 1000;
+    const maxAcceptedAccuracyMeters = 30000;
     lastSentLocationRef.current = null;
 
     const handlePosition = (pos: GeolocationPosition) => {
@@ -322,7 +338,7 @@ export default function SocialHub() {
       const next = { lat: latitude, lng: longitude };
       const prev = lastSentLocationRef.current;
       if (prev && metersBetween(prev, next) < minMoveMeters) {
-        setCurrentLocation(prev);
+        setCurrentLocation(next);
         return;
       }
 
@@ -366,7 +382,7 @@ export default function SocialHub() {
       (pos) => {
         const { latitude, longitude, accuracy } = pos.coords;
         if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
-        if (Number.isFinite(accuracy) && accuracy > 1000) return;
+        if (Number.isFinite(accuracy) && accuracy > 30000) return;
         const next = { lat: latitude, lng: longitude };
         lastSentLocationRef.current = next;
         setCurrentLocation(next);

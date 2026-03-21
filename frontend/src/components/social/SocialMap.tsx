@@ -19,9 +19,9 @@ function userIcon(seed: string, highlighted: boolean) {
 function currentLocationIcon() {
   return L.divIcon({
     className: '',
-    html: `<div style="position:relative;width:30px;height:30px;display:flex;align-items:center;justify-content:center;"><span style="position:absolute;width:30px;height:30px;border-radius:9999px;background:rgba(0,75,227,0.22);"></span><span style="position:relative;width:14px;height:14px;border-radius:9999px;background:#004be3;border:3px solid rgba(255,255,255,0.96);box-shadow:0 8px 20px rgba(0,75,227,0.35);"></span></div>`,
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
+    html: `<div style="display:flex;flex-direction:column;align-items:center;transform:translateY(-8px);"><div style="position:relative;width:28px;height:36px;"><div style="position:absolute;left:2px;top:0;width:24px;height:24px;border-radius:9999px;background:#004be3;box-shadow:0 10px 28px rgba(0,75,227,0.45);border:3px solid rgba(255,255,255,0.95);"></div><div style="position:absolute;left:11px;top:22px;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:10px solid #004be3;"></div></div><div style="margin-top:2px;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,0.97);border:1px solid rgba(0,75,227,0.28);font-family:ui-sans-serif;font-size:10px;font-weight:900;letter-spacing:0.06em;color:#0038ad;">YOU</div></div>`,
+    iconSize: [34, 46],
+    iconAnchor: [17, 40],
   });
 }
 
@@ -148,6 +148,10 @@ export function SocialMap(props: {
     if (hasCurrent) return participantPoints;
     return [...participantPoints, currentLocationPoint];
   }, [participantPoints, currentLocationPoint]);
+  const displayParticipants = useMemo(() => {
+    if (!currentLocationPoint || !props.currentParticipantId) return pinnedParticipants;
+    return pinnedParticipants.filter((participant) => participant.id !== props.currentParticipantId);
+  }, [pinnedParticipants, currentLocationPoint, props.currentParticipantId]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -172,15 +176,28 @@ export function SocialMap(props: {
         />
         <ParticipantBounds points={mapPoints} fallback={props.center} />
 
-        {pinnedParticipants.map((p) => (
+        {currentLocationPoint && (
+          <Marker
+            key="current-location"
+            position={[currentLocationPoint.lat, currentLocationPoint.lng]}
+            icon={currentLocationIcon()}
+            zIndexOffset={1800}
+          >
+            <Tooltip direction="top" offset={[0, -14]} opacity={1}>
+              You
+            </Tooltip>
+          </Marker>
+        )}
+
+        {displayParticipants.map((p) => (
           <Marker
             key={p.id}
             position={[p.lat, p.lng]}
-            icon={p.id === props.currentParticipantId ? currentLocationIcon() : userIcon(p.avatarSeed || p.displayName, p.id === currentParticipant?.id)}
-            zIndexOffset={p.id === props.currentParticipantId ? 1500 : 0}
+            icon={userIcon(p.avatarSeed || p.displayName, p.id === currentParticipant?.id)}
+            zIndexOffset={0}
           >
             <Tooltip direction="top" offset={[0, -12]} opacity={1}>
-              {p.id === props.currentParticipantId ? 'You' : p.displayName}
+              {p.displayName}
             </Tooltip>
           </Marker>
         ))}
