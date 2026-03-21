@@ -70,6 +70,7 @@ export default function VibeCheck() {
                 </Link>
                 <Link
                   to="/assistant"
+                  state={poi ? { source: 'vibe-check', focusPoi: poi } : undefined}
                   className="bg-gradient-to-r from-primary to-primary-container text-white py-3 rounded-full font-headline font-extrabold text-sm text-center shadow-float"
                 >
                   Ask Assistant

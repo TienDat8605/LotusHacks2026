@@ -1,6 +1,6 @@
 import { Bot, MapPin, PlusCircle, Send, Sparkles } from 'lucide-react';
-import { Fragment, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { getApiClient } from '@/api/getClient';
 import type { ChatMessage, Poi, RoutePlanRequest } from '@/api/types';
@@ -50,6 +50,16 @@ function buildRouteSummary(origin: string, pois: Poi[]) {
   return `I planned your guided route from **${origin}** using these exact places: **${stopNames}**.`;
 }
 
+function buildFocusedPoiPrompt(poi: Poi) {
+  const where = [poi.address, poi.city].filter(Boolean).join(', ');
+  return `Vibe check this specific place: ${poi.name}${where ? ` (${where})` : ''}. Tell me what vibe it has, what to order or try first, best visit time, and why this place matches the vibe.`;
+}
+
+type AssistantFocusState = {
+  source?: string;
+  focusPoi?: Poi;
+};
+
 export default function AiAssistant() {
   usePageMeta({
     title: 'Kompas - AI Assistant',
@@ -57,6 +67,7 @@ export default function AiAssistant() {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
   const prefs = useVibeMapStore((s) => s.preferences);
   const lastPlanRequest = useVibeMapStore((s) => s.lastPlanRequest);
   const setLastPlan = useVibeMapStore((s) => s.setLastPlanRequest);
@@ -72,6 +83,7 @@ export default function AiAssistant() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [planningKey, setPlanningKey] = useState<string | null>(null);
+  const handledFocusKeyRef = useRef<string>('');
 
   const messages = assistant.messages;
   const suggestedPois = assistant.suggestedPois;
@@ -82,6 +94,8 @@ export default function AiAssistant() {
     () => (mode === 'poi' ? 'Where to next, explorer?' : 'Plan a route: date vibe, budget, and mood'),
     [mode]
   );
+  const focusState = (location.state as AssistantFocusState | null) ?? null;
+  const focusedPoiFromState = focusState?.focusPoi;
 
   useEffect(() => {
     if (messages.length) return;
@@ -97,9 +111,23 @@ export default function AiAssistant() {
     });
   }, [messages.length, setAssistantState]);
 
-  async function send(text: string) {
+  useEffect(() => {
+    if (!focusedPoiFromState) return;
+    const key = `${focusedPoiFromState.id}|${focusedPoiFromState.name}|${focusedPoiFromState.address ?? ''}`;
+    if (handledFocusKeyRef.current === key) return;
+    handledFocusKeyRef.current = key;
+
+    setMode('poi');
+    const prompt = buildFocusedPoiPrompt(focusedPoiFromState);
+    void send(prompt, { focusPoi: focusedPoiFromState, forceMode: 'poi' });
+    navigate('/assistant', { replace: true, state: null });
+  }, [focusedPoiFromState, navigate]);
+
+  async function send(text: string, options?: { focusPoi?: Poi; forceMode?: 'poi' | 'route' }) {
     const trimmed = text.trim();
     if (!trimmed) return;
+    const activeMode = options?.forceMode ?? mode;
+    const focusedPoi = options?.focusPoi;
 
     setSending(true);
     setError(null);
@@ -117,16 +145,24 @@ export default function AiAssistant() {
     try {
       const api = getApiClient();
       const outbound =
-        mode === 'route'
+        focusedPoi
+          ? `The user wants a vibe check for this exact place only. POI name: ${focusedPoi.name}. Address: ${focusedPoi.address ?? 'unknown'}. City: ${focusedPoi.city ?? 'Ho Chi Minh City'}. Focus your answer on this POI and do not switch to other places unless the user explicitly asks for alternatives. User request: ${trimmed}`
+          : activeMode === 'route'
           ? `Suggest a destination and route vibe for this request. The backend planner will create stops between the user's start and destination: ${trimmed}`
           : `Recommend the single best matching place for this request and explain why: ${trimmed}`;
 
       const resp = await api.sendAssistantMessage(threadId, outbound);
+      const suggestedPois = focusedPoi
+        ? [focusedPoi, ...(resp.suggestedPois ?? []).filter((poi) => poi.id !== focusedPoi.id)]
+        : resp.suggestedPois;
 
       replaceAssistantFromResponse({
         ...resp,
+        suggestedPois,
         suggestedPlan:
-          mode === 'route'
+          focusedPoi
+            ? null
+            : activeMode === 'route'
             ? resp.suggestedPlan ?? {
                 origin,
                 destination: resp.suggestedPois?.[resp.suggestedPois.length - 1]?.name,

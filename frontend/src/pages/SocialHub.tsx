@@ -12,6 +12,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getApiClient } from '@/api/getClient';
 import { resolveApiBase } from '@/api/baseUrl';
 import type { ChatMessage, Poi, SocialEvent, SocialParticipant, SocialSession } from '@/api/types';
@@ -209,6 +210,7 @@ export default function SocialHub() {
 
   const profile = useVibeMapStore((s) => s.profile);
   const setProfile = useVibeMapStore((s) => s.setProfile);
+  const navigate = useNavigate();
   const [sessions, setSessions] = useState<SocialSession[]>([]);
   const [activeId, setActiveId] = useState<string>('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -309,12 +311,13 @@ export default function SocialHub() {
 
     const api = getApiClient();
     const minMoveMeters = 12;
+    const maxAcceptedAccuracyMeters = 1000;
     lastSentLocationRef.current = null;
 
     const handlePosition = (pos: GeolocationPosition) => {
       const { latitude, longitude, accuracy } = pos.coords;
       if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
-      if (Number.isFinite(accuracy) && accuracy > 120) return;
+      if (Number.isFinite(accuracy) && accuracy > maxAcceptedAccuracyMeters) return;
 
       const next = { lat: latitude, lng: longitude };
       const prev = lastSentLocationRef.current;
@@ -356,6 +359,26 @@ export default function SocialHub() {
     };
   }, [activeId, participantId]);
 
+  function publishCurrentLocationOnce(sessionId: string, pid: string) {
+    if (!('geolocation' in navigator)) return;
+    const api = getApiClient();
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude, accuracy } = pos.coords;
+        if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
+        if (Number.isFinite(accuracy) && accuracy > 1000) return;
+        const next = { lat: latitude, lng: longitude };
+        lastSentLocationRef.current = next;
+        setCurrentLocation(next);
+        void api.updateSocialLocation(sessionId, pid, next.lat, next.lng);
+      },
+      () => {
+        return;
+      },
+      { enableHighAccuracy: true, maximumAge: 15000, timeout: 8000 }
+    );
+  }
+
   async function join(sessionId = activeId) {
     if (!sessionId) return;
     const api = getApiClient();
@@ -364,6 +387,7 @@ export default function SocialHub() {
     setJoinedSessionId(sessionId);
     setCurrentLocation(null);
     lastSentLocationRef.current = null;
+    publishCurrentLocationOnce(sessionId, resp.participantId);
     try {
       localStorage.setItem('vibemap.participantId', resp.participantId);
       localStorage.setItem('vibemap.joinedSessionId', sessionId);
@@ -394,6 +418,7 @@ export default function SocialHub() {
     setJoinedSessionId(resp.session.id);
     setCurrentLocation(null);
     lastSentLocationRef.current = null;
+    publishCurrentLocationOnce(resp.session.id, resp.participantId);
     setJoinCode('');
     try {
       localStorage.setItem('vibemap.participantId', resp.participantId);
@@ -416,6 +441,25 @@ export default function SocialHub() {
     } finally {
       setSending(false);
     }
+  }
+
+  function openRecommendationVibeCheck(poi: Poi) {
+    navigate('/assistant', {
+      state: {
+        source: 'social-hub',
+        focusPoi: {
+          id: poi.id,
+          name: poi.name,
+          address: poi.address,
+          city: poi.city,
+          category: poi.category,
+          rating: poi.rating,
+          badges: poi.badges,
+          imageUrl: poi.imageUrl,
+          location: poi.location,
+        } satisfies Poi,
+      },
+    });
   }
 
   function exitRoom() {
@@ -513,6 +557,14 @@ export default function SocialHub() {
                           {accent.label}
                         </span>
                       </div>
+                      <button
+                        type="button"
+                        onClick={() => openRecommendationVibeCheck(poi)}
+                        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2.5 text-xs font-extrabold uppercase tracking-[0.14em] text-white transition-transform active:scale-95"
+                      >
+                        <Sparkles className="h-3.5 w-3.5" />
+                        Vibe check
+                      </button>
                     </article>
                   );
                 })}

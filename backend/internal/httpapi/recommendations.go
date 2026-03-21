@@ -49,7 +49,9 @@ func rankPoisForParticipants(pois []api.Poi, participants []api.SocialParticipan
 				maxD = d
 			}
 		}
-		score := sum + (maxD * 0.25)
+		avg := sum / float64(len(points))
+		// Nearest-for-group scoring: minimize average distance while keeping farthest member reasonable.
+		score := (avg * 0.7) + (maxD * 0.3)
 		scored = append(scored, scoredPoi{poi: poi, score: score})
 	}
 
@@ -78,4 +80,3 @@ func haversineMeters(lat1, lon1, lat2, lon2 float64) float64 {
 	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
 	return R * c
 }
-

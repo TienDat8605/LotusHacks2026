@@ -16,6 +16,15 @@ function userIcon(seed: string, highlighted: boolean) {
   });
 }
 
+function currentLocationIcon() {
+  return L.divIcon({
+    className: '',
+    html: `<div style="position:relative;width:30px;height:30px;display:flex;align-items:center;justify-content:center;"><span style="position:absolute;width:30px;height:30px;border-radius:9999px;background:rgba(0,75,227,0.22);"></span><span style="position:relative;width:14px;height:14px;border-radius:9999px;background:#004be3;border:3px solid rgba(255,255,255,0.96);box-shadow:0 8px 20px rgba(0,75,227,0.35);"></span></div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+  });
+}
+
 function poiIcon(index: number) {
   const colors = ['#004be3', '#7c3aed', '#f97316'];
   const color = colors[index % colors.length];
@@ -112,6 +121,16 @@ export function SocialMap(props: {
     () => pinnedParticipants.map((participant) => ({ lat: participant.lat, lng: participant.lng })),
     [pinnedParticipants]
   );
+  const mapPoints = useMemo(() => {
+    if (!props.currentLocation) return participantPoints;
+    const hasCurrent = participantPoints.some(
+      (point) =>
+        Math.abs(point.lat - props.currentLocation!.lat) < 1e-6 &&
+        Math.abs(point.lng - props.currentLocation!.lng) < 1e-6
+    );
+    if (hasCurrent) return participantPoints;
+    return [...participantPoints, props.currentLocation];
+  }, [participantPoints, props.currentLocation]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -134,7 +153,19 @@ export function SocialMap(props: {
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
-        <ParticipantBounds points={participantPoints} fallback={props.center} />
+        <ParticipantBounds points={mapPoints} fallback={props.center} />
+
+        {props.currentLocation && (
+          <Marker
+            key="current-location"
+            position={[props.currentLocation.lat, props.currentLocation.lng]}
+            icon={currentLocationIcon()}
+          >
+            <Tooltip direction="top" offset={[0, -12]} opacity={1}>
+              Your current location
+            </Tooltip>
+          </Marker>
+        )}
 
         {pinnedParticipants.map((p) => (
           <Marker
