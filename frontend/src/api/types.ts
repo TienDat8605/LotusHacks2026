@@ -1,5 +1,12 @@
 export type LatLng = { lat: number; lng: number };
 
+export type LocationSuggestion = {
+  refId?: string;
+  name: string;
+  address?: string;
+  location: LatLng;
+};
+
 export type TransportMode = 'bike' | 'car' | 'walk' | 'bus';
 
 export type Poi = {

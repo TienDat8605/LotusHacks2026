@@ -24,7 +24,7 @@ export default function AiAssistant() {
 
   const navigate = useNavigate();
   const prefs = useVibeMapStore((s) => s.preferences);
-  const setLastPlan = useVibeMapStore((s) => s.setLastPlanRequest);
+  const setRoute = useVibeMapStore((s) => s.setRoute);
 
   const threadId = 'default';
   const [mode, setMode] = useState<'poi' | 'route'>('poi');
@@ -34,6 +34,8 @@ export default function AiAssistant() {
   const [suggestedPlan, setSuggestedPlan] = useState<Partial<RoutePlanRequest> | null>(null);
   const [followUps, setFollowUps] = useState<string[]>([]);
   const [sending, setSending] = useState(false);
+  const [planningRoute, setPlanningRoute] = useState(false);
+  const [handoffError, setHandoffError] = useState<string | null>(null);
 
   const placeholder = useMemo(
     () => (mode === 'poi' ? 'Where to next, explorer?' : 'Plan a route: vibe, time budget, and transport'),
@@ -69,7 +71,7 @@ export default function AiAssistant() {
     }
   }
 
-  function handoffToPlanner(plan: Partial<RoutePlanRequest>) {
+  async function handoffToPlanner(plan: Partial<RoutePlanRequest>) {
     const req: RoutePlanRequest = {
       origin: plan.origin ?? 'District 1, Ben Thanh',
       destination: plan.destination ?? 'District 1',
@@ -77,8 +79,18 @@ export default function AiAssistant() {
       transportMode: plan.transportMode ?? prefs.defaultTransportMode,
       includeTrending: plan.includeTrending ?? true,
     };
-    setLastPlan(req);
-    navigate('/plan');
+    setHandoffError(null);
+    setPlanningRoute(true);
+    try {
+      const api = getApiClient();
+      const route = await api.planNormalRoute(req);
+      setRoute(route);
+      navigate(`/results/${encodeURIComponent(route.id)}`);
+    } catch {
+      setHandoffError('Could not plan a normal route right now. Please try again.');
+    } finally {
+      setPlanningRoute(false);
+    }
   }
 
   return (
@@ -169,10 +181,14 @@ export default function AiAssistant() {
                       <button
                         type="button"
                         onClick={() => handoffToPlanner({ destination: p.name, includeTrending: true })}
-                        className="w-full py-3 rounded-full bg-primary text-white font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                        disabled={planningRoute}
+                        className={cn(
+                          'w-full py-3 rounded-full bg-primary text-white font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform',
+                          planningRoute ? 'opacity-70 cursor-not-allowed' : ''
+                        )}
                       >
                         <Send className="h-4 w-4" />
-                        Plan route here
+                        {planningRoute ? 'Planning direct route...' : 'Plan route here'}
                       </button>
                     </div>
                   </div>
@@ -184,11 +200,17 @@ export default function AiAssistant() {
               <button
                 type="button"
                 onClick={() => handoffToPlanner(suggestedPlan)}
-                className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 rounded-full font-headline font-extrabold shadow-float active:scale-95 transition-transform"
+                disabled={planningRoute}
+                className={cn(
+                  'w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 rounded-full font-headline font-extrabold shadow-float active:scale-95 transition-transform',
+                  planningRoute ? 'opacity-70 cursor-not-allowed' : ''
+                )}
               >
-                Use suggested route plan
+                {planningRoute ? 'Planning direct route...' : 'Use suggested route plan'}
               </button>
             )}
+
+            {handoffError && <div className="rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{handoffError}</div>}
 
             {followUps.length > 0 && (
               <div className="flex flex-wrap gap-2">
@@ -247,4 +269,3 @@ export default function AiAssistant() {
     </div>
   );
 }
-

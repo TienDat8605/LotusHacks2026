@@ -1,8 +1,8 @@
 import { ArrowLeftRight, Bike, Bus, Car, Footprints, LocateFixed, MapPin, Sparkles } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiClient } from '@/api/getClient';
-import type { TransportMode } from '@/api/types';
+import type { LocationSuggestion, TransportMode } from '@/api/types';
 import { MapCanvas } from '@/components/map/MapCanvas';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { cn } from '@/lib/utils';
@@ -23,6 +23,42 @@ function minutesLabel(mins: number) {
   return `${h}h ${m}m`;
 }
 
+const hcmcBounds = {
+  minLat: 10.3,
+  maxLat: 11.25,
+  minLng: 106.25,
+  maxLng: 107.15,
+};
+
+function isWithinHcmc(location: { lat: number; lng: number }) {
+  return (
+    location.lat >= hcmcBounds.minLat &&
+    location.lat <= hcmcBounds.maxLat &&
+    location.lng >= hcmcBounds.minLng &&
+    location.lng <= hcmcBounds.maxLng
+  );
+}
+
+function isHcmcSuggestion(item: LocationSuggestion) {
+  if (isWithinHcmc(item.location)) return true;
+  const haystack = `${item.name} ${item.address ?? ''}`.toLowerCase();
+  return haystack.includes('ho chi minh') || haystack.includes('hồ chí minh') || haystack.includes('saigon') || haystack.includes('sài gòn');
+}
+
+function withHcmcContext(query: string) {
+  const trimmed = query.trim();
+  const lower = trimmed.toLowerCase();
+  if (
+    lower.includes('ho chi minh') ||
+    lower.includes('hồ chí minh') ||
+    lower.includes('saigon') ||
+    lower.includes('sài gòn')
+  ) {
+    return trimmed;
+  }
+  return `${trimmed}, Ho Chi Minh City`;
+}
+
 export default function RoutePlanner() {
   usePageMeta({
     title: 'VibeMap — Route Planner',
@@ -41,11 +77,114 @@ export default function RoutePlanner() {
   const [includeTrending, setIncludeTrending] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [focusedField, setFocusedField] = useState<'origin' | 'destination' | null>(null);
+  const [originSuggestions, setOriginSuggestions] = useState<LocationSuggestion[]>([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState<LocationSuggestion[]>([]);
+  const [searchingOrigin, setSearchingOrigin] = useState(false);
+  const [searchingDestination, setSearchingDestination] = useState(false);
+  const blurTimerRef = useRef<number | null>(null);
+
+  function clearBlurTimer() {
+    if (blurTimerRef.current != null) {
+      window.clearTimeout(blurTimerRef.current);
+      blurTimerRef.current = null;
+    }
+  }
+
+  function queueCloseSuggestions() {
+    clearBlurTimer();
+    blurTimerRef.current = window.setTimeout(() => {
+      setFocusedField(null);
+    }, 120);
+  }
+
+  useEffect(() => {
+    return () => clearBlurTimer();
+  }, []);
+
+  useEffect(() => {
+    const query = origin.trim();
+    if (query.length < 2) {
+      setSearchingOrigin(false);
+      setOriginSuggestions([]);
+      return;
+    }
+
+    let cancelled = false;
+    const timer = window.setTimeout(async () => {
+      setSearchingOrigin(true);
+      try {
+        const api = getApiClient();
+        const results = await api.searchLocations(withHcmcContext(query), 8);
+        if (cancelled) return;
+        setOriginSuggestions(results.filter(isHcmcSuggestion).slice(0, 6));
+      } catch {
+        if (cancelled) return;
+        setOriginSuggestions([]);
+      } finally {
+        if (!cancelled) {
+          setSearchingOrigin(false);
+        }
+      }
+    }, 240);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [origin]);
+
+  useEffect(() => {
+    const query = destination.trim();
+    if (query.length < 2) {
+      setSearchingDestination(false);
+      setDestinationSuggestions([]);
+      return;
+    }
+
+    let cancelled = false;
+    const timer = window.setTimeout(async () => {
+      setSearchingDestination(true);
+      try {
+        const api = getApiClient();
+        const results = await api.searchLocations(withHcmcContext(query), 8);
+        if (cancelled) return;
+        setDestinationSuggestions(results.filter(isHcmcSuggestion).slice(0, 6));
+      } catch {
+        if (cancelled) return;
+        setDestinationSuggestions([]);
+      } finally {
+        if (!cancelled) {
+          setSearchingDestination(false);
+        }
+      }
+    }, 240);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [destination]);
+
+  function pickOrigin(suggestion: LocationSuggestion) {
+    setOrigin(suggestion.name);
+    setOriginSuggestions([]);
+    setFocusedField(null);
+  }
+
+  function pickDestination(suggestion: LocationSuggestion) {
+    setDestination(suggestion.name);
+    setDestinationSuggestions([]);
+    setFocusedField(null);
+  }
 
   const previewReq = useMemo(
     () => ({ origin, destination, timeBudgetMinutes, transportMode, includeTrending }),
     [origin, destination, timeBudgetMinutes, transportMode, includeTrending]
   );
+
+  const showOriginSuggestions = focusedField === 'origin' && origin.trim().length >= 2;
+  const showDestinationSuggestions = focusedField === 'destination' && destination.trim().length >= 2;
 
   async function onSubmit() {
     setError(null);
@@ -79,13 +218,47 @@ export default function RoutePlanner() {
                   <label className="text-[11px] font-bold text-outline uppercase tracking-wider mb-2 block ml-4">
                     Start Point
                   </label>
-                  <div className="flex items-center bg-surface-container-low rounded-xl px-4 py-3">
-                    <LocateFixed className="h-5 w-5 text-primary mr-3" />
-                    <input
-                      className="bg-transparent border-none focus:ring-0 text-sm font-medium w-full text-on-surface"
-                      value={origin}
-                      onChange={(e) => setOrigin(e.target.value)}
-                    />
+                  <div className="relative">
+                    <div className="flex items-center bg-surface-container-low rounded-xl px-4 py-3">
+                      <LocateFixed className="h-5 w-5 text-primary mr-3" />
+                      <input
+                        className="bg-transparent border-none focus:ring-0 text-sm font-medium w-full text-on-surface"
+                        value={origin}
+                        onFocus={() => {
+                          clearBlurTimer();
+                          setFocusedField('origin');
+                        }}
+                        onBlur={queueCloseSuggestions}
+                        onChange={(e) => setOrigin(e.target.value)}
+                        placeholder="Search with Vietmap"
+                      />
+                    </div>
+                    {showOriginSuggestions && (
+                      <div className="absolute z-40 left-0 right-0 mt-2 max-h-56 overflow-y-auto rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-float">
+                        {searchingOrigin ? (
+                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">Searching Vietmap…</div>
+                        ) : originSuggestions.length ? (
+                          originSuggestions.map((suggestion) => (
+                            <button
+                              key={`${suggestion.refId ?? suggestion.name}_${suggestion.location.lat}_${suggestion.location.lng}`}
+                              type="button"
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                pickOrigin(suggestion);
+                              }}
+                              className="w-full px-4 py-3 text-left hover:bg-surface-container-low transition-colors"
+                            >
+                              <div className="text-sm font-semibold text-on-surface">{suggestion.name}</div>
+                              {suggestion.address && (
+                                <div className="text-xs text-on-surface-variant mt-0.5 truncate">{suggestion.address}</div>
+                              )}
+                            </button>
+                          ))
+                        ) : (
+                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">No Ho Chi Minh City results from Vietmap</div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -95,6 +268,9 @@ export default function RoutePlanner() {
                     onClick={() => {
                       setOrigin(destination);
                       setDestination(origin);
+                      setOriginSuggestions([]);
+                      setDestinationSuggestions([]);
+                      setFocusedField(null);
                     }}
                     className="bg-white p-2 rounded-full shadow-float border border-surface-container active:scale-95 transition-transform"
                     aria-label="Swap"
@@ -107,14 +283,47 @@ export default function RoutePlanner() {
                   <label className="text-[11px] font-bold text-outline uppercase tracking-wider mb-2 block ml-4">
                     Destination
                   </label>
-                  <div className="flex items-center bg-surface-container-low rounded-xl px-4 py-3">
-                    <MapPin className="h-5 w-5 text-tertiary mr-3" />
-                    <input
-                      className="bg-transparent border-none focus:ring-0 text-sm font-medium w-full text-on-surface"
-                      value={destination}
-                      onChange={(e) => setDestination(e.target.value)}
-                      placeholder="Where to?"
-                    />
+                  <div className="relative">
+                    <div className="flex items-center bg-surface-container-low rounded-xl px-4 py-3">
+                      <MapPin className="h-5 w-5 text-tertiary mr-3" />
+                      <input
+                        className="bg-transparent border-none focus:ring-0 text-sm font-medium w-full text-on-surface"
+                        value={destination}
+                        onFocus={() => {
+                          clearBlurTimer();
+                          setFocusedField('destination');
+                        }}
+                        onBlur={queueCloseSuggestions}
+                        onChange={(e) => setDestination(e.target.value)}
+                        placeholder="Where to? (Vietmap search)"
+                      />
+                    </div>
+                    {showDestinationSuggestions && (
+                      <div className="absolute z-40 left-0 right-0 mt-2 max-h-56 overflow-y-auto rounded-2xl border border-surface-container-high bg-surface-container-lowest shadow-float">
+                        {searchingDestination ? (
+                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">Searching Vietmap…</div>
+                        ) : destinationSuggestions.length ? (
+                          destinationSuggestions.map((suggestion) => (
+                            <button
+                              key={`${suggestion.refId ?? suggestion.name}_${suggestion.location.lat}_${suggestion.location.lng}`}
+                              type="button"
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                pickDestination(suggestion);
+                              }}
+                              className="w-full px-4 py-3 text-left hover:bg-surface-container-low transition-colors"
+                            >
+                              <div className="text-sm font-semibold text-on-surface">{suggestion.name}</div>
+                              {suggestion.address && (
+                                <div className="text-xs text-on-surface-variant mt-0.5 truncate">{suggestion.address}</div>
+                              )}
+                            </button>
+                          ))
+                        ) : (
+                          <div className="px-4 py-3 text-sm font-semibold text-on-surface-variant">No Ho Chi Minh City results from Vietmap</div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

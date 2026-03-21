@@ -53,6 +53,49 @@ func TestPlanRoute(t *testing.T) {
 	}
 }
 
+func TestPlanNormalRoute(t *testing.T) {
+	cfg := &config.Config{Port: "8080"}
+	poiRepo := pois.NewRepository("../data/pois.json")
+	_ = poiRepo.Load()
+	socialStore := social.NewStore()
+	socialStore.SeedDefault()
+
+	h := NewHandler(cfg, poiRepo, socialStore)
+	srv := httptest.NewServer(h.Router())
+	t.Cleanup(srv.Close)
+
+	body, _ := json.Marshal(api.RoutePlanRequest{
+		Origin:            "Ben Thanh Market",
+		Destination:       "Landmark 81",
+		TimeBudgetMinutes: 120,
+		TransportMode:     api.TransportModeBike,
+		IncludeTrending:   true,
+	})
+
+	res, err := http.Post(srv.URL+"/api/routes/normal", "application/json", bytes.NewReader(body))
+	if err != nil {
+		t.Fatalf("post: %v", err)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("status: %d", res.StatusCode)
+	}
+
+	var plan api.RoutePlan
+	if err := json.NewDecoder(res.Body).Decode(&plan); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if plan.ID == "" || plan.Title == "" {
+		t.Fatalf("missing id/title")
+	}
+	if len(plan.Pois) != 0 {
+		t.Fatalf("expected no pois for normal route")
+	}
+	if len(plan.Legs) == 0 {
+		t.Fatalf("expected at least one leg")
+	}
+}
+
 func TestSocialSessions(t *testing.T) {
 	cfg := &config.Config{Port: "8080"}
 	poiRepo := pois.NewRepository("../data/pois.json")

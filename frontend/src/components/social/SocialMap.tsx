@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import L from 'leaflet';
-import { MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'react-leaflet';
+import { MapContainer, Marker, TileLayer, Tooltip } from 'react-leaflet';
 import type { Poi, SocialParticipant } from '@/api/types';
 import { cn } from '@/lib/utils';
 
@@ -56,14 +56,6 @@ function seedColor(seed: string) {
   return `hsl(${hue}, 78%, 48%)`;
 }
 
-function MapViewport(props: { center: { lat: number; lng: number } }) {
-  const map = useMap();
-  useEffect(() => {
-    map.setView([props.center.lat, props.center.lng], map.getZoom(), { animate: true });
-  }, [map, props.center.lat, props.center.lng]);
-  return null;
-}
-
 export function SocialMap(props: {
   center: { lat: number; lng: number };
   participants: SocialParticipant[];
@@ -81,14 +73,6 @@ export function SocialMap(props: {
     () => liveParticipants.find((p) => p.id === props.currentParticipantId) ?? liveParticipants[0],
     [liveParticipants, props.currentParticipantId]
   );
-  const midpointConnections = useMemo(() => {
-    if (!currentParticipant) return [] as [number, number][][];
-    return props.recommendations.slice(0, 3).map((poi) => {
-      const start: [number, number] = [currentParticipant.lat as number, currentParticipant.lng as number];
-      const end: [number, number] = [poi.location.lat, poi.location.lng];
-      return [start, end];
-    });
-  }, [currentParticipant, props.recommendations]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -108,19 +92,10 @@ export function SocialMap(props: {
         ref={mapRef}
         className="h-full w-full"
       >
-        <MapViewport center={props.center} />
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
-
-        {midpointConnections.map((path, index) => (
-          <Polyline
-            key={`midpoint-${index}`}
-            positions={path as [[number, number], [number, number]]}
-            pathOptions={{ color: ['#004be3', '#7c3aed', '#f97316'][index % 3], weight: 3, opacity: 0.8, dashArray: '8 8' }}
-          />
-        ))}
 
         {currentParticipant && (
           <Marker

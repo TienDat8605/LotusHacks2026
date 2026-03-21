@@ -2,6 +2,7 @@ import type {
   AssistantResponse,
   ChatMessage,
   JoinByCodeResponse,
+  LocationSuggestion,
   Poi,
   UploadLocationRequest,
   UploadLocationResponse,
@@ -15,7 +16,9 @@ import type {
 export type ApiMode = 'stub' | 'real';
 
 export type ApiClient = {
+  searchLocations: (query: string, limit?: number) => Promise<LocationSuggestion[]>;
   planRoute: (req: RoutePlanRequest) => Promise<RoutePlan>;
+  planNormalRoute: (req: RoutePlanRequest) => Promise<RoutePlan>;
   sendAssistantMessage: (threadId: string, text: string) => Promise<AssistantResponse>;
   listSocialSessions: () => Promise<SocialSession[]>;
   createSocialSession: (destinationName: string) => Promise<SocialSession>;

@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
-import MapDashboard from '@/pages/MapDashboard';
 import RoutePlanner from '@/pages/RoutePlanner';
 import RouteResults from '@/pages/RouteResults';
 import VibeCheck from '@/pages/VibeCheck';
@@ -14,7 +13,7 @@ export default function App() {
     <Router>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<MapDashboard />} />
+          <Route path="/" element={<Navigate to="/plan" replace />} />
           <Route path="/plan" element={<RoutePlanner />} />
           <Route path="/results/:routeId" element={<RouteResults />} />
           <Route path="/results/:routeId/vibe/:poiId" element={<VibeCheck />} />
@@ -23,7 +22,7 @@ export default function App() {
           <Route path="/ugc" element={<UploadLocation />} />
           <Route path="/profile" element={<ProfileSettings />} />
         </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/plan" replace />} />
       </Routes>
     </Router>
   );
