@@ -6,6 +6,7 @@ services:
     init: true
     environment:
       APP_DOMAIN: "${APP_DOMAIN:-localhost}"
+      CADDY_TLS_MODE: "${CADDY_TLS_MODE:-internal}"
     ports:
       - "80:80"
       - "443:443"
