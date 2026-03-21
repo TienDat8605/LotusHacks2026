@@ -61,6 +61,8 @@ services:
       CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
       POI_DATA_PATH: ../data/data.json
       UGC_SERVICE_URL: http://ai-service:8090
+      GOCACHE: /root/.cache/go-build
+      GOMODCACHE: /go/pkg/mod
     ports:
       - "8080:8080"
     volumes:
