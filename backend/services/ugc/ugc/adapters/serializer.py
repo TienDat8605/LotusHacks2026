@@ -8,6 +8,15 @@ from ..config import UGC_PIPELINE_VERSION
 from ..types import CharacteristicRow, JudgeResult, VideoMetadata
 
 
+def _normalize_stt_source(provider_map: dict[str, str]) -> str:
+    raw = provider_map.get("stt", "").split(":", 1)[0].strip()
+    if raw == "interfaze_stt":
+        return "interfaze"
+    if raw.endswith("_stt"):
+        return raw[:-4]
+    return raw
+
+
 class DefaultCharacteristicSerializer:
     """Serializes characteristics to JSONL-compatible format.
 
@@ -38,18 +47,26 @@ class DefaultCharacteristicSerializer:
         """
         # Build characteristic string in existing format: k=v ; k=v ; ...
         parts = [
-            f"poi = {meta.poi_name}",
-            f"city = {meta.poi_city}",
-            f"characteristic_vi = {judge_result.characteristic_vi}",
-            f"confidence = {judge_result.confidence:.2f}",
+            f"poi={meta.poi_name}",
+            f"city={meta.poi_city}",
         ]
+        stt_provider = _normalize_stt_source(provider_map)
+        if stt_provider:
+            parts.append(f"stt_source={stt_provider}")
+
+        parts.extend(
+            [
+                f"characteristic_vi={judge_result.characteristic_vi}",
+                f"confidence={judge_result.confidence:.2f}",
+            ]
+        )
 
         if judge_result.evidence_quotes:
-            evidence = " | ".join(judge_result.evidence_quotes[:3])
-            parts.append(f"evidence = {evidence}")
+            evidence = " | ".join(f"\"{quote}\"" for quote in judge_result.evidence_quotes[:3])
+            parts.append(f"evidence={evidence}")
 
         if meta.poi_address:
-            parts.append(f"address = {meta.poi_address}")
+            parts.append(f"address={meta.poi_address}")
 
         characteristic = " ; ".join(parts)
 

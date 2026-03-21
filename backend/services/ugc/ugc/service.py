@@ -15,26 +15,30 @@ from __future__ import annotations
 import dataclasses
 import uuid
 from datetime import datetime, timezone
-from pathlib import Path
 
 from .config import UGCConfig
 from .contracts import (
     CharacteristicSerializer,
+    CharacteristicJudge,
+    DataRecordRepository,
+    Geocoder,
     JobRepository,
     OcrExtractor,
     Transcriber,
     VectorIndexer,
     VideoStorage,
-    CharacteristicJudge,
 )
 from .errors import (
     InvalidVideoFormatError,
+    VideoTooLargeError,
     JobNotFoundError,
     UGCError,
-    VideoTooLargeError,
 )
 from .types import (
+    GeocodeResult,
+    IndexResult,
     JobStatus,
+    TikTokDataRecord,
     UGCJob,
     VideoMetadata,
 )
@@ -53,6 +57,8 @@ class UGCService:
         serializer: CharacteristicSerializer,
         indexer: VectorIndexer,
         jobs: JobRepository,
+        geocoder: Geocoder,
+        data_records: DataRecordRepository,
     ) -> None:
         self._cfg = cfg
         self._storage = storage
@@ -62,17 +68,20 @@ class UGCService:
         self._serializer = serializer
         self._indexer = indexer
         self._jobs = jobs
+        self._geocoder = geocoder
+        self._data_records = data_records
 
     def health(self) -> dict:
         """Check service health status."""
         errors = self._cfg.validate_for_processing()
 
         # Check storage path
-        storage_ready = self._cfg.storage_path.parent.exists() or True
-        jobs_ready = self._cfg.jobs_path.parent.exists() or True
+        storage_ready = self._cfg.storage_path.parent.exists()
+        jobs_ready = self._cfg.jobs_path.parent.exists()
+        dataset_ready = self._cfg.dataset_path.parent.exists()
 
         status = "ok" if not errors else "degraded"
-        if not storage_ready or not jobs_ready:
+        if not storage_ready or not jobs_ready or not dataset_ready:
             status = "unhealthy"
 
         return {
@@ -80,6 +89,7 @@ class UGCService:
             "service": "ugc",
             "storage_ready": storage_ready,
             "jobs_ready": jobs_ready,
+            "dataset_ready": dataset_ready,
             "providers_configured": len(errors) == 0,
             "errors": errors,
         }
@@ -128,6 +138,8 @@ class UGCService:
             poi_name=metadata.poi_name,
             poi_city=metadata.poi_city,
             poi_address=metadata.poi_address,
+            short_description=metadata.short_description,
+            atmosphere=metadata.atmosphere,
             user_id=metadata.user_id,
             upload_id=upload_id,
             original_filename=original_filename,
@@ -163,6 +175,29 @@ class UGCService:
             raise
 
         return job
+
+    def submit_and_process_video(
+        self,
+        content: bytes,
+        metadata: VideoMetadata,
+        content_type: str = "video/mp4",
+        original_filename: str | None = None,
+    ) -> UGCJob:
+        """Store a video and run the full pipeline before returning."""
+        job = self.submit_video(
+            content=content,
+            metadata=metadata,
+            content_type=content_type,
+            original_filename=original_filename,
+        )
+
+        try:
+            return self.process_job(job.job_id)
+        except Exception:
+            failed_job = self.get_job(job.job_id)
+            if failed_job is not None:
+                return failed_job
+            raise
 
     def process_job(self, job_id: str) -> UGCJob:
         """Process a pending job through the full pipeline.
@@ -214,9 +249,17 @@ class UGCService:
         # Step 1: STT
         try:
             transcription = self._transcriber.transcribe(video_path)
-            job = dataclasses.replace(job, transcription=transcription)
+            provider_map = dict(job.provider_map)
+            provider_map["stt"] = f"{transcription.provider}:{transcription.model}"
+            job = dataclasses.replace(
+                job,
+                transcription=transcription,
+                provider_map=provider_map,
+            )
             trace["stt_status"] = "success"
             trace["stt_text_length"] = len(transcription.text)
+            trace["stt_provider_used"] = transcription.provider
+            trace["stt_model_used"] = transcription.model
         except Exception as e:
             trace["stt_status"] = "failed"
             trace["stt_error"] = str(e)
@@ -226,12 +269,26 @@ class UGCService:
         try:
             ocr_result = self._ocr.extract(video_path)
             job = dataclasses.replace(job, ocr=ocr_result)
-            trace["ocr_status"] = "success"
-            trace["ocr_frame_count"] = ocr_result.frame_count
+            if ocr_result.provider == "disabled":
+                trace["ocr_status"] = "skipped"
+            else:
+                trace["ocr_status"] = "success"
+                trace["ocr_frame_count"] = ocr_result.frame_count
         except Exception as e:
             trace["ocr_status"] = "failed"
             trace["ocr_error"] = str(e)
             ocr_result = None
+
+        if not transcription or not transcription.text.strip():
+            job = dataclasses.replace(
+                job,
+                status=JobStatus.FAILED,
+                error="No transcription extracted from video",
+                trace=trace,
+                updated_at=datetime.now(timezone.utc),
+            )
+            self._jobs.update(job)
+            return job
 
         # Combine evidence
         evidence_parts = []
@@ -291,9 +348,36 @@ class UGCService:
             judge_result=judge_result,
             provider_map=job.provider_map,
         )
-        trace["serialized_characteristic"] = char_row.characteristic[:200]
+        trace["serialized_characteristic"] = char_row.characteristic
+        trace["serialized_characteristic_preview"] = char_row.characteristic[:200]
+        trace["characteristic_raw"] = char_row.characteristic
 
-        # Step 5: Index
+        # Step 5: Geocode + persist dataset record
+        geocode_result = self._geocode_metadata(job.metadata, trace)
+        dataset_record = self._build_dataset_record(
+            job=job,
+            evidence=evidence,
+            characteristic_raw=char_row.characteristic,
+            geocode_result=geocode_result,
+        )
+        try:
+            dataset_path = self._data_records.upsert(dataset_record)
+            trace["dataset_status"] = "success"
+            trace["dataset_path"] = dataset_path
+        except Exception as e:
+            trace["dataset_status"] = "failed"
+            trace["dataset_error"] = str(e)
+            job = dataclasses.replace(
+                job,
+                status=JobStatus.FAILED,
+                error=f"Dataset persistence failed: {e}",
+                trace=trace,
+                updated_at=datetime.now(timezone.utc),
+            )
+            self._jobs.update(job)
+            raise
+
+        # Step 6: Index
         try:
             index_result = self._indexer.index_characteristic(char_row)
             job = dataclasses.replace(job, index=index_result)
@@ -305,13 +389,8 @@ class UGCService:
             trace["index_error"] = str(e)
             job = dataclasses.replace(
                 job,
-                status=JobStatus.FAILED,
-                error=f"Indexing failed: {e}",
-                trace=trace,
-                updated_at=datetime.now(timezone.utc),
+                index=self._build_failed_index_result(job.video_id, e),
             )
-            self._jobs.update(job)
-            raise
 
         # Mark as completed
         job = dataclasses.replace(
@@ -323,6 +402,89 @@ class UGCService:
         self._jobs.update(job)
 
         return job
+
+    def _geocode_metadata(
+        self,
+        metadata: VideoMetadata,
+        trace: dict,
+    ) -> GeocodeResult | None:
+        query_parts = [
+            metadata.poi_address or "",
+            metadata.poi_name,
+            metadata.poi_city,
+        ]
+        query = ", ".join(part.strip() for part in query_parts if part and part.strip())
+        if not query:
+            trace["geocode_status"] = "skipped"
+            return None
+
+        result = self._geocoder.geocode(query)
+        if result is None:
+            trace["geocode_status"] = "not_found"
+            return None
+
+        trace["geocode_status"] = "success"
+        trace["geocode_source"] = result.source
+        trace["geocode_lat"] = result.lat
+        trace["geocode_lng"] = result.lng
+        return result
+
+    def _build_dataset_record(
+        self,
+        job: UGCJob,
+        evidence: str,
+        characteristic_raw: str,
+        geocode_result: GeocodeResult | None,
+    ) -> TikTokDataRecord:
+        if job.judge is None:
+            raise UGCError("Cannot persist dataset record without a judge result")
+
+        stt_source = ""
+        if job.transcription is not None:
+            stt_source = job.transcription.provider
+            if stt_source == "interfaze_stt":
+                stt_source = "interfaze"
+            if stt_source.endswith("_stt"):
+                stt_source = stt_source[:-4]
+        evidence_quotes = [
+            f"\"{quote.strip()}\""
+            for quote in job.judge.evidence_quotes[:3]
+            if quote.strip()
+        ]
+        if not evidence_quotes:
+            evidence_quotes = [
+                f"\"{segment.strip()}\""
+                for segment in evidence.splitlines()
+                if segment.strip()
+            ][:3]
+        evidence_text = " | ".join(evidence_quotes).strip()
+        return TikTokDataRecord(
+            video_id=job.video_id,
+            video_url="",
+            poi_name=job.metadata.poi_name,
+            poi_address=job.metadata.poi_address or "",
+            poi_city=job.metadata.poi_city,
+            lat=geocode_result.lat if geocode_result else "",
+            lng=geocode_result.lng if geocode_result else "",
+            geo_source=geocode_result.source if geocode_result else "",
+            stt_source=stt_source,
+            confidence=f"{job.judge.confidence:.2f}",
+            characteristic_vi=job.judge.characteristic_vi,
+            evidence=evidence_text[:2000],
+            characteristic_raw=characteristic_raw,
+            video_playcount="",
+            location_type="",
+            image_url="",
+        )
+
+    def _build_failed_index_result(self, video_id: str, error: Exception) -> IndexResult:
+        return IndexResult(
+            collection=self._cfg.index_collection,
+            doc_id=video_id,
+            point_id="",
+            indexed=False,
+            error=str(error),
+        )
 
     def get_job(self, job_id: str) -> UGCJob | None:
         """Get a job by ID.

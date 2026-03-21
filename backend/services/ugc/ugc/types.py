@@ -81,6 +81,15 @@ class StorageResult:
     stored: bool
 
 
+@dataclass(frozen=True)
+class GeocodeResult:
+    """Result of geocoding a location query."""
+
+    lat: str
+    lng: str
+    source: str
+
+
 @dataclass
 class VideoMetadata:
     """Metadata about an uploaded video."""
@@ -126,3 +135,45 @@ class CharacteristicRow:
     upload_id: str | None = None
     provider_map: dict[str, str] = field(default_factory=dict)
     created_at: str | None = None
+
+
+@dataclass(frozen=True)
+class TikTokDataRecord:
+    """Persisted record compatible with the existing TikTok-shaped dataset."""
+
+    video_id: str
+    video_url: str
+    poi_name: str
+    poi_address: str
+    poi_city: str
+    lat: str
+    lng: str
+    geo_source: str
+    stt_source: str
+    confidence: str
+    characteristic_vi: str
+    evidence: str
+    characteristic_raw: str
+    video_playcount: str
+    location_type: str
+    image_url: str
+
+    def to_dict(self) -> dict[str, str]:
+        return {
+            "video_id": self.video_id,
+            "video_url": self.video_url,
+            "poi_name": self.poi_name,
+            "poi_address": self.poi_address,
+            "poi_city": self.poi_city,
+            "lat": self.lat,
+            "lng": self.lng,
+            "geo_source": self.geo_source,
+            "stt_source": self.stt_source,
+            "confidence": self.confidence,
+            "characteristic_vi": self.characteristic_vi,
+            "evidence": self.evidence,
+            "characteristic_raw": self.characteristic_raw,
+            "video_playcount": self.video_playcount,
+            "location_type": self.location_type,
+            "image_url": self.image_url,
+        }

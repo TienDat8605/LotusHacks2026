@@ -118,9 +118,24 @@ export type UploadLocationRequest = {
   atmosphere?: string;
 };
 
+export type UploadLocationResult = {
+  characteristic?: string | null;
+  characteristicRaw?: string | null;
+  confidence?: number | null;
+  indexed?: boolean;
+  datasetStored?: boolean;
+  datasetPath?: string | null;
+  providerMap?: Record<string, string>;
+  transcriptionText?: string | null;
+  ocrText?: string | null;
+};
+
 export type UploadLocationResponse = {
   jobId: string;
   videoId: string;
   status: 'queued' | 'processing' | 'completed' | 'failed';
   createdAt: string;
+  updatedAt?: string;
+  error?: string | null;
+  result?: UploadLocationResult | null;
 };

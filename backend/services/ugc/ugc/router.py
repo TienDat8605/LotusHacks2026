@@ -23,7 +23,6 @@ from .schemas import (
     HealthCheckResponse,
     JobResultDetail,
     JobStatusResponse,
-    VideoUploadResponse,
 )
 from .service import UGCService
 from .types import JobStatus, VideoMetadata
@@ -45,12 +44,41 @@ def create_ugc_router(
     if service is None:
         service = create_ugc_service(cfg)
 
-    router = APIRouter(prefix="/api/ugc", tags=["ugc"])
+    router = APIRouter(prefix="/ugc", tags=["ugc"])
 
     def to_api_status(value: str) -> str:
         if value == JobStatus.PENDING.value:
             return "queued"
         return value
+
+    def to_job_result(job) -> JobResultDetail | None:
+        if job.judge is None and job.transcription is None and job.ocr is None:
+            return None
+
+        return JobResultDetail(
+            characteristic=job.judge.characteristic_vi
+            if job.judge and job.judge.accepted
+            else None,
+            characteristicRaw=job.trace.get("characteristic_raw"),
+            confidence=job.judge.confidence if job.judge else None,
+            indexed=job.index.indexed if job.index else False,
+            datasetStored=job.trace.get("dataset_status") == "success",
+            datasetPath=job.trace.get("dataset_path"),
+            providerMap=job.provider_map,
+            transcriptionText=job.transcription.text if job.transcription else None,
+            ocrText=job.ocr.text if job.ocr else None,
+        )
+
+    def to_job_status_response(job) -> JobStatusResponse:
+        return JobStatusResponse(
+            jobId=job.job_id,
+            videoId=job.video_id,
+            status=to_api_status(job.status.value),
+            createdAt=job.created_at,
+            updatedAt=job.updated_at,
+            error=job.error,
+            result=to_job_result(job),
+        )
 
     @router.get("/health", response_model=HealthCheckResponse)
     def health() -> HealthCheckResponse:
@@ -60,8 +88,8 @@ def create_ugc_router(
 
     @router.post(
         "/videos",
-        response_model=VideoUploadResponse,
-        status_code=status.HTTP_202_ACCEPTED,
+        response_model=JobStatusResponse,
+        status_code=status.HTTP_200_OK,
         responses={
             400: {"model": ErrorResponse, "description": "Invalid request"},
             413: {"model": ErrorResponse, "description": "Video too large"},
@@ -88,12 +116,11 @@ def create_ugc_router(
         user_id: Annotated[
             str | None, Form(description="User ID of the uploader")
         ] = None,
-    ) -> VideoUploadResponse:
+    ) -> JobStatusResponse:
         """Upload a video for UGC processing.
 
-        Accepts a video file with POI metadata and enqueues it for
-        asynchronous processing. Returns immediately with a job ID
-        that can be used to check status.
+        Accepts a video file with POI metadata, stores it, processes
+        it synchronously, and returns the resulting job state.
         """
         # Validate inputs
         effective_poi_name = (point_of_interest or poi_name or "").strip()
@@ -138,7 +165,7 @@ def create_ugc_router(
 
         # Submit video
         try:
-            job = service.submit_video(
+            job = service.submit_and_process_video(
                 content=content,
                 metadata=metadata,
                 content_type=file.content_type or "video/mp4",
@@ -160,12 +187,7 @@ def create_ugc_router(
                 detail=str(e),
             )
 
-        return VideoUploadResponse(
-            jobId=job.job_id,
-            videoId=job.video_id,
-            status=to_api_status(job.status.value),
-            createdAt=job.created_at,
-        )
+        return to_job_status_response(job)
 
     @router.get(
         "/jobs/{job_id}",
@@ -183,27 +205,7 @@ def create_ugc_router(
                 detail=f"Job not found: {job_id}",
             )
 
-        # Build result detail if completed
-        result = None
-        if job.judge is not None:
-            result = JobResultDetail(
-                characteristic=job.judge.characteristic_vi if job.judge.accepted else None,
-                confidence=job.judge.confidence,
-                indexed=job.index.indexed if job.index else False,
-                providerMap=job.provider_map,
-                transcriptionText=job.transcription.text if job.transcription else None,
-                ocrText=job.ocr.text if job.ocr else None,
-            )
-
-        return JobStatusResponse(
-            jobId=job.job_id,
-            videoId=job.video_id,
-            status=to_api_status(job.status.value),
-            createdAt=job.created_at,
-            updatedAt=job.updated_at,
-            error=job.error,
-            result=result,
-        )
+        return to_job_status_response(job)
 
     @router.post(
         "/jobs/{job_id}/process",
@@ -233,26 +235,6 @@ def create_ugc_router(
                 detail=str(e),
             )
 
-        # Build result detail
-        result = None
-        if job.judge is not None:
-            result = JobResultDetail(
-                characteristic=job.judge.characteristic_vi if job.judge.accepted else None,
-                confidence=job.judge.confidence,
-                indexed=job.index.indexed if job.index else False,
-                providerMap=job.provider_map,
-                transcriptionText=job.transcription.text if job.transcription else None,
-                ocrText=job.ocr.text if job.ocr else None,
-            )
-
-        return JobStatusResponse(
-            jobId=job.job_id,
-            videoId=job.video_id,
-            status=to_api_status(job.status.value),
-            createdAt=job.created_at,
-            updatedAt=job.updated_at,
-            error=job.error,
-            result=result,
-        )
+        return to_job_status_response(job)
 
     return router

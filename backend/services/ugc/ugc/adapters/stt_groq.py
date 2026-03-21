@@ -16,9 +16,9 @@ from ..types import TranscriptionResult, TranscriptionSegment
 class GroqWhisperTranscriber:
     """Speech-to-text transcription using Groq's Whisper API."""
 
-    def __init__(self, cfg: UGCConfig) -> None:
+    def __init__(self, cfg: UGCConfig, model: str | None = None) -> None:
         self._api_key = cfg.groq_api_key
-        self._model = cfg.stt_model
+        self._model = model or cfg.stt_model
         self._provider = "groq_whisper"
 
     def transcribe(self, video_path: Path) -> TranscriptionResult:

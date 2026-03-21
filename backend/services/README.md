@@ -25,6 +25,9 @@ Fill in:
 - `OPENAI_API_KEY`
 - `ZILLIZ_URI`
 - `ZILLIZ_TOKEN`
+- `INTERFAZE_API_KEY` for UGC upload processing
+- `OPENAI_API_KEY` and `QDRANT_URL` if you want UGC indexing enabled
+- `ORS_API_KEY` or `VIETMAP_API_KEY` if you want uploaded records geocoded into `data/data.json`
 
 ## Offline embed + upload
 

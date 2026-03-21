@@ -53,8 +53,11 @@ class JobResultDetail(BaseModel):
     """Details of a completed job result."""
 
     characteristic: str | None = None
+    characteristicRaw: str | None = None
     confidence: float | None = Field(default=None, ge=0, le=1)
     indexed: bool = False
+    datasetStored: bool = False
+    datasetPath: str | None = None
     providerMap: dict[str, str] = Field(default_factory=dict)
     transcriptionText: str | None = None
     ocrText: str | None = None
@@ -67,6 +70,7 @@ class HealthCheckResponse(BaseModel):
     service: str = "ugc"
     storage_ready: bool
     jobs_ready: bool
+    dataset_ready: bool
     providers_configured: bool
     errors: list[str] = Field(default_factory=list)
 

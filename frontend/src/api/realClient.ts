@@ -32,6 +32,7 @@ function decodeEventPayload(raw: string): SocialEvent | null {
 export function createRealApiClient(): ApiClient {
   const base = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '';
   const aiBase = (import.meta.env.VITE_AI_API_BASE_URL as string | undefined) ?? base;
+  const ugcBase = (import.meta.env.VITE_UGC_API_BASE_URL as string | undefined) ?? base;
 
   return {
     searchLocations: (query, limit = 5) =>
@@ -104,7 +105,7 @@ export function createRealApiClient(): ApiClient {
       if (req.shortDescription) form.append('short_description', req.shortDescription);
       if (req.atmosphere) form.append('atmosphere', req.atmosphere);
 
-      const res = await fetch(`${base}/api/ugc/videos`, {
+      const res = await fetch(`${ugcBase}/api/ugc/videos`, {
         method: 'POST',
         body: form,
       });

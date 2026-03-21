@@ -8,12 +8,19 @@ interfaces; provider binding happens here.
 from __future__ import annotations
 
 from .adapters import (
+    DataJsonRepository,
     DefaultCharacteristicSerializer,
+    FallbackTranscriber,
     FileSystemVideoStorage,
+    HttpGeocoder,
     GroqWhisperTranscriber,
+    InterfazeCharacteristicJudge,
+    InterfazeOcrExtractor,
+    InterfazeSpeechTranscriber,
     JsonJobRepository,
     MistralCharacteristicJudge,
     MistralOcrExtractor,
+    NoopOcrExtractor,
     QdrantVectorIndexer,
 )
 from .config import UGCConfig
@@ -43,6 +50,8 @@ def create_ugc_service(cfg: UGCConfig | None = None) -> UGCService:
     serializer = _create_serializer()
     indexer = _create_indexer(cfg)
     jobs = _create_job_repository(cfg)
+    geocoder = _create_geocoder(cfg)
+    data_records = _create_data_repository(cfg)
 
     return UGCService(
         cfg=cfg,
@@ -53,6 +62,8 @@ def create_ugc_service(cfg: UGCConfig | None = None) -> UGCService:
         serializer=serializer,
         indexer=indexer,
         jobs=jobs,
+        geocoder=geocoder,
+        data_records=data_records,
     )
 
 
@@ -62,31 +73,60 @@ def _create_storage(cfg: UGCConfig) -> FileSystemVideoStorage:
     return FileSystemVideoStorage(cfg)
 
 
-def _create_transcriber(cfg: UGCConfig) -> GroqWhisperTranscriber:
+def _create_transcriber(cfg: UGCConfig) -> InterfazeSpeechTranscriber | GroqWhisperTranscriber:
     """Create STT transcriber adapter based on provider config."""
-    if cfg.stt_provider == "groq_whisper":
-        return GroqWhisperTranscriber(cfg)
-    else:
-        # Default to Groq Whisper
-        return GroqWhisperTranscriber(cfg)
+    primary = _create_single_transcriber(cfg, cfg.stt_provider, cfg.stt_model)
+    if cfg.stt_fallback_provider == "disabled" or cfg.stt_fallback_provider == cfg.stt_provider:
+        return primary
+    fallback = _create_single_transcriber(
+        cfg,
+        cfg.stt_fallback_provider,
+        cfg.stt_fallback_model,
+    )
+    return FallbackTranscriber(
+        primary=primary,
+        fallback=fallback,
+        primary_name=cfg.stt_provider,
+        fallback_name=cfg.stt_fallback_provider,
+    )
 
 
-def _create_ocr_extractor(cfg: UGCConfig) -> MistralOcrExtractor:
+def _create_single_transcriber(
+    cfg: UGCConfig,
+    provider: str,
+    model: str,
+) -> InterfazeSpeechTranscriber | GroqWhisperTranscriber:
+    if provider == "interfaze_stt":
+        return InterfazeSpeechTranscriber(cfg, model=model)
+    if provider == "groq_whisper":
+        return GroqWhisperTranscriber(cfg, model=model)
+    return InterfazeSpeechTranscriber(cfg, model=model)
+
+
+def _create_ocr_extractor(
+    cfg: UGCConfig,
+) -> NoopOcrExtractor | InterfazeOcrExtractor | MistralOcrExtractor:
     """Create OCR extractor adapter based on provider config."""
+    if cfg.ocr_provider == "disabled":
+        return NoopOcrExtractor()
+    if cfg.ocr_provider == "interfaze_vision":
+        return InterfazeOcrExtractor(cfg)
     if cfg.ocr_provider == "mistral_ocr":
         return MistralOcrExtractor(cfg)
     else:
-        # Default to Mistral OCR
-        return MistralOcrExtractor(cfg)
+        return NoopOcrExtractor()
 
 
-def _create_judge(cfg: UGCConfig) -> MistralCharacteristicJudge:
+def _create_judge(
+    cfg: UGCConfig,
+) -> InterfazeCharacteristicJudge | MistralCharacteristicJudge:
     """Create characteristic judge adapter based on provider config."""
+    if cfg.judge_provider == "interfaze_chat":
+        return InterfazeCharacteristicJudge(cfg)
     if cfg.judge_provider == "mistral_chat":
         return MistralCharacteristicJudge(cfg)
     else:
-        # Default to Mistral chat
-        return MistralCharacteristicJudge(cfg)
+        return InterfazeCharacteristicJudge(cfg)
 
 
 def _create_serializer() -> DefaultCharacteristicSerializer:
@@ -103,3 +143,13 @@ def _create_job_repository(cfg: UGCConfig) -> JsonJobRepository:
     """Create job repository adapter."""
     # Currently only JSON file-based repository is supported
     return JsonJobRepository(cfg)
+
+
+def _create_geocoder(cfg: UGCConfig) -> HttpGeocoder:
+    """Create geocoder adapter."""
+    return HttpGeocoder(cfg)
+
+
+def _create_data_repository(cfg: UGCConfig) -> DataJsonRepository:
+    """Create dataset persistence adapter."""
+    return DataJsonRepository(cfg)

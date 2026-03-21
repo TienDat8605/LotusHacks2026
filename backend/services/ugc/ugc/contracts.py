@@ -13,10 +13,12 @@ from typing import Protocol
 
 from .types import (
     CharacteristicRow,
+    GeocodeResult,
     IndexResult,
     JudgeResult,
     OcrResult,
     StorageResult,
+    TikTokDataRecord,
     TranscriptionResult,
     UGCJob,
     VideoMetadata,
@@ -234,5 +236,37 @@ class JobRepository(Protocol):
 
         Returns:
             List of matching jobs.
+        """
+        ...
+
+
+class Geocoder(Protocol):
+    """Interface for resolving an address or place into coordinates."""
+
+    @abstractmethod
+    def geocode(self, query: str) -> GeocodeResult | None:
+        """Resolve a query into coordinates.
+
+        Args:
+            query: A human-readable address or place string.
+
+        Returns:
+            A geocoding result if one could be resolved, else None.
+        """
+        ...
+
+
+class DataRecordRepository(Protocol):
+    """Interface for persisting records in the app's TikTok-style dataset."""
+
+    @abstractmethod
+    def upsert(self, record: TikTokDataRecord) -> str:
+        """Create or replace a dataset record.
+
+        Args:
+            record: The normalized dataset record.
+
+        Returns:
+            The persisted dataset path.
         """
         ...

@@ -20,19 +20,25 @@ except ImportError:
 
 
 # Default provider/model selections
-DEFAULT_STT_PROVIDER = "groq_whisper"
-DEFAULT_STT_MODEL = "whisper-large-v3-turbo"
-DEFAULT_OCR_PROVIDER = "mistral_ocr"
-DEFAULT_OCR_MODEL = "mistral-ocr-latest"
-DEFAULT_JUDGE_PROVIDER = "mistral_chat"
-DEFAULT_JUDGE_MODEL = "mistral-small-latest"
-DEFAULT_EMBED_PROVIDER = "mistral_embed"
-DEFAULT_EMBED_MODEL = "mistral-embed"
+DEFAULT_STT_PROVIDER = "interfaze_stt"
+DEFAULT_STT_MODEL = "interfaze-beta"
+DEFAULT_STT_FALLBACK_PROVIDER = "disabled"
+DEFAULT_STT_FALLBACK_MODEL = "whisper-large-v3-turbo"
+DEFAULT_OCR_PROVIDER = "disabled"
+DEFAULT_OCR_MODEL = "interfaze-beta"
+DEFAULT_JUDGE_PROVIDER = "interfaze_chat"
+DEFAULT_JUDGE_MODEL = "interfaze-beta"
+DEFAULT_EMBED_PROVIDER = "disabled"
+DEFAULT_EMBED_MODEL = "disabled"
 DEFAULT_INDEX_COLLECTION = "video_characteristics"
+DEFAULT_INTERFAZE_BASE_URL = "https://api.interfaze.ai/v1"
+DEFAULT_INTERFAZE_AUDIO_PATH = "/audio/transcriptions"
+DEFAULT_INTERFAZE_CHAT_PATH = "/chat/completions"
 
 # Storage defaults
 DEFAULT_STORAGE_PATH = "ugc_videos"
 DEFAULT_JOBS_PATH = "ugc_jobs"
+DEFAULT_DATASET_PATH = "data.json"
 DEFAULT_MAX_VIDEO_SIZE_MB = 100
 DEFAULT_ALLOWED_VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm"]
 
@@ -101,6 +107,14 @@ def _load_env_file(env_file: Path | None) -> None:
     load_dotenv(root_env)
 
 
+def _resolve_service_path(raw_path: str, services_dir: Path) -> Path:
+    """Resolve a possibly-relative service path against the services directory."""
+    path = Path(raw_path).expanduser()
+    if path.is_absolute():
+        return path.resolve()
+    return (services_dir / path).resolve()
+
+
 @dataclass(frozen=True)
 class UGCConfig:
     """Configuration for UGC video ingestion pipeline.
@@ -110,23 +124,30 @@ class UGCConfig:
     """
 
     # STT (Speech-to-Text) configuration
-    stt_provider: Literal["groq_whisper"]
+    stt_provider: Literal["interfaze_stt", "groq_whisper"]
     stt_model: str
+    stt_fallback_provider: Literal["disabled", "interfaze_stt", "groq_whisper"]
+    stt_fallback_model: str
+    interfaze_api_key: str | None
+    interfaze_base_url: str
+    interfaze_audio_path: str
+    interfaze_chat_path: str
     groq_api_key: str | None
 
     # OCR configuration
-    ocr_provider: Literal["mistral_ocr"]
+    ocr_provider: Literal["disabled", "interfaze_vision", "mistral_ocr"]
     ocr_model: str
     ocr_frame_interval: float
     ocr_max_frames: int
 
     # Judge/Extractor configuration
-    judge_provider: Literal["mistral_chat"]
+    judge_provider: Literal["interfaze_chat", "mistral_chat"]
     judge_model: str
 
     # Embedding configuration
-    embed_provider: Literal["mistral_embed"]
+    embed_provider: Literal["disabled", "openai_embed", "mistral_embed"]
     embed_model: str
+    openai_api_key: str | None
 
     # Shared Mistral API key (for OCR, judge, embed)
     mistral_api_key: str | None
@@ -139,8 +160,11 @@ class UGCConfig:
     # File storage configuration
     storage_path: Path
     jobs_path: Path
+    dataset_path: Path
     max_video_size_bytes: int
     allowed_video_types: list[str]
+    ors_api_key: str | None
+    vietmap_api_key: str | None
 
     # Pipeline metadata
     pipeline_version: str
@@ -150,34 +174,50 @@ class UGCConfig:
         """Load configuration from environment variables.
 
         Environment Variables:
-            UGC_STT_PROVIDER: STT provider (default: groq_whisper)
-            UGC_STT_MODEL: STT model (default: whisper-large-v3-turbo)
-            UGC_OCR_PROVIDER: OCR provider (default: mistral_ocr)
-            UGC_OCR_MODEL: OCR model (default: mistral-ocr-latest)
-            UGC_JUDGE_PROVIDER: Judge provider (default: mistral_chat)
-            UGC_JUDGE_MODEL: Judge model (default: mistral-small-latest)
-            UGC_EMBED_PROVIDER: Embed provider (default: mistral_embed)
-            UGC_EMBED_MODEL: Embed model (default: mistral-embed)
+            UGC_STT_PROVIDER: STT provider (default: interfaze_stt)
+            UGC_STT_MODEL: STT model (default: interfaze-beta)
+            UGC_STT_FALLBACK_PROVIDER: Optional fallback STT provider (default: disabled)
+            UGC_STT_FALLBACK_MODEL: Optional fallback STT model
+            UGC_OCR_PROVIDER: OCR provider (default: disabled)
+            UGC_OCR_MODEL: OCR model (default: interfaze-beta)
+            UGC_JUDGE_PROVIDER: Judge provider (default: interfaze_chat)
+            UGC_JUDGE_MODEL: Judge model (default: interfaze-beta)
+            UGC_EMBED_PROVIDER: Embed provider (default: disabled)
+            UGC_EMBED_MODEL: Embed model (default: disabled)
+            OPENAI_API_KEY: OpenAI API key for optional embeddings
             UGC_INDEX_COLLECTION: Qdrant collection (default: video_characteristics)
             UGC_STORAGE_PATH: Video storage directory
             UGC_JOBS_PATH: Jobs data directory
             UGC_MAX_VIDEO_SIZE_MB: Max video size in MB (default: 100)
-            GROQ_API_KEY: Groq API key for STT
+            INTERFAZE_API_KEY: Interfaze API key for STT/OCR/judge
+            INTERFAZE_BASE_URL: Interfaze OpenAI-compatible base URL
+            INTERFAZE_AUDIO_PATH: Audio transcription endpoint path
+            INTERFAZE_CHAT_PATH: Chat completion endpoint path
+            GROQ_API_KEY: Groq API key for legacy STT
             MISTRAL_API_KEY: Mistral API key for OCR/judge/embed
             QDRANT_URL: Qdrant server URL
             QDRANT_API_KEY: Qdrant API key (optional)
+            ORS_API_KEY: OpenRouteService key for geocoding
+            VIETMAP_API_KEY: Vietmap key for geocoding
         """
         _load_env_file(env_file)
 
         # Compute storage paths relative to project root
         project_root = _repo_root()
         storage_base = project_root / "data"
+        services_dir = Path(__file__).resolve().parents[2]
 
-        storage_path = Path(
-            os.getenv("UGC_STORAGE_PATH", str(storage_base / DEFAULT_STORAGE_PATH))
+        storage_path = _resolve_service_path(
+            os.getenv("UGC_STORAGE_PATH", str(storage_base / DEFAULT_STORAGE_PATH)),
+            services_dir,
         )
-        jobs_path = Path(
-            os.getenv("UGC_JOBS_PATH", str(storage_base / DEFAULT_JOBS_PATH))
+        jobs_path = _resolve_service_path(
+            os.getenv("UGC_JOBS_PATH", str(storage_base / DEFAULT_JOBS_PATH)),
+            services_dir,
+        )
+        dataset_path = _resolve_service_path(
+            os.getenv("UGC_DATASET_PATH", str(storage_base / DEFAULT_DATASET_PATH)),
+            services_dir,
         )
 
         max_size_mb = int(os.getenv("UGC_MAX_VIDEO_SIZE_MB", DEFAULT_MAX_VIDEO_SIZE_MB))
@@ -193,6 +233,24 @@ class UGCConfig:
             # STT
             stt_provider=os.getenv("UGC_STT_PROVIDER", DEFAULT_STT_PROVIDER),  # type: ignore
             stt_model=os.getenv("UGC_STT_MODEL", DEFAULT_STT_MODEL),
+            stt_fallback_provider=os.getenv(
+                "UGC_STT_FALLBACK_PROVIDER",
+                DEFAULT_STT_FALLBACK_PROVIDER,
+            ),  # type: ignore
+            stt_fallback_model=os.getenv(
+                "UGC_STT_FALLBACK_MODEL",
+                DEFAULT_STT_FALLBACK_MODEL,
+            ),
+            interfaze_api_key=_optional_env("INTERFAZE_API_KEY"),
+            interfaze_base_url=os.getenv("INTERFAZE_BASE_URL", DEFAULT_INTERFAZE_BASE_URL),
+            interfaze_audio_path=os.getenv(
+                "INTERFAZE_AUDIO_PATH",
+                DEFAULT_INTERFAZE_AUDIO_PATH,
+            ),
+            interfaze_chat_path=os.getenv(
+                "INTERFAZE_CHAT_PATH",
+                DEFAULT_INTERFAZE_CHAT_PATH,
+            ),
             groq_api_key=_optional_env("GROQ_API_KEY"),
             # OCR
             ocr_provider=os.getenv("UGC_OCR_PROVIDER", DEFAULT_OCR_PROVIDER),  # type: ignore
@@ -209,6 +267,7 @@ class UGCConfig:
             # Embed
             embed_provider=os.getenv("UGC_EMBED_PROVIDER", DEFAULT_EMBED_PROVIDER),  # type: ignore
             embed_model=os.getenv("UGC_EMBED_MODEL", DEFAULT_EMBED_MODEL),
+            openai_api_key=_optional_env("OPENAI_API_KEY"),
             # Mistral shared key
             mistral_api_key=_optional_env("MISTRAL_API_KEY"),
             # Vector storage
@@ -218,8 +277,11 @@ class UGCConfig:
             # File storage
             storage_path=storage_path,
             jobs_path=jobs_path,
+            dataset_path=dataset_path,
             max_video_size_bytes=max_size_bytes,
             allowed_video_types=allowed_types,
+            ors_api_key=_optional_env("ORS_API_KEY"),
+            vietmap_api_key=_optional_env("VIETMAP_API_KEY"),
             # Pipeline
             pipeline_version=UGC_PIPELINE_VERSION,
         )
@@ -232,14 +294,32 @@ class UGCConfig:
         """
         errors: list[str] = []
 
+        if self.stt_provider == "interfaze_stt" and not self.interfaze_api_key:
+            errors.append("INTERFAZE_API_KEY required for interfaze_stt provider")
+
         if self.stt_provider == "groq_whisper" and not self.groq_api_key:
             errors.append("GROQ_API_KEY required for groq_whisper STT provider")
+
+        if self.stt_fallback_provider == "interfaze_stt" and not self.interfaze_api_key:
+            errors.append("INTERFAZE_API_KEY required for interfaze_stt fallback provider")
+
+        if self.stt_fallback_provider == "groq_whisper" and not self.groq_api_key:
+            errors.append("GROQ_API_KEY required for groq_whisper fallback provider")
+
+        if self.ocr_provider == "interfaze_vision" and not self.interfaze_api_key:
+            errors.append("INTERFAZE_API_KEY required for interfaze_vision provider")
 
         if self.ocr_provider == "mistral_ocr" and not self.mistral_api_key:
             errors.append("MISTRAL_API_KEY required for mistral_ocr OCR provider")
 
+        if self.judge_provider == "interfaze_chat" and not self.interfaze_api_key:
+            errors.append("INTERFAZE_API_KEY required for interfaze_chat provider")
+
         if self.judge_provider == "mistral_chat" and not self.mistral_api_key:
             errors.append("MISTRAL_API_KEY required for mistral_chat judge provider")
+
+        if self.embed_provider == "openai_embed" and not self.openai_api_key:
+            errors.append("OPENAI_API_KEY required for openai_embed embed provider")
 
         if self.embed_provider == "mistral_embed" and not self.mistral_api_key:
             errors.append("MISTRAL_API_KEY required for mistral_embed embed provider")

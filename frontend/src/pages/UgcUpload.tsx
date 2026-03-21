@@ -72,7 +72,7 @@ export default function UgcUpload() {
         <header>
           <h1 className="font-headline text-3xl font-extrabold tracking-tight">Upload Location</h1>
           <p className="text-on-surface-variant mt-2">
-            Pick a video, confirm the metadata, and queue it for backend processing.
+            Pick a video, confirm the metadata, and send it through the backend extraction pipeline.
           </p>
         </header>
 
@@ -222,10 +222,24 @@ export default function UgcUpload() {
           )}
 
           {result && (
-            <div className="rounded-xl bg-primary/10 px-4 py-4">
-              <div className="flex items-center gap-2 text-primary font-extrabold">
-                <CheckCircle2 className="h-4 w-4" />
-                Upload queued
+            <div
+              className={cn(
+                'rounded-xl px-4 py-4',
+                result.status === 'failed' ? 'bg-red-500/10' : 'bg-primary/10'
+              )}
+            >
+              <div
+                className={cn(
+                  'flex items-center gap-2 font-extrabold',
+                  result.status === 'failed' ? 'text-red-700 dark:text-red-300' : 'text-primary'
+                )}
+              >
+                {result.status === 'failed' ? <XCircle className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
+                {result.status === 'completed'
+                  ? 'Upload processed'
+                  : result.status === 'failed'
+                    ? 'Processing failed'
+                    : 'Upload submitted'}
               </div>
               <div className="text-sm mt-2 space-y-1">
                 <div>
@@ -237,6 +251,11 @@ export default function UgcUpload() {
                 <div>
                   <span className="font-bold">Status:</span> {result.status}
                 </div>
+                {result.error && (
+                  <div>
+                    <span className="font-bold">Message:</span> {result.error}
+                  </div>
+                )}
               </div>
             </div>
           )}

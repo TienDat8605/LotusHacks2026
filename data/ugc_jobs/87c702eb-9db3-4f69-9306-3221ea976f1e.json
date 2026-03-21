@@ -1,0 +1,98 @@
+{
+  "job_id": "87c702eb-9db3-4f69-9306-3221ea976f1e",
+  "video_id": "3ad4ec8a-be12-4309-ab0d-d73611553b52",
+  "status": "completed",
+  "created_at": "2026-03-21T12:34:27.465279+00:00",
+  "updated_at": "2026-03-21T12:36:25.125351+00:00",
+  "metadata": {
+    "poi_name": "ga",
+    "poi_city": "Ho Chi Minh City",
+    "poi_address": "dfsf",
+    "short_description": null,
+    "atmosphere": null,
+    "user_id": null,
+    "upload_id": "d745b839-14be-42c8-a8a7-fe66a2a4a243",
+    "original_filename": "Qu\u00e1n \u0103n mi\u1ec1n T\u00e2y l\u1ecdt danh s\u00e1ch Michelin #shorts #hanoi #review.mp4"
+  },
+  "provider_map": {
+    "stt": "interfaze:interfaze-beta",
+    "ocr": "disabled:interfaze-beta",
+    "judge": "interfaze_chat:interfaze-beta",
+    "embed": "disabled:disabled"
+  },
+  "transcription": {
+    "text": "10 n\u0103m g\u1eafn b\u00f3 v\u1edbi th\u1ef1c kh\u00e1ch H\u00e0 Th\u00e0nh, Mr. B\u1ea3y mi\u1ec1n T\u00e2y c\u1ee7a ch\u1ee7 qu\u00e1n L\u00ea Tr\u1ecdng Qu\u1ed1c hay c\u00f2n g\u1ecdi l\u00e0 Mr. B\u1ea3y \u0111\u00e3 kh\u1eb3ng \u0111\u1ecbnh v\u1ecb tr\u00ed c\u1ee7a m\u00ecnh tr\u00ean ph\u1ed1 H\u00e0ng \u0110i\u1ebfu nh\u1edd nh\u1eefng m\u00f3n \u0103n \u0111\u1eb7c tr\u01b0ng mang \u0111\u1eadm h\u01b0\u01a1ng v\u1ecb s\u1ed1ng n\u01b0\u1edbc mi\u1ec1n T\u00e2y. \u0110\u1eb7c tr\u01b0ng nh\u1ea5t trong th\u1ef1c \u0111\u01a1n l\u00e0 b\u00e1nh x\u00e8o gi\u00f2n.\nv\u1edbi nhi\u1ec1u lo\u1ea1i nh\u00e2n, \u0103n k\u00e8m rau th\u01a1m v\u00e0 n\u01b0\u1edbc m\u1eafm. Ngo\u00e0i ra, c\u00e1c \u0111\u1eb7c s\u1ea3n v\u00f9ng \u0111\u1ed3ng b\u1eb1ng s\u00f4ng n\u01b0\u1edbc nh\u01b0 b\u00fan b\u00f2 Nam B\u1ed9, b\u00fan m\u1eafm C\u1ea7n Th\u01a1, g\u1ecfi c\u1ee7 h\u1ee7 d\u1eeba B\u1ebfn Tre c\u0169ng l\u00e0 th\u1ebf m\u1ea1nh c\u1ee7a qu\u00e1n. Qu\u00e1n l\u1ea7n \u0111\u1ea7u \u0111\u01b0\u1ee3c Michelin Guide th\u00eam v\u00e0o danh s\u00e1ch New Girl Man\nH\u00e3y subscribe cho k\u00eanh Ghi\u1ec1n M\u00ec G\u00f5 \u0110\u1ec3 kh\u00f4ng b\u1ecf l\u1ee1 nh\u1eefng video h\u1ea5p d\u1eabn\nx\u1ebfp h\u1ea1ng theo 5 ti\u00eau ch\u00ed nh\u1ea5t qu\u00e1n, g\u1ed3m ch\u1ea5t l\u01b0\u1ee3ng nguy\u00ean li\u1ec7u, t\u00e0i ngh\u1ec7 n\u1ea5u \u0103n, s\u1ef1 h\u00e0i h\u00f2a h\u01b0\u01a1ng v\u1ecb, c\u00e1 t\u00ednh c\u1ee7a \u0111\u1ea7u b\u1ebfp \u0111\u01b0\u1ee3c th\u1ec3 hi\u1ec7n qua m\u00f3n \u0103n v\u00e0 s\u1ef1 nh\u1ea5t qu\u00e1n c\u1ee7a m\u00f3n \u0103n theo th\u1eddi gian v\u00e0 tr\u00ean t\u00f2a th\u1ef1c \u0111\u01a1n.",
+    "provider": "interfaze",
+    "model": "interfaze-beta",
+    "segments": [
+      {
+        "text": "10 n\u0103m g\u1eafn b\u00f3 v\u1edbi th\u1ef1c kh\u00e1ch H\u00e0 Th\u00e0nh, Mr. B\u1ea3y mi\u1ec1n T\u00e2y c\u1ee7a ch\u1ee7 qu\u00e1n L\u00ea Tr\u1ecdng Qu\u1ed1c hay c\u00f2n g\u1ecdi l\u00e0 Mr. B\u1ea3y \u0111\u00e3 kh\u1eb3ng \u0111\u1ecbnh v\u1ecb tr\u00ed c\u1ee7a m\u00ecnh tr\u00ean ph\u1ed1 H\u00e0ng \u0110i\u1ebfu nh\u1edd nh\u1eefng m\u00f3n \u0103n \u0111\u1eb7c tr\u01b0ng mang \u0111\u1eadm h\u01b0\u01a1ng v\u1ecb s\u1ed1ng n\u01b0\u1edbc mi\u1ec1n T\u00e2y. \u0110\u1eb7c tr\u01b0ng nh\u1ea5t trong th\u1ef1c \u0111\u01a1n l\u00e0 b\u00e1nh x\u00e8o gi\u00f2n.",
+        "start": 0.0,
+        "end": 15.0
+      },
+      {
+        "text": "v\u1edbi nhi\u1ec1u lo\u1ea1i nh\u00e2n, \u0103n k\u00e8m rau th\u01a1m v\u00e0 n\u01b0\u1edbc m\u1eafm. Ngo\u00e0i ra, c\u00e1c \u0111\u1eb7c s\u1ea3n v\u00f9ng \u0111\u1ed3ng b\u1eb1ng s\u00f4ng n\u01b0\u1edbc nh\u01b0 b\u00fan b\u00f2 Nam B\u1ed9, b\u00fan m\u1eafm C\u1ea7n Th\u01a1, g\u1ecfi c\u1ee7 h\u1ee7 d\u1eeba B\u1ebfn Tre c\u0169ng l\u00e0 th\u1ebf m\u1ea1nh c\u1ee7a qu\u00e1n. Qu\u00e1n l\u1ea7n \u0111\u1ea7u \u0111\u01b0\u1ee3c Michelin Guide th\u00eam v\u00e0o danh s\u00e1ch New Girl Man",
+        "start": 15.0,
+        "end": 30.0
+      },
+      {
+        "text": "H\u00e3y subscribe cho k\u00eanh Ghi\u1ec1n M\u00ec G\u00f5 \u0110\u1ec3 kh\u00f4ng b\u1ecf l\u1ee1 nh\u1eefng video h\u1ea5p d\u1eabn",
+        "start": 30.0,
+        "end": 45.0
+      },
+      {
+        "text": "x\u1ebfp h\u1ea1ng theo 5 ti\u00eau ch\u00ed nh\u1ea5t qu\u00e1n, g\u1ed3m ch\u1ea5t l\u01b0\u1ee3ng nguy\u00ean li\u1ec7u, t\u00e0i ngh\u1ec7 n\u1ea5u \u0103n, s\u1ef1 h\u00e0i h\u00f2a h\u01b0\u01a1ng v\u1ecb, c\u00e1 t\u00ednh c\u1ee7a \u0111\u1ea7u b\u1ebfp \u0111\u01b0\u1ee3c th\u1ec3 hi\u1ec7n qua m\u00f3n \u0103n v\u00e0 s\u1ef1 nh\u1ea5t qu\u00e1n c\u1ee7a m\u00f3n \u0103n theo th\u1eddi gian v\u00e0 tr\u00ean t\u00f2a th\u1ef1c \u0111\u01a1n.",
+        "start": 45.0,
+        "end": 60.0
+      }
+    ],
+    "language": "vi",
+    "duration_seconds": 60.0
+  },
+  "ocr": {
+    "text": "",
+    "provider": "disabled",
+    "model": "disabled",
+    "frame_count": 0,
+    "frame_texts": []
+  },
+  "judge": {
+    "accepted": true,
+    "characteristic_vi": "Mr. B\u1ea3y mi\u1ec1n T\u00e2y l\u00e0 m\u1ed9t nh\u00e0 h\u00e0ng n\u1ed5i ti\u1ebfng tr\u00ean ph\u1ed1 H\u00e0ng \u0110i\u1ebfu, H\u00e0 N\u1ed9i, chuy\u00ean ph\u1ee5c v\u1ee5 c\u00e1c m\u00f3n \u0103n \u0111\u1eb7c tr\u01b0ng mang \u0111\u1eadm h\u01b0\u01a1ng v\u1ecb mi\u1ec1n T\u00e2y Nam B\u1ed9 nh\u01b0 b\u00e1nh x\u00e8o gi\u00f2n, b\u00fan b\u00f2 Nam B\u1ed9, b\u00fan m\u1eafm C\u1ea7n Th\u01a1 v\u00e0 g\u1ecfi c\u1ee7 h\u1ee7 d\u1eeba B\u1ebfn Tre. Qu\u00e1n \u0111\u01b0\u1ee3c Michelin Guide th\u00eam v\u00e0o danh s\u00e1ch New Girl Man.",
+    "confidence": 0.9,
+    "reason": "B\u1eb1ng ch\u1ee9ng cung c\u1ea5p th\u00f4ng tin chi ti\u1ebft v\u1ec1 t\u00ean qu\u00e1n, \u0111\u1ecba \u0111i\u1ec3m, c\u00e1c m\u00f3n \u0103n \u0111\u1eb7c tr\u01b0ng, v\u00e0 c\u1ea3 vi\u1ec7c \u0111\u01b0\u1ee3c Michelin Guide c\u00f4ng nh\u1eadn, cho th\u1ea5y \u0111\u00e2y l\u00e0 m\u1ed9t \u0111\u1ecba \u0111i\u1ec3m \u0103n u\u1ed1ng n\u1ed5i b\u1eadt v\u1edbi h\u01b0\u01a1ng v\u1ecb mi\u1ec1n T\u00e2y.",
+    "evidence_quotes": [
+      "10 n\u0103m g\u1eafn b\u00f3 v\u1edbi th\u1ef1c kh\u00e1ch H\u00e0 Th\u00e0nh, Mr. B\u1ea3y mi\u1ec1n T\u00e2y c\u1ee7a ch\u1ee7 qu\u00e1n L\u00ea Tr\u1ecdng Qu\u1ed1c hay c\u00f2n g\u1ecdi l\u00e0 Mr. B\u1ea3y \u0111\u00e3 kh\u1eb3ng \u0111\u1ecbnh v\u1ecb tr\u00ed c\u1ee7a m\u00ecnh tr\u00ean ph\u1ed1 H\u00e0ng \u0110i\u1ebfu nh\u1edd nh\u1eefng m\u00f3n \u0103n \u0111\u1eb7c tr\u01b0ng mang \u0111\u1eadm h\u01b0\u01a1ng v\u1ecb s\u1ed1ng n\u01b0\u1edbc mi\u1ec1n T\u00e2y.",
+      "\u0110\u1eb7c tr\u01b0ng nh\u1ea5t trong th\u1ef1c \u0111\u01a1n l\u00e0 b\u00e1nh x\u00e8o gi\u00f2n v\u1edbi nhi\u1ec1u lo\u1ea1i nh\u00e2n, \u0103n k\u00e8m rau th\u01a1m v\u00e0 n\u01b0\u1edbc m\u1eafm.",
+      "Ngo\u00e0i ra, c\u00e1c \u0111\u1eb7c s\u1ea3n v\u00f9ng \u0111\u1ed3ng b\u1eb1ng s\u00f4ng n\u01b0\u1edbc nh\u01b0 b\u00fan b\u00f2 Nam B\u1ed9, b\u00fan m\u1eafm C\u1ea7n Th\u01a1, g\u1ecfi c\u1ee7 h\u1ee7 d\u1eeba B\u1ebfn Tre c\u0169ng l\u00e0 th\u1ebf m\u1ea1nh c\u1ee7a qu\u00e1n.",
+      "Qu\u00e1n l\u1ea7n \u0111\u1ea7u \u0111\u01b0\u1ee3c Michelin Guide th\u00eam v\u00e0o danh s\u00e1ch New Girl Man"
+    ]
+  },
+  "index": {
+    "collection": "video_characteristics",
+    "doc_id": "",
+    "point_id": "",
+    "indexed": false,
+    "error": null
+  },
+  "error": null,
+  "trace": {
+    "stt_status": "success",
+    "stt_text_length": 795,
+    "stt_provider_used": "interfaze",
+    "stt_model_used": "interfaze-beta",
+    "ocr_status": "skipped",
+    "judge_status": "success",
+    "judge_accepted": true,
+    "judge_confidence": 0.9,
+    "serialized_characteristic": "poi=ga ; city=Ho Chi Minh City ; stt_source=interfaze ; characteristic_vi=Mr. B\u1ea3y mi\u1ec1n T\u00e2y l\u00e0 m\u1ed9t nh\u00e0 h\u00e0ng n\u1ed5i ti\u1ebfng tr\u00ean ph\u1ed1 H\u00e0ng \u0110i\u1ebfu, H\u00e0 N\u1ed9i, chuy\u00ean ph\u1ee5c v\u1ee5 c\u00e1c m\u00f3n \u0103n \u0111\u1eb7c tr\u01b0ng mang \u0111\u1eadm h\u01b0\u01a1ng v\u1ecb m",
+    "characteristic_raw": "poi=ga ; city=Ho Chi Minh City ; stt_source=interfaze ; characteristic_vi=Mr. B\u1ea3y mi\u1ec1n T\u00e2y l\u00e0 m\u1ed9t nh\u00e0 h\u00e0ng n\u1ed5i ti\u1ebfng tr\u00ean ph\u1ed1 H\u00e0ng \u0110i\u1ebfu, H\u00e0 N\u1ed9i, chuy\u00ean ph\u1ee5c v\u1ee5 c\u00e1c m\u00f3n \u0103n \u0111\u1eb7c tr\u01b0ng mang \u0111\u1eadm h\u01b0\u01a1ng v\u1ecb mi\u1ec1n T\u00e2y Nam B\u1ed9 nh\u01b0 b\u00e1nh x\u00e8o gi\u00f2n, b\u00fan b\u00f2 Nam B\u1ed9, b\u00fan m\u1eafm C\u1ea7n Th\u01a1 v\u00e0 g\u1ecfi c\u1ee7 h\u1ee7 d\u1eeba B\u1ebfn Tre. Qu\u00e1n \u0111\u01b0\u1ee3c Michelin Guide th\u00eam v\u00e0o danh s\u00e1ch New Girl Man. ; confidence=0.90 ; evidence=\"10 n\u0103m g\u1eafn b\u00f3 v\u1edbi th\u1ef1c kh\u00e1ch H\u00e0 Th\u00e0nh, Mr. B\u1ea3y mi\u1ec1n T\u00e2y c\u1ee7a ch\u1ee7 qu\u00e1n L\u00ea Tr\u1ecdng Qu\u1ed1c hay c\u00f2n g\u1ecdi l\u00e0 Mr. B\u1ea3y \u0111\u00e3 kh\u1eb3ng \u0111\u1ecbnh v\u1ecb tr\u00ed c\u1ee7a m\u00ecnh tr\u00ean ph\u1ed1 H\u00e0ng \u0110i\u1ebfu nh\u1edd nh\u1eefng m\u00f3n \u0103n \u0111\u1eb7c tr\u01b0ng mang \u0111\u1eadm h\u01b0\u01a1ng v\u1ecb s\u1ed1ng n\u01b0\u1edbc mi\u1ec1n T\u00e2y.\" | \"\u0110\u1eb7c tr\u01b0ng nh\u1ea5t trong th\u1ef1c \u0111\u01a1n l\u00e0 b\u00e1nh x\u00e8o gi\u00f2n v\u1edbi nhi\u1ec1u lo\u1ea1i nh\u00e2n, \u0103n k\u00e8m rau th\u01a1m v\u00e0 n\u01b0\u1edbc m\u1eafm.\" | \"Ngo\u00e0i ra, c\u00e1c \u0111\u1eb7c s\u1ea3n v\u00f9ng \u0111\u1ed3ng b\u1eb1ng s\u00f4ng n\u01b0\u1edbc nh\u01b0 b\u00fan b\u00f2 Nam B\u1ed9, b\u00fan m\u1eafm C\u1ea7n Th\u01a1, g\u1ecfi c\u1ee7 h\u1ee7 d\u1eeba B\u1ebfn Tre c\u0169ng l\u00e0 th\u1ebf m\u1ea1nh c\u1ee7a qu\u00e1n.\" ; address=dfsf",
+    "geocode_status": "success",
+    "geocode_source": "ors",
+    "geocode_lat": "10.781971",
+    "geocode_lng": "106.693081",
+    "dataset_status": "success",
+    "dataset_path": "D:\\LotusHacks2026\\data\\data.json",
+    "index_status": "skipped"
+  }
+}

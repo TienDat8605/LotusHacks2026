@@ -7,6 +7,7 @@ import re
 import uuid
 
 import httpx
+from openai import OpenAI
 
 from ..config import UGCConfig
 from ..errors import IndexingError
@@ -53,6 +54,8 @@ class QdrantVectorIndexer:
         self._qdrant_url = cfg.qdrant_url
         self._qdrant_api_key = cfg.qdrant_api_key
         self._collection = cfg.index_collection
+        self._embed_provider = cfg.embed_provider
+        self._openai_api_key = cfg.openai_api_key
         self._mistral_api_key = cfg.mistral_api_key
         self._embed_model = cfg.embed_model
 
@@ -68,8 +71,14 @@ class QdrantVectorIndexer:
         Raises:
             IndexingError: If indexing fails.
         """
-        if not self._mistral_api_key:
-            raise IndexingError("MISTRAL_API_KEY is not configured for embeddings")
+        if self._embed_provider == "disabled":
+            return IndexResult(
+                collection=self._collection,
+                doc_id="",
+                point_id="",
+                indexed=False,
+                error=None,
+            )
 
         # Parse the characteristic format to extract fields
         fields = self._parse_characteristic_fields(row.characteristic)
@@ -191,7 +200,22 @@ class QdrantVectorIndexer:
             return 0.0
 
     def _get_embedding(self, text: str) -> list[float]:
-        """Get embedding from Mistral API."""
+        """Get embedding from the configured provider."""
+        if self._embed_provider == "openai_embed":
+            if not self._openai_api_key:
+                raise IndexingError("OPENAI_API_KEY is not configured for embeddings")
+            client = OpenAI(api_key=self._openai_api_key)
+            response = client.embeddings.create(model=self._embed_model, input=[text])
+            if not response.data:
+                raise IndexingError("No embedding data in OpenAI response")
+            return list(response.data[0].embedding)
+
+        if self._embed_provider != "mistral_embed":
+            raise IndexingError(f"Unsupported embed provider: {self._embed_provider}")
+
+        if not self._mistral_api_key:
+            raise IndexingError("MISTRAL_API_KEY is not configured for embeddings")
+
         url = "https://api.mistral.ai/v1/embeddings"
 
         payload = {

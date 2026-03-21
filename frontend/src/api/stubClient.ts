@@ -425,11 +425,18 @@ export function createStubApiClient(): ApiClient {
       await sleep(900);
       const fileStem = req.file.name.replace(/\.[^.]+$/, '') || 'upload';
       const videoId = `video_${toSafeId(fileStem)}_${Date.now().toString(16)}`;
+      const timestamp = nowIso();
       const resp: UploadLocationResponse = {
         jobId: id('upload_job'),
         videoId,
-        status: 'queued',
-        createdAt: nowIso(),
+        status: 'completed',
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        result: {
+          characteristic: `${req.pointOfInterest} has been processed from the uploaded video.`,
+          indexed: false,
+          datasetStored: true,
+        },
       };
       return resp;
     },
