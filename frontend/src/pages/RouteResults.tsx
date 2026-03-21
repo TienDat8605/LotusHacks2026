@@ -49,9 +49,9 @@ export default function RouteResults() {
   }
 
   return (
-    <div className="h-full w-full overflow-hidden">
-      <div className="h-full grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 lg:p-8">
-        <section className="lg:col-span-8 h-full relative overflow-hidden rounded-lg shadow-float">
+    <div className="h-full w-full overflow-y-auto lg:overflow-hidden">
+      <div className="min-h-full grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 lg:h-full lg:p-8">
+        <section className="lg:col-span-8 min-h-[24rem] lg:h-full relative rounded-lg shadow-float bg-surface-container overflow-hidden isolate z-0">
           <MapCanvas
             className="h-full"
             title={route.title}
@@ -61,19 +61,47 @@ export default function RouteResults() {
             onPoiClick={(poi) => setActivePoiId(poi.id)}
           />
 
-          <div className="absolute top-6 right-6 z-20 flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => navigate('/plan')}
-              className="glass-card rounded-full px-4 py-2 shadow-float border border-white/60 flex items-center gap-2 text-sm font-bold text-primary"
-            >
-              <Pencil className="h-4 w-4" />
-              Edit plan
-            </button>
+          <div className="pointer-events-none absolute inset-x-4 top-4 z-[1200] flex justify-between gap-3 lg:inset-x-6 lg:top-6">
+            <div className="pointer-events-auto max-w-md rounded-[28px] border border-white/70 bg-white/92 p-4 shadow-float backdrop-blur-xl">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Current route</div>
+                  <h2 className="mt-2 font-headline text-lg font-extrabold text-on-surface">{route.title}</h2>
+                  <p className="mt-1 text-xs text-on-surface-variant">
+                    {minutesLabel(route.totalDurationMinutes)} total · {route.pois.length} curated stops
+                  </p>
+                </div>
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <RouteIcon className="h-5 w-5" />
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl bg-surface-container-low px-4 py-3">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Start</div>
+                  <div className="mt-1 text-sm font-extrabold text-on-surface line-clamp-2">{route.origin?.name ?? 'Origin'}</div>
+                </div>
+                <div className="rounded-2xl bg-surface-container-low px-4 py-3">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">End</div>
+                  <div className="mt-1 text-sm font-extrabold text-on-surface line-clamp-2">{route.destination?.name ?? 'Destination'}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pointer-events-auto flex items-start">
+              <button
+                type="button"
+                onClick={() => navigate('/plan')}
+                className="glass-card rounded-full px-4 py-2 shadow-float border border-white/60 flex items-center gap-2 text-sm font-bold text-primary"
+              >
+                <Pencil className="h-4 w-4" />
+                Plan new route
+              </button>
+            </div>
           </div>
         </section>
 
-        <section className="lg:col-span-4 h-full overflow-hidden rounded-lg bg-surface-container-lowest shadow-float flex flex-col">
+        <section className="lg:col-span-4 min-h-[24rem] lg:h-full rounded-lg bg-surface-container-lowest shadow-float flex flex-col relative z-10">
           <div className="p-6 border-b border-surface-container">
             <div className="flex items-start justify-between gap-4">
               <div>
