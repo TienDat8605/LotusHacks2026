@@ -4,7 +4,7 @@ import { MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'reac
 import { cn } from '@/lib/utils';
 import type { LatLng, Poi, RoutePlan } from '@/api/types';
 
-const legColors = ['#004be3', '#b90037', '#006763', '#7c3aed', '#ea580c', '#0ea5e9'];
+const legColors = ['#5b8cff', '#8b5cf6', '#14b8a6', '#f97316', '#ec4899', '#06b6d4'];
 const defaultCenter: [number, number] = [10.7757, 106.7008];
 
 function toLatLng(p: LatLng): [number, number] {
@@ -31,21 +31,45 @@ function BoundsFitter(props: { points: LatLng[] }) {
 }
 
 function poiIcon(index: number, active: boolean) {
-  const bg = active ? '#b90037' : 'rgba(0,75,227,0.92)';
+  const background = active
+    ? 'linear-gradient(135deg, rgba(99,102,241,0.95), rgba(236,72,153,0.92))'
+    : 'linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72))';
+  const color = active ? '#ffffff' : '#334155';
+  const border = active ? '1px solid rgba(255,255,255,0.45)' : '1px solid rgba(255,255,255,0.85)';
+  const shadow = active ? '0 14px 28px rgba(99,102,241,0.28)' : '0 10px 24px rgba(15,23,42,0.14)';
+
   return L.divIcon({
     className: '',
-    html: `<div style="width:36px;height:36px;border-radius:9999px;background:${bg};color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:ui-sans-serif;font-size:12px;box-shadow:0 14px 30px rgba(0,0,0,0.20);border:4px solid rgba(255,255,255,0.65);">${index}</div>`,
-    iconSize: [36, 36],
-    iconAnchor: [18, 18],
+    html: `<div style="width:30px;height:30px;border-radius:9999px;background:${background};color:${color};display:flex;align-items:center;justify-content:center;font-weight:800;font-family:ui-sans-serif;font-size:11px;backdrop-filter:blur(10px);box-shadow:${shadow};border:${border};">${index}</div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
   });
 }
 
-function pinIcon(label: string) {
+function pinIcon(label: string, tone: 'start' | 'end') {
+  const palette =
+    tone === 'start'
+      ? {
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.96), rgba(236,253,245,0.88))',
+          border: 'rgba(16,185,129,0.22)',
+          dot: 'linear-gradient(135deg, rgba(16,185,129,0.95), rgba(45,212,191,0.9))',
+          text: '#047857',
+          shadow: '0 14px 28px rgba(16,185,129,0.18)',
+        }
+      : {
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,241,242,0.9))',
+          border: 'rgba(244,63,94,0.22)',
+          dot: 'linear-gradient(135deg, rgba(244,63,94,0.95), rgba(251,113,133,0.9))',
+          text: '#be123c',
+          shadow: '0 14px 28px rgba(244,63,94,0.18)',
+        };
+
   return L.divIcon({
     className: '',
-    html: `<div style="padding:8px 12px;border-radius:9999px;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.85);box-shadow:0 14px 30px rgba(0,0,0,0.18);font-weight:800;font-family:ui-sans-serif;font-size:12px;color:#0f172a;">${label}</div>`,
-    iconSize: [90, 34],
-    iconAnchor: [45, 17],
+    html: `<div style="width:58px;height:34px;border-radius:9999px;background:${palette.background};border:1px solid ${palette.border};backdrop-filter:blur(12px);box-shadow:${palette.shadow};display:flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;font-family:ui-sans-serif;"><span style="width:10px;height:10px;border-radius:9999px;background:${palette.dot};box-shadow:0 0 0 3px rgba(255,255,255,0.72);"></span><span style="font-size:10px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:${palette.text};">${label}</span></div>`,
+    iconSize: [58, 34],
+    iconAnchor: [29, 17],
+    popupAnchor: [0, -20],
   });
 }
 
@@ -98,13 +122,6 @@ export function MapCanvas(props: {
 
   return (
     <div className={cn('relative h-full w-full overflow-hidden rounded-lg bg-surface-container', props.className)}>
-      {(props.title || props.subtitle) && (
-        <div className="pointer-events-none absolute top-4 left-4 z-[1000] glass-card rounded-full px-3 py-2 shadow-float">
-          {props.title && <div className="text-xs font-bold text-on-surface">{props.title}</div>}
-          {props.subtitle && <div className="text-[10px] font-semibold text-on-surface-variant">{props.subtitle}</div>}
-        </div>
-      )}
-
       <MapContainer center={center} zoom={13} scrollWheelZoom className="h-full w-full">
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -114,16 +131,16 @@ export function MapCanvas(props: {
         {route && <BoundsFitter points={fitPoints} />}
 
         {origin && (
-          <Marker position={toLatLng(origin)} icon={pinIcon('Start')}>
-            <Tooltip direction="top" offset={[0, -10]} opacity={1}>
+          <Marker position={toLatLng(origin)} icon={pinIcon('Start', 'start')}>
+            <Tooltip direction="top" offset={[0, -16]} opacity={1}>
               {route?.origin?.name ?? 'Origin'}
             </Tooltip>
           </Marker>
         )}
 
         {destination && (
-          <Marker position={toLatLng(destination)} icon={pinIcon('End')}>
-            <Tooltip direction="top" offset={[0, -10]} opacity={1}>
+          <Marker position={toLatLng(destination)} icon={pinIcon('End', 'end')}>
+            <Tooltip direction="top" offset={[0, -16]} opacity={1}>
               {route?.destination?.name ?? 'Destination'}
             </Tooltip>
           </Marker>
@@ -137,7 +154,7 @@ export function MapCanvas(props: {
             <Polyline
               key={`leg_${i}`}
               positions={path.map(toLatLng)}
-              pathOptions={{ color, weight: 6, opacity: 0.9 }}
+              pathOptions={{ color, weight: 5, opacity: 0.82 }}
             />
           );
         })}

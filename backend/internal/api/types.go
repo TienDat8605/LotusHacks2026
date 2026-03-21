@@ -76,6 +76,7 @@ type SocialSession struct {
 	DestinationName  string `json:"destinationName"`
 	ParticipantCount int    `json:"participantCount"`
 	Status           string `json:"status"`
+	Code             string `json:"code"`
 }
 
 type SocialParticipant struct {
@@ -85,4 +86,14 @@ type SocialParticipant struct {
 	Lat         *float64 `json:"lat,omitempty"`
 	Lng         *float64 `json:"lng,omitempty"`
 	LastSeen    string   `json:"lastSeen"`
+}
+
+type SocialEvent struct {
+	Type            string              `json:"type"`
+	Session         *SocialSession      `json:"session,omitempty"`
+	Participant     *SocialParticipant  `json:"participant,omitempty"`
+	Participants    []SocialParticipant `json:"participants,omitempty"`
+	Message         *ChatMessage        `json:"message,omitempty"`
+	Messages        []ChatMessage       `json:"messages,omitempty"`
+	Recommendations []Poi               `json:"recommendations,omitempty"`
 }

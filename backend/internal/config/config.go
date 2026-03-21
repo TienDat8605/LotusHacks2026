@@ -12,6 +12,7 @@ type Config struct {
 	OrsAPIKey     string
 	VietmapAPIKey string
 	PoiDataPath   string
+	UgcServiceURL string
 }
 
 func Load() (*Config, error) {
@@ -36,12 +37,18 @@ func Load() (*Config, error) {
 		poiPath = "../data/data.json"
 	}
 
+	ugcServiceURL := strings.TrimSpace(os.Getenv("UGC_SERVICE_URL"))
+	if ugcServiceURL == "" {
+		ugcServiceURL = "http://localhost:8001"
+	}
+
 	cfg := &Config{
 		Port:          port,
 		CorsOrigins:   origins,
 		OrsAPIKey:     strings.TrimSpace(os.Getenv("ORS_API_KEY")),
 		VietmapAPIKey: strings.TrimSpace(os.Getenv("VIETMAP_API_KEY")),
 		PoiDataPath:   poiPath,
+		UgcServiceURL: ugcServiceURL,
 	}
 
 	if cfg.Port == "" {

@@ -1,9 +1,12 @@
 package httpapi
 
 import (
+	"bufio"
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 	"strings"
+	"sync"
 
 	"github.com/go-chi/chi/v5"
 
@@ -15,13 +18,20 @@ import (
 )
 
 type Handler struct {
-	cfg    *config.Config
-	pois   *pois.Repository
-	social *social.Store
+	cfg         *config.Config
+	pois        *pois.Repository
+	social      *social.Store
+	streamMu    sync.Mutex
+	streamRooms map[string]map[chan api.SocialEvent]struct{}
 }
 
 func NewHandler(cfg *config.Config, poiRepo *pois.Repository, socialStore *social.Store) *Handler {
-	return &Handler{cfg: cfg, pois: poiRepo, social: socialStore}
+	return &Handler{
+		cfg:         cfg,
+		pois:        poiRepo,
+		social:      socialStore,
+		streamRooms: map[string]map[chan api.SocialEvent]struct{}{},
+	}
 }
 
 func (h *Handler) Router() http.Handler {
@@ -37,7 +47,13 @@ func (h *Handler) Router() http.Handler {
 		apiR.Post("/routes/plan", h.handlePlanRoute)
 		apiR.Post("/route", h.handlePlanRouteCompat)
 
+		apiR.Handle("/ugc", http.HandlerFunc(h.handleUGCProxy))
+		apiR.Handle("/ugc/*", http.HandlerFunc(h.handleUGCProxy))
+
 		apiR.Get("/social/sessions", h.handleListSessions)
+		apiR.Post("/social/sessions", h.handleCreateSession)
+		apiR.Post("/social/sessions/join-by-code", h.handleJoinByCode)
+		apiR.Get("/social/sessions/{sessionId}/stream", h.handleSessionStream)
 		apiR.Post("/social/sessions/{sessionId}/join", h.handleJoinSession)
 		apiR.Get("/social/sessions/{sessionId}/participants", h.handleListParticipants)
 		apiR.Post("/social/sessions/{sessionId}/location", h.handleUpdateLocation)
@@ -47,6 +63,9 @@ func (h *Handler) Router() http.Handler {
 		apiR.Post("/social/sessions/{sessionId}/ping", h.handlePing)
 
 		apiR.Get("/meetup/sessions", h.handleListSessions)
+		apiR.Post("/meetup/sessions", h.handleCreateSession)
+		apiR.Post("/meetup/sessions/join-by-code", h.handleJoinByCode)
+		apiR.Get("/meetup/sessions/{sessionId}/stream", h.handleSessionStream)
 		apiR.Post("/meetup/sessions/{sessionId}/join", h.handleJoinSession)
 		apiR.Get("/meetup/sessions/{sessionId}/participants", h.handleListParticipants)
 		apiR.Post("/meetup/sessions/{sessionId}/location", h.handleUpdateLocation)
@@ -92,6 +111,10 @@ func (h *Handler) corsMiddleware(next http.Handler) http.Handler {
 
 func jsonMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.Contains(r.URL.Path, "/stream") {
+			next.ServeHTTP(w, r)
+			return
+		}
 		w.Header().Set("Content-Type", "application/json")
 		next.ServeHTTP(w, r)
 	})
@@ -155,6 +178,42 @@ func (h *Handler) handleListSessions(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, h.social.ListSessions())
 }
 
+func (h *Handler) handleCreateSession(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		DestinationName string `json:"destinationName"`
+	}
+	_ = json.NewDecoder(r.Body).Decode(&body)
+	session := h.social.CreateSession(body.DestinationName)
+	writeJSON(w, http.StatusCreated, session)
+}
+
+func (h *Handler) handleJoinByCode(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Code        string `json:"code"`
+		DisplayName string `json:"displayName"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeError(w, http.StatusBadRequest, "BAD_REQUEST", "Invalid JSON body")
+		return
+	}
+	session, ok := h.social.FindSessionByCode(body.Code)
+	if !ok {
+		writeError(w, http.StatusNotFound, "NOT_FOUND", "Session code not found")
+		return
+	}
+	participant, ok := h.social.Join(session.ID, body.DisplayName)
+	if !ok {
+		writeError(w, http.StatusNotFound, "NOT_FOUND", "Session not found")
+		return
+	}
+	h.broadcastSessionSnapshot(session.ID)
+	writeJSON(w, http.StatusOK, map[string]any{
+		"session":       session,
+		"participantId": participant.ID,
+		"avatarSeed":    participant.AvatarSeed,
+	})
+}
+
 func (h *Handler) handleJoinSession(w http.ResponseWriter, r *http.Request) {
 	sessionID := chi.URLParam(r, "sessionId")
 	var body struct {
@@ -166,6 +225,7 @@ func (h *Handler) handleJoinSession(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "NOT_FOUND", "Session not found")
 		return
 	}
+	h.broadcastSessionSnapshot(sessionID)
 	writeJSON(w, http.StatusOK, map[string]string{"participantId": participant.ID, "avatarSeed": participant.AvatarSeed})
 }
 
@@ -194,11 +254,13 @@ func (h *Handler) handleUpdateLocation(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "BAD_REQUEST", "participantId is required")
 		return
 	}
-	if ok := h.social.UpdateLocation(sessionID, body.ParticipantId, body.Lat, body.Lng); !ok {
+	participant, ok := h.social.UpdateLocation(sessionID, body.ParticipantId, body.Lat, body.Lng)
+	if !ok {
 		writeError(w, http.StatusNotFound, "NOT_FOUND", "Participant not found")
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
+	h.broadcastSessionSnapshot(sessionID)
+	writeJSON(w, http.StatusOK, participant)
 }
 
 func (h *Handler) handleRecommendations(w http.ResponseWriter, r *http.Request) {
@@ -208,7 +270,7 @@ func (h *Handler) handleRecommendations(w http.ResponseWriter, r *http.Request) 
 		writeError(w, http.StatusNotFound, "NOT_FOUND", "Session not found")
 		return
 	}
-	pois := rankPoisForParticipants(h.pois.List(), participants, 5)
+	pois := rankPoisForParticipants(h.pois.List(), participants, 3)
 	writeJSON(w, http.StatusOK, pois)
 }
 
@@ -241,6 +303,7 @@ func (h *Handler) handleSendMessage(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "NOT_FOUND", "Session not found")
 		return
 	}
+	h.broadcastEvent(sessionID, api.SocialEvent{Type: "message", Message: &msg})
 	writeJSON(w, http.StatusOK, msg)
 }
 
@@ -250,7 +313,127 @@ func (h *Handler) handlePing(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "NOT_FOUND", "Session not found")
 		return
 	}
+	h.broadcastSessionSnapshot(sessionID)
 	writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
+}
+
+func (h *Handler) handleSessionStream(w http.ResponseWriter, r *http.Request) {
+	sessionID := chi.URLParam(r, "sessionId")
+	if _, ok := h.social.ListParticipants(sessionID); !ok {
+		writeError(w, http.StatusNotFound, "NOT_FOUND", "Session not found")
+		return
+	}
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		writeError(w, http.StatusInternalServerError, "STREAM_UNAVAILABLE", "Streaming is not supported")
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+
+	ch := make(chan api.SocialEvent, 8)
+	h.addStreamListener(sessionID, ch)
+	defer h.removeStreamListener(sessionID, ch)
+
+	writer := bufio.NewWriter(w)
+	h.writeStreamEvent(writer, api.SocialEvent{Type: "snapshot", Session: h.sessionPtr(sessionID), Participants: h.mustParticipants(sessionID), Messages: h.mustMessages(sessionID), Recommendations: h.mustRecommendations(sessionID)})
+	flusher.Flush()
+
+	for {
+		select {
+		case <-r.Context().Done():
+			return
+		case event := <-ch:
+			h.writeStreamEvent(writer, event)
+			flusher.Flush()
+		}
+	}
+}
+
+func (h *Handler) writeStreamEvent(writer *bufio.Writer, event api.SocialEvent) {
+	payload, err := json.Marshal(event)
+	if err != nil {
+		return
+	}
+	encoded := base64.StdEncoding.EncodeToString(payload)
+	_, _ = writer.WriteString("data: " + encoded + "\n\n")
+	_ = writer.Flush()
+}
+
+func (h *Handler) addStreamListener(sessionID string, ch chan api.SocialEvent) {
+	h.streamMu.Lock()
+	defer h.streamMu.Unlock()
+	if h.streamRooms[sessionID] == nil {
+		h.streamRooms[sessionID] = map[chan api.SocialEvent]struct{}{}
+	}
+	h.streamRooms[sessionID][ch] = struct{}{}
+}
+
+func (h *Handler) removeStreamListener(sessionID string, ch chan api.SocialEvent) {
+	h.streamMu.Lock()
+	defer h.streamMu.Unlock()
+	listeners := h.streamRooms[sessionID]
+	if listeners == nil {
+		return
+	}
+	delete(listeners, ch)
+	close(ch)
+	if len(listeners) == 0 {
+		delete(h.streamRooms, sessionID)
+	}
+}
+
+func (h *Handler) broadcastEvent(sessionID string, event api.SocialEvent) {
+	h.streamMu.Lock()
+	listeners := h.streamRooms[sessionID]
+	channels := make([]chan api.SocialEvent, 0, len(listeners))
+	for ch := range listeners {
+		channels = append(channels, ch)
+	}
+	h.streamMu.Unlock()
+	for _, ch := range channels {
+		select {
+		case ch <- event:
+		default:
+		}
+	}
+}
+
+func (h *Handler) broadcastSessionSnapshot(sessionID string) {
+	h.broadcastEvent(sessionID, api.SocialEvent{
+		Type:            "snapshot",
+		Session:         h.sessionPtr(sessionID),
+		Participants:    h.mustParticipants(sessionID),
+		Messages:        h.mustMessages(sessionID),
+		Recommendations: h.mustRecommendations(sessionID),
+	})
+}
+
+func (h *Handler) sessionPtr(sessionID string) *api.SocialSession {
+	for _, session := range h.social.ListSessions() {
+		if session.ID == sessionID {
+			copy := session
+			return &copy
+		}
+	}
+	return nil
+}
+
+func (h *Handler) mustParticipants(sessionID string) []api.SocialParticipant {
+	participants, _ := h.social.ListParticipants(sessionID)
+	return participants
+}
+
+func (h *Handler) mustMessages(sessionID string) []api.ChatMessage {
+	messages, _ := h.social.ListMessages(sessionID)
+	return messages
+}
+
+func (h *Handler) mustRecommendations(sessionID string) []api.Poi {
+	participants, _ := h.social.ListParticipants(sessionID)
+	return rankPoisForParticipants(h.pois.List(), participants, 3)
 }
 
 func writeError(w http.ResponseWriter, status int, code, message string) {

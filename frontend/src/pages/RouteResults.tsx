@@ -1,11 +1,22 @@
-import { ChevronRight, Eye, MapPin, Pencil, Route as RouteIcon } from 'lucide-react';
+import {
+  ArrowLeft,
+  ChevronRight,
+  ExternalLink,
+  Eye,
+  MapPin,
+  Pencil,
+  Play,
+  Route as RouteIcon,
+  Sparkles,
+  Star,
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import type { Poi } from '@/api/types';
 import { MapCanvas } from '@/components/map/MapCanvas';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { cn } from '@/lib/utils';
 import { useVibeMapStore } from '@/stores/vibemapStore';
-import type { Poi } from '@/api/types';
 
 function minutesLabel(mins: number) {
   const h = Math.floor(mins / 60);
@@ -15,13 +26,92 @@ function minutesLabel(mins: number) {
   return `${h}h ${m}m`;
 }
 
+function distanceLabel(poiCount: number) {
+  const estimate = Math.max(1.2, poiCount * 0.8);
+  return `${estimate.toFixed(1)} km`;
+}
+
+function stopTone(index: number) {
+  const tones = [
+    'bg-primary text-white',
+    'bg-fuchsia-500 text-white',
+    'bg-emerald-500 text-white',
+    'bg-violet-500 text-white',
+  ];
+  return tones[index % tones.length];
+}
+
+function stopBadge(poi: Poi) {
+  if (poi.badges?.length) return poi.badges[0];
+  if (poi.category) return poi.category;
+  return 'Curated stop';
+}
+
+function normalizeTikTokUrl(value?: string) {
+  if (!value) return undefined;
+
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (/^(www\.)?tiktok\.com\//i.test(trimmed) || /^vm\.tiktok\.com\//i.test(trimmed)) {
+    return `https://${trimmed}`;
+  }
+
+  return undefined;
+}
+
+function getTikTokUrl(poi: Poi) {
+  const normalizedUrl = normalizeTikTokUrl(poi.videoUrl);
+  if (normalizedUrl) return normalizedUrl;
+  if (poi.videoId) return `https://www.tiktok.com/@vibemap/video/${poi.videoId}`;
+  return undefined;
+}
+
+function getTikTokEmbedUrl(poi: Poi) {
+  if (!poi.videoId) return undefined;
+  return `https://www.tiktok.com/embed/v3/${poi.videoId}`;
+}
+
+function getTikTokThumbnailUrl(poi: Poi) {
+  const videoUrl = getTikTokUrl(poi);
+  if (!videoUrl) return undefined;
+  return `https://www.tiktok.com/oembed?url=${encodeURIComponent(videoUrl)}`;
+}
+
+function videoLabel(poi: Poi) {
+  if (getTikTokUrl(poi)) return 'TikTok ready';
+  if (poi.videoId) return `TikTok clip ${poi.videoId}`;
+  return 'TikTok preview pending';
+}
+
+function fallbackThumbnailUrl(poi: Poi) {
+  if (poi.videoUrl) {
+    return `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
+      `${poi.name}, Ho Chi Minh City TikTok travel video thumbnail, vertical social media cover, cinematic street food and nightlife, vibrant neon lighting, realistic mobile video still`
+    )}&image_size=portrait_16_9`;
+  }
+
+  if (poi.videoId) {
+    return `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
+      `${poi.name}, TikTok style thumbnail cover, vertical travel reel poster, Ho Chi Minh City urban exploration, bold title card, realistic social media thumbnail`
+    )}&image_size=portrait_16_9`;
+  }
+
+  return `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
+    `${poi.name}, curated destination thumbnail, vertical short video cover, Ho Chi Minh City lifestyle, modern editorial travel frame, realistic`
+  )}&image_size=portrait_16_9`;
+}
+
 export default function RouteResults() {
   const params = useParams();
-  const navigate = useNavigate();
   const getRoute = useVibeMapStore((s) => s.getRoute);
   const route = params.routeId ? getRoute(params.routeId) : undefined;
   const [activePoiId, setActivePoiId] = useState<string | undefined>(route?.pois[0]?.id);
   const [activeLegIndex, setActiveLegIndex] = useState(0);
+  const [panelMode, setPanelMode] = useState<'results' | 'tiktok'>('results');
+  const [thumbnailErrors, setThumbnailErrors] = useState<Record<string, boolean>>({});
+  const [embedErrors, setEmbedErrors] = useState<Record<string, boolean>>({});
 
   usePageMeta({
     title: route ? `VibeMap — ${route.title}` : 'VibeMap — Your Route',
@@ -29,19 +119,27 @@ export default function RouteResults() {
   });
 
   const activeLeg = useMemo(() => route?.legs[activeLegIndex], [route?.legs, activeLegIndex]);
-  const activePoi = useMemo(() => route?.pois.find((p) => p.id === activePoiId), [route?.pois, activePoiId]);
+  const activePoi = useMemo(() => route?.pois.find((p) => p.id === activePoiId) ?? route?.pois[0], [route?.pois, activePoiId]);
+  const totalStops = route?.pois.length ?? 0;
+  const totalDistance = route ? distanceLabel(totalStops) : '0 km';
+  const selectedPoi = activePoi ?? route?.pois[0];
+  const selectedTikTokUrl = selectedPoi ? getTikTokUrl(selectedPoi) : undefined;
+  const selectedEmbedUrl = selectedPoi ? getTikTokEmbedUrl(selectedPoi) : undefined;
+  const selectedThumbnailUrl = selectedPoi ? getTikTokThumbnailUrl(selectedPoi) : undefined;
+  const shouldUseFallbackThumbnail = selectedPoi ? thumbnailErrors[selectedPoi.id] || !selectedThumbnailUrl : true;
+  const shouldUseEmbedFallback = selectedPoi ? embedErrors[selectedPoi.id] || !selectedEmbedUrl : true;
 
   if (!route) {
     return (
       <div className="h-full w-full p-6 lg:p-10">
-        <div className="max-w-xl bg-surface-container-lowest rounded-lg shadow-float p-8">
+        <div className="max-w-xl rounded-[28px] bg-surface-container-lowest p-8 shadow-float">
           <h1 className="font-headline text-2xl font-extrabold">Route not found</h1>
-          <p className="text-on-surface-variant mt-2">Generate a route from the planner to see results here.</p>
+          <p className="mt-2 text-on-surface-variant">Generate a route from Discovery to see results here.</p>
           <Link
             to="/plan"
-            className="inline-flex mt-6 bg-gradient-to-r from-primary to-primary-container text-white px-5 py-3 rounded-full font-headline font-extrabold"
+            className="mt-6 inline-flex rounded-full bg-gradient-to-r from-primary to-primary-container px-5 py-3 font-headline font-extrabold text-white"
           >
-            Go to planner
+            Back to Discovery
           </Link>
         </div>
       </div>
@@ -50,229 +148,361 @@ export default function RouteResults() {
 
   return (
     <div className="h-full w-full overflow-y-auto lg:overflow-hidden">
-      <div className="min-h-full grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 lg:h-full lg:p-8">
-        <section className="lg:col-span-8 min-h-[24rem] lg:h-full relative rounded-lg shadow-float bg-surface-container overflow-hidden isolate z-0">
-          <MapCanvas
-            className="h-full"
-            title={route.title}
-            subtitle={`${minutesLabel(route.totalDurationMinutes)} · ${route.pois.length} stops`}
-            route={route}
-            activePoiId={activePoiId}
-            onPoiClick={(poi) => setActivePoiId(poi.id)}
-          />
+      <div className="grid min-h-full grid-cols-1 gap-4 p-4 lg:h-full lg:grid-cols-12 lg:p-8">
+        <section className="relative isolate min-h-[28rem] overflow-hidden rounded-[32px] bg-surface-container shadow-float lg:col-span-8 lg:h-full">
+          <MapCanvas className="h-full" route={route} activePoiId={activePoi?.id} onPoiClick={(poi) => setActivePoiId(poi.id)} />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10" />
 
-          <div className="pointer-events-none absolute inset-x-4 top-4 z-[1200] flex justify-between gap-3 lg:inset-x-6 lg:top-6">
-            <div className="pointer-events-auto max-w-md rounded-[28px] border border-white/70 bg-white/92 p-4 shadow-float backdrop-blur-xl">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Current route</div>
-                  <h2 className="mt-2 font-headline text-lg font-extrabold text-on-surface">{route.title}</h2>
-                  <p className="mt-1 text-xs text-on-surface-variant">
-                    {minutesLabel(route.totalDurationMinutes)} total · {route.pois.length} curated stops
+          <div className="absolute bottom-4 left-4 z-[1200] lg:bottom-6 lg:left-6">
+            <div className="w-[15.5rem] rounded-[22px] border border-white/60 bg-white/86 p-3.5 shadow-2xl backdrop-blur-2xl">
+              <div className="flex items-start gap-3">
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <RouteIcon className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.22em] text-outline">Discovery route</div>
+                  <h1 className="mt-1 truncate font-headline text-sm font-black text-on-surface">{route.title}</h1>
+                  <p className="mt-1 truncate text-[11px] font-medium text-on-surface-variant">
+                    {route.origin?.name ?? 'Origin'} → {route.destination?.name ?? 'Destination'}
                   </p>
                 </div>
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <RouteIcon className="h-5 w-5" />
+              </div>
+
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                <div className="rounded-2xl bg-surface-container-low px-2 py-2 text-center">
+                  <div className="font-headline text-sm font-black text-on-surface">{minutesLabel(route.totalDurationMinutes)}</div>
+                  <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-outline">Time</div>
+                </div>
+                <div className="rounded-2xl bg-surface-container-low px-2 py-2 text-center">
+                  <div className="font-headline text-sm font-black text-on-surface">{totalDistance}</div>
+                  <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-outline">Dist</div>
+                </div>
+                <div className="rounded-2xl bg-surface-container-low px-2 py-2 text-center">
+                  <div className="font-headline text-sm font-black text-on-surface">{totalStops}</div>
+                  <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-outline">Stops</div>
                 </div>
               </div>
 
-              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl bg-surface-container-low px-4 py-3">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Start</div>
-                  <div className="mt-1 text-sm font-extrabold text-on-surface line-clamp-2">{route.origin?.name ?? 'Origin'}</div>
-                </div>
-                <div className="rounded-2xl bg-surface-container-low px-4 py-3">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">End</div>
-                  <div className="mt-1 text-sm font-extrabold text-on-surface line-clamp-2">{route.destination?.name ?? 'Destination'}</div>
-                </div>
+              <div className="mt-3 flex gap-2">
+                <Link
+                  to="/plan"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-surface-container-high bg-surface-container-lowest px-3 py-2 text-[11px] font-bold text-on-surface transition-colors hover:bg-surface-container-low"
+                >
+                  <Pencil className="h-3.5 w-3.5 text-primary" />
+                  Edit
+                </Link>
+                <Link
+                  to={activePoi ? `/results/${encodeURIComponent(route.id)}/vibe/${encodeURIComponent(activePoi.id)}` : `/results/${encodeURIComponent(route.id)}`}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-container px-3 py-2 text-[11px] font-headline font-extrabold text-white shadow-lg transition-transform active:scale-95"
+                >
+                  <Eye className="h-3.5 w-3.5" />
+                  Vibe check
+                </Link>
               </div>
-            </div>
-
-            <div className="pointer-events-auto flex items-start">
-              <button
-                type="button"
-                onClick={() => navigate('/plan')}
-                className="glass-card rounded-full px-4 py-2 shadow-float border border-white/60 flex items-center gap-2 text-sm font-bold text-primary"
-              >
-                <Pencil className="h-4 w-4" />
-                Plan new route
-              </button>
             </div>
           </div>
         </section>
 
-        <section className="lg:col-span-4 min-h-[24rem] lg:h-full rounded-lg bg-surface-container-lowest shadow-float flex flex-col relative z-10">
-          <div className="p-6 border-b border-surface-container">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-outline">Your Route</div>
-                <h2 className="font-headline text-xl font-extrabold mt-2">{route.title}</h2>
-                <p className="text-sm text-on-surface-variant mt-1">{minutesLabel(route.totalDurationMinutes)} total</p>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                <RouteIcon className="h-5 w-5" />
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-6 space-y-8">
-            <div>
-              <div className="flex items-center justify-between">
-                <h3 className="font-headline font-extrabold text-sm">Itinerary</h3>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-outline">Stops</span>
-              </div>
-              <div className="mt-4 space-y-3">
-                {route.pois.map((p, idx) => {
-                  const active = p.id === activePoiId;
-                  return (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => setActivePoiId(p.id)}
-                      className={cn(
-                        'w-full text-left rounded-2xl p-4 transition-colors',
-                        active ? 'bg-surface-container-low' : 'bg-surface-container-lowest hover:bg-surface-container-low'
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={cn(
-                            'h-9 w-9 rounded-full flex items-center justify-center font-headline font-extrabold text-xs',
-                            active ? 'bg-tertiary text-white' : 'bg-primary/10 text-primary'
-                          )}
-                        >
-                          {idx + 1}
-                        </div>
-                        <div className="flex-1">
-                          <div className="text-sm font-extrabold text-on-surface">{p.name}</div>
-                          <div className="text-xs text-on-surface-variant mt-0.5">
-                            {(p.address ?? p.city ?? p.category ?? 'Curated') + (p.rating ? ` · ${p.rating.toFixed(1)}` : '')}
-                          </div>
-                        </div>
-                        <ChevronRight className="h-4 w-4 text-on-surface-variant" />
-                      </div>
-                      {p.badges?.length ? (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {p.badges.slice(0, 2).map((b) => (
-                            <span
-                              key={b}
-                              className="px-3 py-1 rounded-full bg-tertiary-container/25 text-on-tertiary-container text-[10px] font-bold uppercase tracking-wider"
-                            >
-                              {b}
-                            </span>
-                          ))}
-                        </div>
-                      ) : null}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <h3 className="font-headline font-extrabold text-sm">Directions</h3>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-outline">Legs</span>
+        <section className="relative z-10 flex min-h-[28rem] flex-col overflow-hidden rounded-[32px] bg-surface-container-lowest shadow-float lg:col-span-4 lg:h-full">
+          {panelMode === 'results' ? (
+            <>
+              <div className="border-b border-surface-container p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Discovery</div>
+                    <h2 className="mt-2 font-headline text-2xl font-black text-on-surface">Route Results</h2>
+                    <p className="mt-1 text-sm text-on-surface-variant">Tap an itinerary stop to open its TikTok panel.</p>
+                  </div>
+                  <div className="rounded-full bg-primary/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+                    Live plan
+                  </div>
+                </div>
               </div>
 
-              <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
-                {route.legs.map((leg, idx) => (
-                  <button
-                    key={`${leg.fromPoiId ?? 'x'}_${leg.toPoiId ?? 'y'}_${idx}`}
-                    type="button"
-                    onClick={() => setActiveLegIndex(idx)}
-                    className={cn(
-                      'flex-shrink-0 px-4 py-2 rounded-full text-xs font-extrabold transition-colors',
-                      idx === activeLegIndex
-                        ? 'bg-primary text-white'
-                        : 'bg-surface-container-low text-on-surface/70 hover:bg-surface-container-high'
-                    )}
-                  >
-                    Leg {idx + 1} · {minutesLabel(leg.durationMinutes)}
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-4 space-y-3">
-                {(activeLeg?.steps ?? []).map((s, i) => (
-                  <div key={`${i}_${s.instruction}`} className="bg-surface-container-low rounded-2xl p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                        <MapPin className="h-4 w-4" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-sm font-extrabold text-on-surface">{s.instruction}</div>
-                        <div className="text-xs text-on-surface-variant mt-1">
-                          {(s.durationMinutes ?? 0) > 0 ? `${s.durationMinutes} mins` : '—'}
-                        </div>
-                      </div>
+              <div className="flex-1 space-y-8 overflow-y-auto p-6">
+                <div className="rounded-[28px] bg-surface-container-low p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Selected stop</div>
+                      <h3 className="mt-2 font-headline text-lg font-extrabold text-on-surface">{activePoi?.name ?? 'Choose a stop'}</h3>
+                    </div>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
+                      <Star className="h-4 w-4" />
                     </div>
                   </div>
-                ))}
+                  <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">
+                    {activePoi
+                      ? activePoi.address ?? activePoi.city ?? activePoi.category ?? 'Curated stop on your route.'
+                      : 'Tap a stop on the map or itinerary to inspect it.'}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+                      {stopBadge(activePoi ?? route.pois[0])}
+                    </span>
+                    {activePoi?.rating ? (
+                      <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface">
+                        {activePoi.rating.toFixed(1)} rating
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-headline text-sm font-extrabold text-on-surface">Itinerary</h3>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Stops</span>
+                  </div>
+                  <div className="mt-4 space-y-3">
+                    {route.pois.map((poi, idx) => {
+                      const active = poi.id === activePoi?.id;
+                      return (
+                        <button
+                          key={poi.id}
+                          type="button"
+                          onClick={() => {
+                            setActivePoiId(poi.id);
+                            setActiveLegIndex(Math.min(idx, Math.max(route.legs.length - 1, 0)));
+                            setPanelMode('tiktok');
+                          }}
+                          className={cn(
+                            'w-full rounded-[24px] border p-4 text-left transition-all',
+                            active
+                              ? 'border-primary/20 bg-primary/5 shadow-sm'
+                              : 'border-surface-container bg-surface-container-lowest hover:bg-surface-container-low'
+                          )}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={cn('flex h-10 w-10 items-center justify-center rounded-2xl text-xs font-black', stopTone(idx))}>
+                              {idx + 1}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="truncate text-sm font-extrabold text-on-surface">{poi.name}</div>
+                              <div className="mt-1 truncate text-xs text-on-surface-variant">
+                                {poi.address ?? poi.city ?? poi.category ?? 'Curated stop'}
+                              </div>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-on-surface-variant" />
+                          </div>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <span className="rounded-full bg-surface-container-low px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
+                              {stopBadge(poi)}
+                            </span>
+                            <span className="rounded-full bg-surface-container-low px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
+                              TikTok panel
+                            </span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-headline text-sm font-extrabold text-on-surface">Current leg</h3>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">
+                      {route.legs.length ? `${Math.min(activeLegIndex + 1, route.legs.length)}/${route.legs.length}` : '0/0'}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 rounded-[28px] bg-surface-container-low p-5">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Travel time</div>
+                        <div className="mt-2 font-headline text-2xl font-black text-on-surface">
+                          {activeLeg ? minutesLabel(activeLeg.durationMinutes) : '—'}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setActiveLegIndex((value) => (route.legs.length ? (value + 1) % route.legs.length : 0))}
+                        className="rounded-full bg-white px-4 py-2 text-xs font-bold text-primary shadow-sm transition-transform active:scale-95"
+                      >
+                        Next leg
+                      </button>
+                    </div>
+
+                    <div className="mt-4 space-y-3">
+                      {activeLeg?.steps?.length ? (
+                        activeLeg.steps.map((step, index) => (
+                          <div key={`${step.instruction}-${index}`} className="flex gap-3 rounded-2xl bg-white px-4 py-3 shadow-sm">
+                            <div className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[10px] font-black text-primary">
+                              {index + 1}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-sm font-semibold text-on-surface">{step.instruction}</div>
+                              <div className="mt-1 text-xs text-on-surface-variant">
+                                {step.distanceMeters ? `${step.distanceMeters}m` : 'Short hop'}
+                                {step.durationMinutes ? ` · ${minutesLabel(step.durationMinutes)}` : ''}
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="rounded-2xl bg-white px-4 py-3 text-sm text-on-surface-variant shadow-sm">
+                          No step-by-step instructions available for this leg yet.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="border-b border-surface-container p-6">
+                <button
+                  type="button"
+                  onClick={() => setPanelMode('results')}
+                  className="inline-flex items-center gap-2 rounded-full bg-surface-container-low px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-surface-container"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Return to route results
+                </button>
+                <div className="mt-5 flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">TikTok panel</div>
+                    <h2 className="mt-2 font-headline text-2xl font-black text-on-surface">{activePoi?.name ?? 'Selected stop'}</h2>
+                    <p className="mt-1 text-sm text-on-surface-variant">Focused social preview for this itinerary stop.</p>
+                  </div>
+                  <div className="rounded-full bg-tertiary-container/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-on-tertiary-container">
+                    Social clip
+                  </div>
+                </div>
               </div>
 
-              <TikTokPanel poi={activePoi} />
+              <div className="flex-1 space-y-6 overflow-y-auto p-6">
+                <div className="overflow-hidden rounded-[28px] bg-surface-container-low shadow-sm">
+                  <div className="relative aspect-[9/16] w-full overflow-hidden bg-slate-950">
+                    {selectedTikTokUrl && !shouldUseEmbedFallback ? (
+                      <iframe
+                        src={selectedEmbedUrl}
+                        title={`${selectedPoi?.name ?? 'Selected stop'} TikTok video`}
+                        className="h-full w-full border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        onError={() => {
+                          if (selectedPoi) {
+                            setEmbedErrors((current) => ({ ...current, [selectedPoi.id]: true }));
+                          }
+                        }}
+                      />
+                    ) : (
+                      <a
+                        href={selectedTikTokUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="group block h-full w-full"
+                        aria-label={`Open TikTok video for ${selectedPoi?.name ?? 'selected stop'}`}
+                      >
+                        <img
+                          src={shouldUseFallbackThumbnail ? fallbackThumbnailUrl(selectedPoi ?? route.pois[0]) : selectedThumbnailUrl}
+                          alt={`${selectedPoi?.name ?? 'Selected stop'} TikTok thumbnail`}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                          onError={() => {
+                            if (selectedPoi) {
+                              setThumbnailErrors((current) => ({ ...current, [selectedPoi.id]: true }));
+                            }
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-slate-950 shadow-xl transition-transform duration-300 group-hover:scale-105">
+                            <Play className="ml-1 h-7 w-7 fill-current" />
+                          </div>
+                        </div>
+                        <div className="absolute left-4 right-4 top-4 flex items-center justify-between gap-3">
+                          <div className="inline-flex items-center gap-2 rounded-full bg-black/35 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                            <Sparkles className="h-3.5 w-3.5" />
+                            {videoLabel(selectedPoi ?? route.pois[0])}
+                          </div>
+                          <div className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                            <ExternalLink className="h-3.5 w-3.5" />
+                            Open TikTok
+                          </div>
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                          <div className="text-lg font-black">{selectedPoi?.name ?? 'Selected stop'}</div>
+                          <div className="mt-2 text-sm text-white/80">
+                            {selectedPoi?.address ?? selectedPoi?.city ?? selectedPoi?.category ?? 'Curated stop on your route'}
+                          </div>
+                        </div>
+                      </a>
+                    )}
+                    {selectedTikTokUrl && !shouldUseEmbedFallback ? (
+                      <a
+                        href={selectedTikTokUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="absolute right-4 top-4 inline-flex items-center gap-2 rounded-full bg-black/45 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        Open on TikTok
+                      </a>
+                    ) : null}
+                    {!selectedTikTokUrl ? (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-slate-950/80 px-6 text-center text-white">
+                        <div className="rounded-full bg-white/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-white/80">
+                          TikTok unavailable
+                        </div>
+                        <div className="max-w-xs text-sm text-white/75">This stop does not have a TikTok link yet, so only the preview artwork is available.</div>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
 
-              {activePoiId && (
-                <Link
-                  to={`/results/${encodeURIComponent(route.id)}/vibe/${encodeURIComponent(activePoiId)}`}
-                  className="mt-5 inline-flex w-full items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-container text-white py-4 rounded-full font-headline font-extrabold shadow-float active:scale-95 transition-transform"
-                >
-                  <Eye className="h-5 w-5" />
-                  Street-view vibe check
-                </Link>
-              )}
-            </div>
-          </div>
+                <div className="rounded-[28px] bg-surface-container-low p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">TikTok URL</div>
+                    {selectedTikTokUrl ? (
+                      <a
+                        href={selectedTikTokUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-primary shadow-sm transition-transform active:scale-95"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        Open link
+                      </a>
+                    ) : null}
+                  </div>
+                  <div className="mt-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-on-surface shadow-sm break-all">
+                    {selectedTikTokUrl ?? 'No TikTok URL available for this stop yet.'}
+                  </div>
+                  <div className="mt-3 text-xs text-on-surface-variant">
+                    The panel now opens the TikTok clip directly from the preview surface and falls back to a generated cover when a live thumbnail cannot be loaded.
+                  </div>
+                </div>
+
+                <div className="rounded-[28px] bg-surface-container-low p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Stop details</div>
+                      <div className="mt-2 font-headline text-lg font-extrabold text-on-surface">{activePoi?.name ?? 'Selected stop'}</div>
+                    </div>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
+                      <MapPin className="h-4 w-4" />
+                    </div>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+                      {stopBadge(activePoi ?? route.pois[0])}
+                    </span>
+                    {activePoi?.rating ? (
+                      <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface">
+                        {activePoi.rating.toFixed(1)} rating
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-4 text-sm leading-relaxed text-on-surface-variant">
+                    {activePoi?.address ?? activePoi?.city ?? activePoi?.category ?? 'Curated stop on your route.'}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </section>
-      </div>
-    </div>
-  );
-}
-
-function TikTokPanel(props: { poi?: Poi }) {
-  const url = props.poi?.videoUrl;
-  const id = props.poi?.videoId;
-  const embed = id ? `https://www.tiktok.com/embed/v2/${encodeURIComponent(id)}` : undefined;
-
-  if (!url && !embed) return null;
-
-  return (
-    <div className="mt-8">
-      <div className="flex items-center justify-between">
-        <h3 className="font-headline font-extrabold text-sm">TikTok</h3>
-        <span className="text-[10px] font-bold uppercase tracking-widest text-outline">Vibe Proof</span>
-      </div>
-
-      <div className="mt-4 bg-surface-container-low rounded-2xl overflow-hidden">
-        {embed ? (
-          <div className="aspect-[9/16] w-full">
-            <iframe
-              src={embed}
-              className="w-full h-full"
-              allow="encrypted-media;"
-              referrerPolicy="strict-origin-when-cross-origin"
-              title={props.poi?.name ?? 'TikTok'}
-            />
-          </div>
-        ) : null}
-
-        {url ? (
-          <div className="p-4 flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <div className="text-xs font-extrabold text-on-surface truncate">{props.poi?.name ?? 'Open video'}</div>
-              <div className="text-[10px] text-on-surface-variant truncate mt-1">{url}</div>
-            </div>
-            <a
-              href={url}
-              target="_blank"
-              rel="noreferrer"
-              className="flex-shrink-0 bg-primary text-white px-4 py-2 rounded-full text-xs font-extrabold"
-            >
-              Open
-            </a>
-          </div>
-        ) : null}
       </div>
     </div>
   );

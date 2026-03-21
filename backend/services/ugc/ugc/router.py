@@ -26,7 +26,7 @@ from .schemas import (
     VideoUploadResponse,
 )
 from .service import UGCService
-from .types import VideoMetadata
+from .types import JobStatus, VideoMetadata
 
 
 def create_ugc_router(
@@ -45,7 +45,12 @@ def create_ugc_router(
     if service is None:
         service = create_ugc_service(cfg)
 
-    router = APIRouter(prefix="/ugc", tags=["ugc"])
+    router = APIRouter(prefix="/api/ugc", tags=["ugc"])
+
+    def to_api_status(value: str) -> str:
+        if value == JobStatus.PENDING.value:
+            return "queued"
+        return value
 
     @router.get("/health", response_model=HealthCheckResponse)
     def health() -> HealthCheckResponse:
@@ -66,11 +71,20 @@ def create_ugc_router(
     )
     async def upload_video(
         file: Annotated[UploadFile, File(description="Video file to process")],
-        poi_name: Annotated[str, Form(description="Name of the POI")],
-        poi_city: Annotated[str, Form(description="City of the POI")],
-        poi_address: Annotated[
+        point_of_interest: Annotated[
+            str | None, Form(description="Name of the POI")
+        ] = None,
+        city: Annotated[str | None, Form(description="City of the POI")] = None,
+        address: Annotated[
             str | None, Form(description="Address of the POI")
         ] = None,
+        short_description: Annotated[
+            str | None, Form(description="Short description")
+        ] = None,
+        atmosphere: Annotated[str | None, Form(description="Atmosphere")] = None,
+        poi_name: Annotated[str | None, Form(description="Name of the POI")] = None,
+        poi_city: Annotated[str | None, Form(description="City of the POI")] = None,
+        poi_address: Annotated[str | None, Form(description="Address of the POI")] = None,
         user_id: Annotated[
             str | None, Form(description="User ID of the uploader")
         ] = None,
@@ -82,15 +96,25 @@ def create_ugc_router(
         that can be used to check status.
         """
         # Validate inputs
-        if not poi_name or not poi_name.strip():
+        effective_poi_name = (point_of_interest or poi_name or "").strip()
+        effective_city = (city or poi_city or "").strip()
+        effective_address = (
+            (address or poi_address).strip() if (address or poi_address) else None
+        )
+        effective_short_description = (
+            short_description.strip() if short_description else None
+        )
+        effective_atmosphere = atmosphere.strip() if atmosphere else None
+
+        if not effective_poi_name:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="poi_name is required",
+                detail="point_of_interest is required",
             )
-        if not poi_city or not poi_city.strip():
+        if not effective_city:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="poi_city is required",
+                detail="city is required",
             )
 
         # Read file content
@@ -104,10 +128,12 @@ def create_ugc_router(
 
         # Build metadata
         metadata = VideoMetadata(
-            poi_name=poi_name.strip(),
-            poi_city=poi_city.strip(),
-            poi_address=poi_address.strip() if poi_address else None,
+            poi_name=effective_poi_name,
+            poi_city=effective_city,
+            poi_address=effective_address,
             user_id=user_id.strip() if user_id else None,
+            short_description=effective_short_description,
+            atmosphere=effective_atmosphere,
         )
 
         # Submit video
@@ -135,10 +161,10 @@ def create_ugc_router(
             )
 
         return VideoUploadResponse(
-            job_id=job.job_id,
-            video_id=job.video_id,
-            status=job.status.value,
-            created_at=job.created_at,
+            jobId=job.job_id,
+            videoId=job.video_id,
+            status=to_api_status(job.status.value),
+            createdAt=job.created_at,
         )
 
     @router.get(
@@ -164,17 +190,17 @@ def create_ugc_router(
                 characteristic=job.judge.characteristic_vi if job.judge.accepted else None,
                 confidence=job.judge.confidence,
                 indexed=job.index.indexed if job.index else False,
-                provider_map=job.provider_map,
-                transcription_text=job.transcription.text if job.transcription else None,
-                ocr_text=job.ocr.text if job.ocr else None,
+                providerMap=job.provider_map,
+                transcriptionText=job.transcription.text if job.transcription else None,
+                ocrText=job.ocr.text if job.ocr else None,
             )
 
         return JobStatusResponse(
-            job_id=job.job_id,
-            video_id=job.video_id,
-            status=job.status.value,
-            created_at=job.created_at,
-            updated_at=job.updated_at,
+            jobId=job.job_id,
+            videoId=job.video_id,
+            status=to_api_status(job.status.value),
+            createdAt=job.created_at,
+            updatedAt=job.updated_at,
             error=job.error,
             result=result,
         )
@@ -214,17 +240,17 @@ def create_ugc_router(
                 characteristic=job.judge.characteristic_vi if job.judge.accepted else None,
                 confidence=job.judge.confidence,
                 indexed=job.index.indexed if job.index else False,
-                provider_map=job.provider_map,
-                transcription_text=job.transcription.text if job.transcription else None,
-                ocr_text=job.ocr.text if job.ocr else None,
+                providerMap=job.provider_map,
+                transcriptionText=job.transcription.text if job.transcription else None,
+                ocrText=job.ocr.text if job.ocr else None,
             )
 
         return JobStatusResponse(
-            job_id=job.job_id,
-            video_id=job.video_id,
-            status=job.status.value,
-            created_at=job.created_at,
-            updated_at=job.updated_at,
+            jobId=job.job_id,
+            videoId=job.video_id,
+            status=to_api_status(job.status.value),
+            createdAt=job.created_at,
+            updatedAt=job.updated_at,
             error=job.error,
             result=result,
         )

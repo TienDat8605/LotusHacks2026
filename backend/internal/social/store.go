@@ -16,6 +16,7 @@ type Store struct {
 	sessions     map[string]*api.SocialSession
 	messages     map[string][]api.ChatMessage
 	participants map[string]map[string]*api.SocialParticipant
+	codes        map[string]string
 }
 
 func NewStore() *Store {
@@ -23,31 +24,30 @@ func NewStore() *Store {
 		sessions:     map[string]*api.SocialSession{},
 		messages:     map[string][]api.ChatMessage{},
 		participants: map[string]map[string]*api.SocialParticipant{},
+		codes:        map[string]string{},
 	}
 }
 
 func (s *Store) SeedDefault() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.sessions["session_urban_pulse"] = &api.SocialSession{
-		ID:               "session_urban_pulse",
-		DestinationName:  "Pasteur Street Brewing Co.",
-		ParticipantCount: 12,
-		Status:           "live",
-	}
-	s.sessions["session_rooftop"] = &api.SocialSession{
-		ID:               "session_rooftop",
-		DestinationName:  "Twilight Rooftop",
-		ParticipantCount: 6,
-		Status:           "scheduled",
-	}
+	s.seedSession("session_urban_pulse", "Pasteur Street Brewing Co.", "live", "URBAN1")
+	s.seedSession("session_rooftop", "Twilight Rooftop", "scheduled", "ROOF22")
 	s.messages["session_urban_pulse"] = []api.ChatMessage{
 		{ID: newID("m"), Role: "assistant", Text: "Welcome to Urban Pulse. Drop your ETA and I’ll keep the vibe aligned.", CreatedAt: time.Now().UTC().Format(time.RFC3339)},
-		{ID: newID("m"), Role: "user", Text: "On my way — 10 mins.", CreatedAt: time.Now().UTC().Format(time.RFC3339)},
 	}
+}
 
-	s.participants["session_urban_pulse"] = map[string]*api.SocialParticipant{}
-	s.participants["session_rooftop"] = map[string]*api.SocialParticipant{}
+func (s *Store) seedSession(id, destinationName, status, code string) {
+	s.sessions[id] = &api.SocialSession{
+		ID:               id,
+		DestinationName:  destinationName,
+		ParticipantCount: 0,
+		Status:           status,
+		Code:             code,
+	}
+	s.codes[strings.ToUpper(code)] = id
+	s.participants[id] = map[string]*api.SocialParticipant{}
 }
 
 func (s *Store) ListSessions() []api.SocialSession {
@@ -57,7 +57,51 @@ func (s *Store) ListSessions() []api.SocialSession {
 	for _, v := range s.sessions {
 		out = append(out, *v)
 	}
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].Status == out[j].Status {
+			return out[i].DestinationName < out[j].DestinationName
+		}
+		return out[i].Status < out[j].Status
+	})
 	return out
+}
+
+func (s *Store) CreateSession(destinationName string) api.SocialSession {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	name := strings.TrimSpace(destinationName)
+	if name == "" {
+		name = "New Meetup Room"
+	}
+	sessionID := newID("session")
+	code := s.newRoomCodeLocked()
+	s.sessions[sessionID] = &api.SocialSession{
+		ID:               sessionID,
+		DestinationName:  name,
+		ParticipantCount: 0,
+		Status:           "live",
+		Code:             code,
+	}
+	s.participants[sessionID] = map[string]*api.SocialParticipant{}
+	s.messages[sessionID] = []api.ChatMessage{
+		{ID: newID("m"), Role: "assistant", Text: "Room created. Share the code so others can join the meetup.", CreatedAt: time.Now().UTC().Format(time.RFC3339)},
+	}
+	s.codes[code] = sessionID
+	return *s.sessions[sessionID]
+}
+
+func (s *Store) FindSessionByCode(code string) (api.SocialSession, bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	sessionID, ok := s.codes[strings.ToUpper(strings.TrimSpace(code))]
+	if !ok {
+		return api.SocialSession{}, false
+	}
+	session, ok := s.sessions[sessionID]
+	if !ok {
+		return api.SocialSession{}, false
+	}
+	return *session, true
 }
 
 func (s *Store) Join(sessionID string, displayName string) (api.SocialParticipant, bool) {
@@ -67,7 +111,6 @@ func (s *Store) Join(sessionID string, displayName string) (api.SocialParticipan
 	if !ok {
 		return api.SocialParticipant{}, false
 	}
-	sess.ParticipantCount++
 	if strings.TrimSpace(displayName) == "" {
 		displayName = "Explorer"
 	}
@@ -82,24 +125,25 @@ func (s *Store) Join(sessionID string, displayName string) (api.SocialParticipan
 		s.participants[sessionID] = map[string]*api.SocialParticipant{}
 	}
 	s.participants[sessionID][pid] = p
+	sess.ParticipantCount = len(s.participants[sessionID])
 	return *p, true
 }
 
-func (s *Store) UpdateLocation(sessionID, participantID string, lat, lng float64) bool {
+func (s *Store) UpdateLocation(sessionID, participantID string, lat, lng float64) (api.SocialParticipant, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	room, ok := s.participants[sessionID]
 	if !ok {
-		return false
+		return api.SocialParticipant{}, false
 	}
 	p, ok := room[participantID]
 	if !ok {
-		return false
+		return api.SocialParticipant{}, false
 	}
 	p.Lat = &lat
 	p.Lng = &lng
 	p.LastSeen = time.Now().UTC().Format(time.RFC3339)
-	return true
+	return *p, true
 }
 
 func (s *Store) ListParticipants(sessionID string) ([]api.SocialParticipant, bool) {
@@ -129,7 +173,7 @@ func (s *Store) ListMessages(sessionID string) ([]api.ChatMessage, bool) {
 	return out, true
 }
 
-func (s *Store) AddMessage(sessionID string, role, text string) (api.ChatMessage, bool) {
+func (s *Store) AddMessage(sessionID, role, text string) (api.ChatMessage, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if _, ok := s.sessions[sessionID]; !ok {
@@ -150,6 +194,34 @@ func (s *Store) Ping(sessionID string) bool {
 	defer s.mu.RUnlock()
 	_, ok := s.sessions[sessionID]
 	return ok
+}
+
+func (s *Store) newRoomCodeLocked() string {
+	for {
+		code := strings.ToUpper(randomAlphaNumeric(6))
+		if code == "" {
+			code = strings.ToUpper(time.Now().UTC().Format("150405"))
+		}
+		if _, exists := s.codes[code]; !exists {
+			return code
+		}
+	}
+}
+
+func randomAlphaNumeric(length int) string {
+	const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+	if length <= 0 {
+		return ""
+	}
+	bytes := make([]byte, length)
+	raw := make([]byte, length)
+	if _, err := rand.Read(raw); err != nil {
+		return ""
+	}
+	for i := range bytes {
+		bytes[i] = alphabet[int(raw[i])%len(alphabet)]
+	}
+	return string(bytes)
 }
 
 func newID(prefix string) string {

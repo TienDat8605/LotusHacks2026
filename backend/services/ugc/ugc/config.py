@@ -66,12 +66,34 @@ def _require_env(name: str, context: str = "") -> str:
     return value
 
 
+def _find_repo_root(start: Path) -> Path | None:
+    for p in [start, *start.parents]:
+        if (p / "backend").is_dir() and (p / "frontend").is_dir() and (p / "data").is_dir():
+            return p
+    return None
+
+
+def _repo_root() -> Path:
+    override = _optional_env("UGC_REPO_ROOT")
+    if override:
+        return Path(override).expanduser().resolve()
+
+    here = Path(__file__).resolve().parent
+    found = _find_repo_root(here)
+    if found:
+        return found
+
+    cwd = Path.cwd().resolve()
+    found = _find_repo_root(cwd)
+    return found or cwd
+
+
 def _load_env_file(env_file: Path | None) -> None:
     """Load environment from file, defaulting to project root .env."""
     if env_file:
         load_dotenv(env_file)
         return
-    root_env = Path(__file__).resolve().parents[4] / ".env"
+    root_env = _repo_root() / ".env"
     load_dotenv(root_env)
 
 
@@ -144,7 +166,7 @@ class UGCConfig:
         _load_env_file(env_file)
 
         # Compute storage paths relative to project root
-        project_root = Path(__file__).resolve().parents[4]
+        project_root = _repo_root()
         storage_base = project_root / "data"
 
         storage_path = Path(

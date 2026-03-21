@@ -1,15 +1,16 @@
-import { useMemo } from 'react';
-import { MapContainer, Marker, TileLayer, Tooltip } from 'react-leaflet';
+import { useEffect, useMemo, useRef } from 'react';
 import L from 'leaflet';
+import { MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'react-leaflet';
 import type { Poi, SocialParticipant } from '@/api/types';
+import { cn } from '@/lib/utils';
 
 function userIcon(seed: string, highlighted: boolean) {
-  const color = highlighted ? '#b90037' : seedColor(seed);
+  const color = highlighted ? '#004be3' : seedColor(seed);
   const label = initials(seed);
-  const ring = highlighted ? '0 0 0 6px rgba(185,0,55,0.18)' : '0 14px 30px rgba(0,0,0,0.18)';
+  const ring = highlighted ? '0 0 0 10px rgba(0,75,227,0.18)' : '0 14px 30px rgba(0,0,0,0.18)';
   return L.divIcon({
     className: '',
-    html: `<div style="width:34px;height:34px;border-radius:9999px;background:${color};color:white;display:flex;align-items:center;justify-content:center;font-weight:900;font-family:ui-sans-serif;font-size:11px;box-shadow:${ring};border:4px solid rgba(255,255,255,0.80);">${label}</div>`,
+    html: `<div style="width:34px;height:34px;border-radius:9999px;background:${color};color:white;display:flex;align-items:center;justify-content:center;font-weight:900;font-family:ui-sans-serif;font-size:11px;box-shadow:${ring};border:4px solid rgba(255,255,255,0.92);">${label}</div>`,
     iconSize: [34, 34],
     iconAnchor: [17, 17],
   });
@@ -19,18 +20,20 @@ function pulseIcon(seed: string) {
   const color = seedColor(seed);
   return L.divIcon({
     className: '',
-    html: `<div style="position:relative;width:54px;height:54px;display:flex;align-items:center;justify-content:center;"><span style="position:absolute;width:54px;height:54px;border-radius:9999px;background:${color};opacity:0.18;animation:vibemap-pulse 1.8s ease-out infinite;"></span><span style="position:absolute;width:40px;height:40px;border-radius:9999px;background:${color};opacity:0.24;animation:vibemap-pulse 1.8s ease-out 0.35s infinite;"></span><span style="position:relative;width:18px;height:18px;border-radius:9999px;background:${color};border:4px solid rgba(255,255,255,0.92);box-shadow:0 10px 24px rgba(0,0,0,0.18);"></span></div>`,
-    iconSize: [54, 54],
-    iconAnchor: [27, 27],
+    html: `<div style="position:relative;width:72px;height:72px;display:flex;align-items:center;justify-content:center;"><span style="position:absolute;width:72px;height:72px;border-radius:9999px;background:${color};opacity:0.16;animation:vibemap-pulse 1.8s ease-out infinite;"></span><span style="position:absolute;width:52px;height:52px;border-radius:9999px;background:${color};opacity:0.22;animation:vibemap-pulse 1.8s ease-out 0.35s infinite;"></span><span style="position:relative;width:24px;height:24px;border-radius:9999px;background:${color};border:6px solid rgba(255,255,255,0.96);box-shadow:0 18px 36px rgba(0,0,0,0.22);"></span></div>`,
+    iconSize: [72, 72],
+    iconAnchor: [36, 36],
   });
 }
 
-function poiIcon() {
+function poiIcon(index: number) {
+  const colors = ['#004be3', '#7c3aed', '#f97316'];
+  const color = colors[index % colors.length];
   return L.divIcon({
     className: '',
-    html: `<div style="width:26px;height:26px;border-radius:10px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;font-weight:900;font-family:ui-sans-serif;font-size:11px;box-shadow:0 10px 24px rgba(0,0,0,0.16);border:1px solid rgba(255,255,255,0.9);color:#004be3;">★</div>`,
-    iconSize: [26, 26],
-    iconAnchor: [13, 13],
+    html: `<div style="width:28px;height:28px;border-radius:9999px;background:rgba(255,255,255,0.96);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;font-weight:900;font-family:ui-sans-serif;font-size:12px;box-shadow:0 10px 24px rgba(0,0,0,0.16);border:1px solid rgba(255,255,255,0.9);color:${color};">★</div>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
   });
 }
 
@@ -53,12 +56,23 @@ function seedColor(seed: string) {
   return `hsl(${hue}, 78%, 48%)`;
 }
 
+function MapViewport(props: { center: { lat: number; lng: number } }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView([props.center.lat, props.center.lng], map.getZoom(), { animate: true });
+  }, [map, props.center.lat, props.center.lng]);
+  return null;
+}
+
 export function SocialMap(props: {
   center: { lat: number; lng: number };
   participants: SocialParticipant[];
   recommendations: Poi[];
   currentParticipantId?: string;
+  className?: string;
+  fullscreen?: boolean;
 }) {
+  const mapRef = useRef<L.Map | null>(null);
   const liveParticipants = useMemo(
     () => props.participants.filter((p) => typeof p.lat === 'number' && typeof p.lng === 'number'),
     [props.participants]
@@ -67,21 +81,46 @@ export function SocialMap(props: {
     () => liveParticipants.find((p) => p.id === props.currentParticipantId) ?? liveParticipants[0],
     [liveParticipants, props.currentParticipantId]
   );
+  const midpointConnections = useMemo(() => {
+    if (!currentParticipant) return [] as [number, number][][];
+    return props.recommendations.slice(0, 3).map((poi) => {
+      const start: [number, number] = [currentParticipant.lat as number, currentParticipant.lng as number];
+      const end: [number, number] = [poi.location.lat, poi.location.lng];
+      return [start, end];
+    });
+  }, [currentParticipant, props.recommendations]);
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+    window.setTimeout(() => {
+      mapRef.current?.invalidateSize();
+    }, 120);
+  }, [props.fullscreen]);
 
   return (
-    <div className="h-64 w-full overflow-hidden rounded-[28px] border border-white/70 shadow-float">
+    <div className={cn('h-64 w-full overflow-hidden rounded-[28px] border border-white/70 shadow-float', props.className)}>
       <style>{'@keyframes vibemap-pulse { 0% { transform: scale(0.45); opacity: 0.45; } 70% { transform: scale(1); opacity: 0; } 100% { transform: scale(1); opacity: 0; } }'}</style>
       <MapContainer
         center={[props.center.lat, props.center.lng]}
         zoom={14}
-        scrollWheelZoom={false}
+        scrollWheelZoom={props.fullscreen}
         dragging
+        ref={mapRef}
         className="h-full w-full"
       >
+        <MapViewport center={props.center} />
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
+
+        {midpointConnections.map((path, index) => (
+          <Polyline
+            key={`midpoint-${index}`}
+            positions={path as [[number, number], [number, number]]}
+            pathOptions={{ color: ['#004be3', '#7c3aed', '#f97316'][index % 3], weight: 3, opacity: 0.8, dashArray: '8 8' }}
+          />
+        ))}
 
         {currentParticipant && (
           <Marker
@@ -107,8 +146,8 @@ export function SocialMap(props: {
           </Marker>
         ))}
 
-        {props.recommendations.slice(0, 4).map((poi) => (
-          <Marker key={poi.id} position={[poi.location.lat, poi.location.lng]} icon={poiIcon()}>
+        {props.recommendations.slice(0, 3).map((poi, index) => (
+          <Marker key={poi.id} position={[poi.location.lat, poi.location.lng]} icon={poiIcon(index)}>
             <Tooltip direction="top" offset={[0, -12]} opacity={1}>
               {poi.name}
             </Tooltip>

@@ -31,20 +31,20 @@ class VideoUploadMetadata(BaseModel):
 class VideoUploadResponse(BaseModel):
     """Response after video upload is accepted."""
 
-    job_id: str
-    video_id: str
-    status: Literal["pending", "processing", "completed", "failed"]
-    created_at: datetime
+    jobId: str
+    videoId: str
+    status: Literal["queued", "processing", "completed", "failed"]
+    createdAt: datetime
 
 
 class JobStatusResponse(BaseModel):
     """Response for job status query."""
 
-    job_id: str
-    video_id: str
-    status: Literal["pending", "processing", "completed", "failed"]
-    created_at: datetime
-    updated_at: datetime
+    jobId: str
+    videoId: str
+    status: Literal["queued", "processing", "completed", "failed"]
+    createdAt: datetime
+    updatedAt: datetime
     error: str | None = None
     result: "JobResultDetail | None" = None
 
@@ -55,9 +55,9 @@ class JobResultDetail(BaseModel):
     characteristic: str | None = None
     confidence: float | None = Field(default=None, ge=0, le=1)
     indexed: bool = False
-    provider_map: dict[str, str] = Field(default_factory=dict)
-    transcription_text: str | None = None
-    ocr_text: str | None = None
+    providerMap: dict[str, str] = Field(default_factory=dict)
+    transcriptionText: str | None = None
+    ocrText: str | None = None
 
 
 class HealthCheckResponse(BaseModel):

@@ -4,7 +4,7 @@
 Add a new user-generated-content (UGC) pipeline without mutating legacy ingestion code paths. Keep implementation in separate files with explicit interfaces so provider/model swaps are low-risk and localized.
 
 Approach:
-- Build a new UGC module boundary under `services/ai-orchestrator/ai_orchestrator/ugc/`
+- Build a new UGC module boundary under `backend/services/ugc/ugc/`
 - Define stable interfaces (ports) for STT, OCR, judge/extractor, embed/index, storage, and job persistence
 - Provide default adapters that wrap existing logic/models
 - Keep output format backward compatible with current JSONL and Qdrant indexing flow
@@ -52,7 +52,7 @@ Approach:
 - [ ] Define canonical UGC data contracts
   - Files:
     - `ugc/schemas.py`
-  - Request contract (`POST /ugc/videos`):
+  - Request contract (`POST /api/ugc/videos`):
     - multipart `file`
     - fields: `poi_name`, `poi_city`, optional `poi_address`, optional `user_id`
   - Job response:
@@ -79,8 +79,8 @@ Approach:
     - `ugc/router.py`
     - hook in existing app bootstrap with minimal surface change
   - Endpoints:
-    - `POST /ugc/videos` (enqueue/process)
-    - `GET /ugc/jobs/{job_id}`
+    - `POST /api/ugc/videos` (enqueue/process)
+    - `GET /api/ugc/jobs/{job_id}`
   - Keep API isolated from legacy pipeline routes.
 
 - [ ] Preserve compatibility with existing indexer format

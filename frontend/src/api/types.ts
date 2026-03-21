@@ -47,7 +47,7 @@ export type RoutePlan = {
 
 export type ChatMessage = {
   id: string;
-  role: 'user' | 'assistant';
+  role: string;
   text: string;
   createdAt: string;
 };
@@ -57,6 +57,7 @@ export type SocialSession = {
   destinationName: string;
   participantCount: number;
   status: 'live' | 'scheduled' | 'ended';
+  code: string;
 };
 
 export type SocialParticipant = {
@@ -66,6 +67,22 @@ export type SocialParticipant = {
   lat?: number;
   lng?: number;
   lastSeen: string;
+};
+
+export type SocialEvent = {
+  type: 'snapshot' | 'message';
+  session?: SocialSession;
+  participant?: SocialParticipant;
+  participants?: SocialParticipant[];
+  message?: ChatMessage;
+  messages?: ChatMessage[];
+  recommendations?: Poi[];
+};
+
+export type JoinByCodeResponse = {
+  session: SocialSession;
+  participantId: string;
+  avatarSeed: string;
 };
 
 export type AssistantResponse = {

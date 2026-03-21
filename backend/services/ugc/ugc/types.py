@@ -88,6 +88,8 @@ class VideoMetadata:
     poi_name: str
     poi_city: str
     poi_address: str | None = None
+    short_description: str | None = None
+    atmosphere: str | None = None
     user_id: str | None = None
     upload_id: str | None = None
     original_filename: str | None = None

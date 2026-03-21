@@ -1,4 +1,5 @@
 import type { ApiClient } from '@/api/client';
+import type { SocialEvent } from '@/api/types';
 
 async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -17,6 +18,15 @@ async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T;
 }
 
+function decodeEventPayload(raw: string): SocialEvent | null {
+  try {
+    const json = atob(raw);
+    return JSON.parse(json) as SocialEvent;
+  } catch {
+    return null;
+  }
+}
+
 export function createRealApiClient(): ApiClient {
   const base = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '';
 
@@ -28,10 +38,20 @@ export function createRealApiClient(): ApiClient {
         body: JSON.stringify({ threadId, text }),
       }),
     listSocialSessions: () => jsonFetch(`${base}/api/social/sessions`),
+    createSocialSession: (destinationName) =>
+      jsonFetch(`${base}/api/social/sessions`, {
+        method: 'POST',
+        body: JSON.stringify({ destinationName }),
+      }),
     joinSocialSession: (sessionId, displayName) =>
       jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/join`, {
         method: 'POST',
         body: JSON.stringify({ displayName }),
+      }),
+    joinSocialSessionByCode: (code, displayName) =>
+      jsonFetch(`${base}/api/social/sessions/join-by-code`, {
+        method: 'POST',
+        body: JSON.stringify({ code, displayName }),
       }),
     updateSocialLocation: (sessionId, participantId, lat, lng) =>
       jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/location`, {
@@ -53,6 +73,21 @@ export function createRealApiClient(): ApiClient {
       jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/ping`, {
         method: 'POST',
       }),
+    subscribeToSocialSession: (sessionId, onEvent) => {
+      const source = new EventSource(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/stream`);
+      source.onmessage = (event) => {
+        const payload = decodeEventPayload(event.data);
+        if (payload) {
+          onEvent(payload);
+        }
+      };
+      source.onerror = () => {
+        return;
+      };
+      return () => {
+        source.close();
+      };
+    },
     uploadLocationVideo: async (req) => {
       const form = new FormData();
       form.append('file', req.file);

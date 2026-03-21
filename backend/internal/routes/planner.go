@@ -47,9 +47,9 @@ func (p *Planner) Plan(req api.RoutePlanRequest) api.RoutePlan {
 		return candidates[i].Poi.ID < candidates[j].Poi.ID
 	})
 
-	targetStops := int(math.Round(float64(budget) / 50.0))
-	if targetStops < 2 {
-		targetStops = 2
+	targetStops := int(math.Round(float64(budget) / 120.0))
+	if targetStops < 1 {
+		targetStops = 1
 	}
 	if targetStops > 5 {
 		targetStops = 5

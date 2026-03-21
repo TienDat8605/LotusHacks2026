@@ -2,11 +2,13 @@ import type { ApiClient } from '@/api/client';
 import type {
   AssistantResponse,
   ChatMessage,
+  JoinByCodeResponse,
   UploadLocationRequest,
   UploadLocationResponse,
   Poi,
   RoutePlan,
   RoutePlanRequest,
+  SocialEvent,
   SocialParticipant,
   SocialSession,
 } from '@/api/types';
@@ -86,30 +88,52 @@ type StubState = {
   sessions: SocialSession[];
   participants: Record<string, SocialParticipant[]>;
   recommendations: Record<string, Poi[]>;
+  listeners: Record<string, Set<(event: SocialEvent) => void>>;
 };
 
 const state: StubState = {
   assistantThreads: {},
   sessionMessages: {
-    session_urban_pulse: [
-      { id: id('m'), role: 'assistant', text: 'Welcome to Urban Pulse. Drop your ETA and I’ll keep the vibe aligned.', createdAt: nowIso() },
-      { id: id('m'), role: 'user', text: 'On my way — 10 mins.', createdAt: nowIso() },
-    ],
+    session_urban_pulse: [{ id: id('m'), role: 'assistant', text: 'Welcome to Urban Pulse. Drop your ETA and I’ll keep the vibe aligned.', createdAt: nowIso() }],
   },
   sessions: [
-    { id: 'session_urban_pulse', destinationName: 'Pasteur Street Brewing Co.', participantCount: 12, status: 'live' },
-    { id: 'session_rooftop', destinationName: 'Twilight Rooftop', participantCount: 6, status: 'scheduled' },
+    { id: 'session_urban_pulse', destinationName: 'Pasteur Street Brewing Co.', participantCount: 2, status: 'live', code: 'URBAN1' },
+    { id: 'session_rooftop', destinationName: 'Twilight Rooftop', participantCount: 0, status: 'scheduled', code: 'ROOF22' },
   ],
   participants: {
     session_urban_pulse: [
       { id: id('p'), displayName: 'Minh Tran', avatarSeed: 'minh', lastSeen: nowIso(), lat: 10.772, lng: 106.698 },
       { id: id('p'), displayName: 'Linh Nguyen', avatarSeed: 'linh', lastSeen: nowIso(), lat: 10.775, lng: 106.705 },
     ],
+    session_rooftop: [],
   },
   recommendations: {
     session_urban_pulse: samplePois(true),
+    session_rooftop: samplePois(false),
   },
+  listeners: {},
 };
+
+function emit(sessionId: string, event: SocialEvent) {
+  state.listeners[sessionId]?.forEach((listener) => listener(event));
+}
+
+function refreshSessionCount(sessionId: string) {
+  const session = state.sessions.find((entry) => entry.id === sessionId);
+  if (session) {
+    session.participantCount = state.participants[sessionId]?.length ?? 0;
+  }
+}
+
+function snapshot(sessionId: string): SocialEvent {
+  return {
+    type: 'snapshot',
+    session: state.sessions.find((entry) => entry.id === sessionId),
+    participants: [...(state.participants[sessionId] ?? [])],
+    messages: [...(state.sessionMessages[sessionId] ?? [])],
+    recommendations: [...(state.recommendations[sessionId] ?? samplePois(true))].slice(0, 3),
+  };
+}
 
 export function createStubApiClient(): ApiClient {
   return {
@@ -168,24 +192,70 @@ export function createStubApiClient(): ApiClient {
       return [...state.sessions];
     },
 
-    joinSocialSession: async (sessionId: string) => {
+    createSocialSession: async (destinationName: string) => {
+      await sleep(220);
+      const session: SocialSession = {
+        id: id('session'),
+        destinationName: destinationName.trim() || 'New Meetup Room',
+        participantCount: 0,
+        status: 'live',
+        code: Math.random().toString(36).slice(2, 8).toUpperCase(),
+      };
+      state.sessions = [session, ...state.sessions];
+      state.participants[session.id] = [];
+      state.sessionMessages[session.id] = [
+        { id: id('m'), role: 'assistant', text: 'Room created. Share the code so others can join the meetup.', createdAt: nowIso() },
+      ];
+      state.recommendations[session.id] = samplePois(true);
+      emit(session.id, snapshot(session.id));
+      return session;
+    },
+
+    joinSocialSession: async (sessionId: string, displayName: string) => {
       await sleep(250);
-      const s = state.sessions.find((x) => x.id === sessionId);
-      if (s) s.participantCount += 1;
-      return { participantId: id('participant'), avatarSeed: id('avatar') };
+      const participantId = id('participant');
+      const avatarSeed = id('avatar');
+      state.participants[sessionId] = [
+        {
+          id: participantId,
+          displayName: displayName.trim() || 'Explorer',
+          avatarSeed,
+          lastSeen: nowIso(),
+        },
+        ...(state.participants[sessionId] ?? []),
+      ];
+      refreshSessionCount(sessionId);
+      emit(sessionId, snapshot(sessionId));
+      return { participantId, avatarSeed };
+    },
+
+    joinSocialSessionByCode: async (code: string, displayName: string) => {
+      await sleep(250);
+      const session = state.sessions.find((entry) => entry.code === code.trim().toUpperCase());
+      if (!session) {
+        throw new Error('Session code not found');
+      }
+      const participant = await createStubApiClient().joinSocialSession(session.id, displayName);
+      const response: JoinByCodeResponse = {
+        session,
+        participantId: participant.participantId,
+        avatarSeed: participant.avatarSeed,
+      };
+      return response;
     },
 
     updateSocialLocation: async (sessionId: string, participantId: string, lat: number, lng: number) => {
       await sleep(120);
       const list = state.participants[sessionId] ?? [];
       const p = list.find((x) => x.id === participantId);
-      if (p) {
-        p.lat = lat;
-        p.lng = lng;
-        p.lastSeen = nowIso();
+      if (!p) {
+        throw new Error('Participant not found');
       }
-      state.participants[sessionId] = list;
-      return { ok: true };
+      p.lat = lat;
+      p.lng = lng;
+      p.lastSeen = nowIso();
+      emit(sessionId, snapshot(sessionId));
+      return { ...p };
     },
 
     listParticipants: async (sessionId: string) => {
@@ -195,7 +265,7 @@ export function createStubApiClient(): ApiClient {
 
     listRecommendations: async (sessionId: string) => {
       await sleep(140);
-      return [...(state.recommendations[sessionId] ?? samplePois(true))];
+      return [...(state.recommendations[sessionId] ?? samplePois(true))].slice(0, 3);
     },
 
     listSessionMessages: async (sessionId: string) => {
@@ -207,12 +277,25 @@ export function createStubApiClient(): ApiClient {
       await sleep(200);
       const msg: ChatMessage = { id: id('m'), role: 'user', text, createdAt: nowIso() };
       state.sessionMessages[sessionId] = [...(state.sessionMessages[sessionId] ?? []), msg];
+      emit(sessionId, { type: 'message', message: msg });
       return msg;
     },
 
-    sendSessionPing: async () => {
+    sendSessionPing: async (sessionId) => {
       await sleep(140);
+      emit(sessionId, snapshot(sessionId));
       return { ok: true };
+    },
+
+    subscribeToSocialSession: (sessionId, onEvent) => {
+      if (!state.listeners[sessionId]) {
+        state.listeners[sessionId] = new Set();
+      }
+      state.listeners[sessionId].add(onEvent);
+      onEvent(snapshot(sessionId));
+      return () => {
+        state.listeners[sessionId]?.delete(onEvent);
+      };
     },
 
     uploadLocationVideo: async (req: UploadLocationRequest) => {
