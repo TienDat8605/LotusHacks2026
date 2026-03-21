@@ -42,7 +42,7 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - ./backend/services:/workspace/backend/services
+      - ./backend:/workspace/backend
       - ./data:/workspace/data
       - ai-venv:/opt/venv
     restart: unless-stopped

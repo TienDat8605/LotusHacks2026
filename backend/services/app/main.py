@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -13,6 +15,7 @@ from .zilliz_store import ZillizStore
 
 
 settings = Settings.from_env()
+logger = logging.getLogger("assistant")
 app = FastAPI(title="Kompas Backend Services")
 app.add_middleware(
     CORSMiddleware,
@@ -25,6 +28,7 @@ app.add_middleware(
 def build_assistant_service() -> AssistantChatService | RuleBasedAssistantService:
     if not settings.openai_api_key:
         # Fallback mode keeps /api/assistant usable even when external AI credentials are absent.
+        logger.warning("Assistant mode=fallback (missing OPENAI_API_KEY)")
         return RuleBasedAssistantService.from_review_file(settings.review_data_path, settings.zilliz_top_k)
 
     openai_service = OpenAIService(
@@ -35,11 +39,13 @@ def build_assistant_service() -> AssistantChatService | RuleBasedAssistantServic
 
     # If vector DB is not configured, still run live OpenAI chat using local review retrieval.
     if not settings.zilliz_uri or not settings.zilliz_token:
+        logger.info("Assistant mode=openai-local-retrieval (OPENAI_API_KEY set, Zilliz missing)")
         return RuleBasedAssistantService.from_review_file(
             settings.review_data_path,
             settings.zilliz_top_k,
             openai_service=openai_service,
         )
+    logger.info("Assistant mode=openai-zilliz (OPENAI_API_KEY + Zilliz set)")
     zilliz_store = ZillizStore(
         uri=settings.zilliz_uri,
         token=settings.zilliz_token,
