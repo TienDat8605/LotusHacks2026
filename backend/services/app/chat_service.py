@@ -131,17 +131,23 @@ class AssistantChatService:
 
 
 class RuleBasedAssistantService:
-    def __init__(self, documents: list[ReviewDocument], top_k: int) -> None:
+    def __init__(self, documents: list[ReviewDocument], top_k: int, openai_service: OpenAIService | None = None) -> None:
         self._documents = documents
         self._top_k = max(1, top_k)
+        self._openai = openai_service
         self._threads = ThreadStore()
 
     @classmethod
-    def from_review_file(cls, path: Path, top_k: int) -> "RuleBasedAssistantService":
+    def from_review_file(
+        cls,
+        path: Path,
+        top_k: int,
+        openai_service: OpenAIService | None = None,
+    ) -> "RuleBasedAssistantService":
         if not path.exists():
-            return cls([], top_k)
+            return cls([], top_k, openai_service=openai_service)
         docs = load_review_documents(path)
-        return cls(docs, top_k)
+        return cls(docs, top_k, openai_service=openai_service)
 
     def search_only(self, query: str, top_k: int | None = None) -> list[RetrievedReview]:
         text = query.strip()
@@ -185,7 +191,19 @@ class RuleBasedAssistantService:
         route_mode = _is_route_request(text)
         results = self.search_only(text, 3 if route_mode else self._top_k)
 
-        if route_mode:
+        if self._openai:
+            contexts = []
+            for result in results:
+                line = result.poi.name
+                if result.poi.address:
+                    line += f" | address: {result.poi.address}"
+                if result.summary:
+                    line += f" | review: {result.summary}"
+                if result.evidence:
+                    line += f" | evidence: {result.evidence[:240]}"
+                contexts.append(line)
+            answer = self._openai.chat_with_context(text, contexts)
+        elif route_mode:
             if results:
                 listed = ", ".join(item.poi.name for item in results)
                 answer = (

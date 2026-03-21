@@ -99,10 +99,22 @@ export function SocialMap(props: {
       lng: participant.lng as number,
     }));
     if (!props.currentParticipantId || !props.currentLocation) return pins;
-    if (pins.some((participant) => participant.id === props.currentParticipantId)) return pins;
+
+    let replaced = false;
+    const merged = pins.map((participant) => {
+      if (participant.id !== props.currentParticipantId) return participant;
+      replaced = true;
+      return {
+        ...participant,
+        lat: props.currentLocation!.lat,
+        lng: props.currentLocation!.lng,
+      };
+    });
+    if (replaced) return merged;
+
     const fallback = props.participants.find((participant) => participant.id === props.currentParticipantId);
     return [
-      ...pins,
+      ...merged,
       {
         id: props.currentParticipantId,
         displayName: fallback?.displayName ?? 'You',
@@ -160,24 +172,12 @@ export function SocialMap(props: {
         />
         <ParticipantBounds points={mapPoints} fallback={props.center} />
 
-        {currentLocationPoint && (
-          <Marker
-            key="current-location"
-            position={[currentLocationPoint.lat, currentLocationPoint.lng]}
-            icon={currentLocationIcon()}
-            zIndexOffset={1500}
-          >
-            <Tooltip direction="top" offset={[0, -12]} opacity={1}>
-              Your current location
-            </Tooltip>
-          </Marker>
-        )}
-
         {pinnedParticipants.map((p) => (
           <Marker
             key={p.id}
             position={[p.lat, p.lng]}
-            icon={userIcon(p.avatarSeed || p.displayName, p.id === currentParticipant?.id)}
+            icon={p.id === props.currentParticipantId ? currentLocationIcon() : userIcon(p.avatarSeed || p.displayName, p.id === currentParticipant?.id)}
+            zIndexOffset={p.id === props.currentParticipantId ? 1500 : 0}
           >
             <Tooltip direction="top" offset={[0, -12]} opacity={1}>
               {p.id === props.currentParticipantId ? 'You' : p.displayName}

@@ -23,7 +23,7 @@ app.add_middleware(
 )
 
 def build_assistant_service() -> AssistantChatService | RuleBasedAssistantService:
-    if not settings.openai_api_key or not settings.zilliz_uri or not settings.zilliz_token:
+    if not settings.openai_api_key:
         # Fallback mode keeps /api/assistant usable even when external AI credentials are absent.
         return RuleBasedAssistantService.from_review_file(settings.review_data_path, settings.zilliz_top_k)
 
@@ -32,6 +32,14 @@ def build_assistant_service() -> AssistantChatService | RuleBasedAssistantServic
         embed_model=settings.openai_embedding_model,
         chat_model=settings.openai_chat_model,
     )
+
+    # If vector DB is not configured, still run live OpenAI chat using local review retrieval.
+    if not settings.zilliz_uri or not settings.zilliz_token:
+        return RuleBasedAssistantService.from_review_file(
+            settings.review_data_path,
+            settings.zilliz_top_k,
+            openai_service=openai_service,
+        )
     zilliz_store = ZillizStore(
         uri=settings.zilliz_uri,
         token=settings.zilliz_token,

@@ -27,6 +27,8 @@ services:
     image: lotus-hacks-ai-service:dev
     init: true
     working_dir: /workspace/backend/services
+    env_file:
+      - ./backend/.env
     environment:
       PYTHONUNBUFFERED: "1"
       AI_SERVICE_HOST: 0.0.0.0
