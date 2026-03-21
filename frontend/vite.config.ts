@@ -4,8 +4,27 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { traeBadgePlugin } from 'vite-plugin-trae-solo-badge';
 import { VitePWA } from 'vite-plugin-pwa';
 
+const envHostList = ((process.env.VITE_ALLOWED_HOSTS ?? '') as string)
+  .split(',')
+  .map((entry) => entry.trim())
+  .filter(Boolean);
+
+const allowedHosts = Array.from(
+  new Set([
+    'localhost',
+    '127.0.0.1',
+    ...envHostList,
+    (process.env.APP_DOMAIN ?? '').trim(),
+  ].filter(Boolean))
+);
+
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    allowedHosts,
+  },
   build: {
     sourcemap: 'hidden',
   },
