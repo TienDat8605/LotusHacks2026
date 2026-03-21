@@ -60,7 +60,7 @@ const assistantKey = 'vibemap.assistant';
 
 const defaultState = {
   profile: { displayName: 'Explorer', avatarSeed: 'urban_pulse' },
-  preferences: { defaultTransportMode: 'bike' as const, defaultTimeBudgetMinutes: 150 },
+  preferences: { defaultTransportMode: 'bike' as const, defaultTimeBudgetMinutes: 180 },
   assistant: {
     messages: [
       {
@@ -148,4 +148,3 @@ export const useVibeMapStore = create<VibeMapState>((set, get) => ({
     });
   },
 }));
-

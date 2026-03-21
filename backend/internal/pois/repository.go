@@ -127,16 +127,22 @@ func decodePois(raw []byte) ([]api.Poi, error) {
 		if videoID != "" {
 			videoIDPtr = &videoID
 		}
+		playcount, err := parseIntLoose(it.VideoPlaycount)
+		var playcountPtr *int64
+		if err == nil && playcount > 0 {
+			playcountPtr = &playcount
+		}
 		out = append(out, api.Poi{
-			ID:       id,
-			Name:     name,
-			Location: api.LatLng{Lat: lat, Lng: lng},
-			Address:  addrPtr,
-			City:     cityPtr,
-			VideoURL: videoURLPtr,
-			VideoID:  videoIDPtr,
-			Category: nil,
-			Badges:   badge,
+			ID:             id,
+			Name:           name,
+			Location:       api.LatLng{Lat: lat, Lng: lng},
+			Address:        addrPtr,
+			City:           cityPtr,
+			VideoURL:       videoURLPtr,
+			VideoID:        videoIDPtr,
+			VideoPlaycount: playcountPtr,
+			Category:       nil,
+			Badges:         badge,
 		})
 	}
 	if len(out) == 0 {
@@ -146,13 +152,14 @@ func decodePois(raw []byte) ([]api.Poi, error) {
 }
 
 type rawPoiItem struct {
-	VideoID    string `json:"video_id"`
-	VideoURL   string `json:"video_url"`
-	PoiName    string `json:"poi_name"`
-	PoiAddress string `json:"poi_address"`
-	PoiCity    string `json:"poi_city"`
-	Lat        string `json:"lat"`
-	Lng        string `json:"lng"`
+	VideoID        string `json:"video_id"`
+	VideoURL       string `json:"video_url"`
+	VideoPlaycount string `json:"video_playcount"`
+	PoiName        string `json:"poi_name"`
+	PoiAddress     string `json:"poi_address"`
+	PoiCity        string `json:"poi_city"`
+	Lat            string `json:"lat"`
+	Lng            string `json:"lng"`
 }
 
 func parseFloatLoose(v string) (float64, error) {
@@ -161,6 +168,23 @@ func parseFloatLoose(v string) (float64, error) {
 		return 0, errors.New("empty")
 	}
 	return strconv.ParseFloat(v, 64)
+}
+
+func parseIntLoose(v string) (int64, error) {
+	v = strings.TrimSpace(v)
+	if v == "" {
+		return 0, errors.New("empty")
+	}
+	var digits strings.Builder
+	for _, r := range v {
+		if r >= '0' && r <= '9' {
+			digits.WriteRune(r)
+		}
+	}
+	if digits.Len() == 0 {
+		return 0, errors.New("no digits")
+	}
+	return strconv.ParseInt(digits.String(), 10, 64)
 }
 
 var nonAlnum = regexp.MustCompile(`[^a-z0-9]+`)

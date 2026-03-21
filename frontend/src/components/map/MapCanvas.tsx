@@ -4,7 +4,7 @@ import { MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'reac
 import { cn } from '@/lib/utils';
 import type { LatLng, Poi, RoutePlan } from '@/api/types';
 
-const legColors = ['#5b8cff', '#8b5cf6', '#14b8a6', '#f97316', '#ec4899', '#06b6d4'];
+const legColors = ['#0b5fff', '#7c3aed', '#00a884', '#f97316', '#e11d48', '#0ea5e9'];
 const defaultCenter: [number, number] = [10.7757, 106.7008];
 
 function toLatLng(p: LatLng): [number, number] {
@@ -124,7 +124,7 @@ export function MapCanvas(props: {
     <div className={cn('relative h-full w-full overflow-hidden rounded-lg bg-surface-container', props.className)}>
       <MapContainer center={center} zoom={13} scrollWheelZoom className="h-full w-full">
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
 
@@ -154,7 +154,7 @@ export function MapCanvas(props: {
             <Polyline
               key={`leg_${i}`}
               positions={path.map(toLatLng)}
-              pathOptions={{ color, weight: 5, opacity: 0.82 }}
+              pathOptions={{ color, weight: 5, opacity: 0.92 }}
             />
           );
         })}
