@@ -1,6 +1,25 @@
 name: lotus-hacks
 
 services:
+  caddy:
+    image: caddy:2-alpine
+    init: true
+    environment:
+      APP_DOMAIN: "${APP_DOMAIN:-localhost}"
+      ACME_EMAIL: "${ACME_EMAIL:-}"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - frontend
+      - backend
+      - ai-service
+    restart: unless-stopped
+
   ai-service:
     # Keep Debian slim for binary wheel compatibility (e.g. pymilvus/grpc).
     image: python:3.11-slim
@@ -61,9 +80,9 @@ services:
       npm run dev -- --host 0.0.0.0 --port 5173"
     environment:
       VITE_API_MODE: real
-      VITE_API_BASE_URL: http://localhost:8080
-      VITE_AI_API_BASE_URL: http://localhost:8090
-      VITE_UGC_API_BASE_URL: http://localhost:8090
+      VITE_API_BASE_URL: "${VITE_API_BASE_URL:-}"
+      VITE_AI_API_BASE_URL: "${VITE_AI_API_BASE_URL:-}"
+      VITE_UGC_API_BASE_URL: "${VITE_UGC_API_BASE_URL:-}"
       CHOKIDAR_USEPOLLING: "${CHOKIDAR_USEPOLLING:-false}"
     ports:
       - "5173:5173"
@@ -73,6 +92,8 @@ services:
     restart: unless-stopped
 
 volumes:
+  caddy-data:
+  caddy-config:
   pip-cache:
   ai-venv:
   go-mod-cache:

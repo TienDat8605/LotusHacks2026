@@ -1,0 +1,15 @@
+{
+	email {$ACME_EMAIL}
+}
+
+{$APP_DOMAIN:localhost} {
+	encode zstd gzip
+
+	@assistant path /api/assistant*
+	reverse_proxy @assistant ai-service:8090
+
+	@backend path /api/* /assets/* /healthz
+	reverse_proxy @backend backend:8080
+
+	reverse_proxy frontend:5173
+}
