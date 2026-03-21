@@ -4,8 +4,6 @@ import {
   Leaf,
   LogIn,
   LogOut,
-  Maximize,
-  Minimize,
   Plus,
   Send,
   Sparkles,
@@ -15,13 +13,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getApiClient } from '@/api/getClient';
+import { resolveApiBase } from '@/api/baseUrl';
 import type { ChatMessage, Poi, SocialEvent, SocialParticipant, SocialSession } from '@/api/types';
 import { SocialMap } from '@/components/social/SocialMap';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { cn } from '@/lib/utils';
 import { useVibeMapStore } from '@/stores/vibemapStore';
 
-const apiBase = ((import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '').replace(/\/+$/, '');
+const apiBase = resolveApiBase(import.meta.env.VITE_API_BASE_URL as string | undefined);
 
 function isoTime(ts: string) {
   try {
@@ -234,7 +233,6 @@ export default function SocialHub() {
   const [sending, setSending] = useState(false);
   const [roomName, setRoomName] = useState('');
   const [joinCode, setJoinCode] = useState('');
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
   const geoWatchId = useRef<number | null>(null);
   const lastSentLocationRef = useRef<{ lat: number; lng: number } | null>(null);
@@ -443,14 +441,13 @@ export default function SocialHub() {
       <div className="h-full px-4 pb-4 pt-4 lg:px-8 lg:pb-8 lg:pt-6">
         <div className="grid h-full grid-cols-1 gap-6 xl:grid-cols-12 xl:gap-8">
           <section className="xl:col-span-8 flex min-h-0 flex-col overflow-hidden rounded-[32px] border border-white/70 bg-surface-container-lowest shadow-float">
-            <div className={cn('relative min-h-[360px] flex-1 overflow-hidden bg-surface-container', isFullscreen && 'fixed inset-4 z-50 rounded-[32px]')}>
+            <div className="relative min-h-[360px] flex-1 overflow-hidden bg-surface-container">
               <SocialMap
                 center={mapCenter}
                 participants={participants}
                 recommendations={recommendations.slice(0, 3)}
                 currentParticipantId={participantId}
                 currentLocation={currentLocation ?? undefined}
-                fullscreen={isFullscreen}
                 className="h-full rounded-none border-0 shadow-none"
               />
 
@@ -461,17 +458,6 @@ export default function SocialHub() {
                   <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-red-500" />
                   <span className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-on-background">Live session</span>
                 </div>
-              </div>
-
-              <div className="absolute right-6 top-6 z-[500]">
-                <button
-                  type="button"
-                  onClick={() => setIsFullscreen((current) => !current)}
-                  className="inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-extrabold text-on-background shadow-lg backdrop-blur"
-                >
-                  {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
-                  {isFullscreen ? 'Minimize' : 'Full screen'}
-                </button>
               </div>
 
               <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -756,22 +742,6 @@ export default function SocialHub() {
           </div>
         </section>
 
-        <div className="pointer-events-none fixed bottom-10 right-10 z-40 hidden flex-col gap-3 xl:flex">
-          <button
-            type="button"
-            onClick={() => setIsFullscreen(true)}
-            className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full border border-outline-variant/15 bg-surface-container-lowest/85 text-primary shadow-xl backdrop-blur transition-all active:scale-95"
-          >
-            <Maximize className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => void join()}
-            className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-2xl shadow-primary/40 transition-all active:scale-95"
-          >
-            <Users className="h-5 w-5" />
-          </button>
-        </div>
       </div>
 
       <div className="sr-only">Last message time {messages.length ? isoTime(messages[messages.length - 1].createdAt) : 'none'}</div>

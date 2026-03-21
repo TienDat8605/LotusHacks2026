@@ -1,5 +1,6 @@
 import type { ApiClient } from '@/api/client';
 import type { SocialEvent } from '@/api/types';
+import { resolveApiBase } from '@/api/baseUrl';
 
 async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -30,9 +31,9 @@ function decodeEventPayload(raw: string): SocialEvent | null {
 }
 
 export function createRealApiClient(): ApiClient {
-  const base = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '';
-  const aiBase = (import.meta.env.VITE_AI_API_BASE_URL as string | undefined) ?? base;
-  const ugcBase = (import.meta.env.VITE_UGC_API_BASE_URL as string | undefined) ?? base;
+  const base = resolveApiBase(import.meta.env.VITE_API_BASE_URL as string | undefined);
+  const aiBase = resolveApiBase(import.meta.env.VITE_AI_API_BASE_URL as string | undefined) || base;
+  const ugcBase = resolveApiBase(import.meta.env.VITE_UGC_API_BASE_URL as string | undefined) || base;
 
   return {
     searchLocations: (query, limit = 5) =>

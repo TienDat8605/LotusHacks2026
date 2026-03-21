@@ -63,7 +63,6 @@ export function SocialMap(props: {
   currentParticipantId?: string;
   currentLocation?: { lat: number; lng: number };
   className?: string;
-  fullscreen?: boolean;
 }) {
   const mapRef = useRef<L.Map | null>(null);
   const liveParticipants = useMemo(
@@ -83,7 +82,7 @@ export function SocialMap(props: {
     window.setTimeout(() => {
       mapRef.current?.invalidateSize();
     }, 120);
-  }, [props.fullscreen]);
+  }, []);
 
   return (
     <div className={cn('h-64 w-full overflow-hidden rounded-[28px] border border-white/70 shadow-float', props.className)}>
@@ -91,7 +90,7 @@ export function SocialMap(props: {
       <MapContainer
         center={[props.center.lat, props.center.lng]}
         zoom={14}
-        scrollWheelZoom={props.fullscreen}
+        scrollWheelZoom
         dragging
         ref={mapRef}
         className="h-full w-full"
