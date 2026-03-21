@@ -19,7 +19,7 @@ function formatBytes(bytes: number) {
 
 export default function UgcUpload() {
   usePageMeta({
-    title: 'VibeMap — Upload Location',
+    title: 'Kompas — Upload Location',
     description: 'Upload your own location video and queue it for processing.',
   });
 

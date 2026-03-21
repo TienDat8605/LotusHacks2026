@@ -13,7 +13,9 @@
     "characteristic_vi": "Hội chợ triển lãm rộng, đầu tư hoành tráng, miễn phí vé vào cổng. Gian hàng ẩm thực đa dạng (đồ mặn, ngọt, Việt, Thái, Nhật), trình bày bắt mắt. Gian hàng thủ công mỹ nghệ tinh xảo (quần áo, phụ kiện, giày dép, trang sức). Có quầy trang sức Mosana Jewelry (trang sức Titan, mẫu mã đa dạng, chương trình khuyến mại). Có chương trình ca nhạc, sự kiện diễn ra từ 05/03 đến 14/03. Địa điểm: Trung tâm Văn hóa và Thể thao Quận 5.",
     "evidence": "\"Tôi thấy hội chợ rất là rộng và được đầu tư hoành tráng luôn. Quan trọng là miễn phí vé vào cổng đã chưa.\" | \"Tới đây thì tôi chắc chắn không thể bỏ qua các cái gian hàng ẩm thực rồi. Trời ơi tâm hồn ăn uống mà. Rất là nhiều gian hàng đồ ăn được trình bày bắt mắt nè. Đa dạng từ đồ mặn cho tới đồ ngọt, đồ Việt cho tới đồ thái, đồ nhật là có đủ.\" | \"Tôi thấy dùng để trưng bày các cái sản phẩm thủ công mỹ nghệ nè. Mà đồ rất là tinh xảo nha. Quần áo, phụ kiện, giày dép, đồng hồ, mắt kính. Phải gọi là không thiếu thứ gì luôn á.\"",
     "characteristic_raw": "poi=District 5 Cultural Center ; city=Quận 5 ; stt_source=groq ; characteristic_vi=Hội chợ triển lãm rộng, đầu tư hoành tráng, miễn phí vé vào cổng. Gian hàng ẩm thực đa dạng (đồ mặn, ngọt, Việt, Thái, Nhật), trình bày bắt mắt. Gian hàng thủ công mỹ nghệ tinh xảo (quần áo, phụ kiện, giày dép, trang sức). Có quầy trang sức Mosana Jewelry (trang sức Titan, mẫu mã đa dạng, chương trình khuyến mại). Có chương trình ca nhạc, sự kiện diễn ra từ 05/03 đến 14/03. Địa điểm: Trung tâm Văn hóa và Thể thao Quận 5. ; confidence=0.98 ; evidence=\"Tôi thấy hội chợ rất là rộng và được đầu tư hoành tráng luôn. Quan trọng là miễn phí vé vào cổng đã chưa.\" | \"Tới đây thì tôi chắc chắn không thể bỏ qua các cái gian hàng ẩm thực rồi. Trời ơi tâm hồn ăn uống mà. Rất là nhiều gian hàng đồ ăn được trình bày bắt mắt nè. Đa dạng từ đồ mặn cho tới đồ ngọt, đồ Việt cho tới đồ thái, đồ nhật là có đủ.\" | \"Tôi thấy dùng để trưng bày các cái sản phẩm thủ công mỹ nghệ nè. Mà đồ rất là tinh xảo nha. Quần áo, phụ kiện, giày dép, đồng hồ, mắt kính. Phải gọi là không thiếu thứ gì luôn á.\"",
-    "video_playcount": "63100"
+    "video_playcount": "63100",
+    "location_type": "cultural_center",
+    "image_url": "images/cultural_center.jpg"
   },
   {
     "video_id": "7482729050637716754",
@@ -29,7 +31,9 @@
     "characteristic_vi": "Nước lẹo đậm đà, thơm; nhiều topping (thịt cua, tôm ngọt, chả cua); sợi bánh canh một lọc không dai; giá hợp lý; đông khách; diện tích nhỏ, nóng buổi trưa; phục vụ mang về; vị trí nổi tiếng tại Bình Thạnh.",
     "evidence": "Múc lìa múc lìa mà vẫn không kịp bán, quán bánh canh cua này đông thật. | đồ ăn thì luôn nóng hỏi vì liên tục bưng lên do lượng khách rất nhiều. | nước lẹo của bánh canh cua tại đây thật sự đậm đà và thơm.",
     "characteristic_raw": "poi=Bánh canh cua Hiền ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Nước lẹo đậm đà, thơm; nhiều topping (thịt cua, tôm ngọt, chả cua); sợi bánh canh một lọc không dai; giá hợp lý; đông khách; diện tích nhỏ, nóng buổi trưa; phục vụ mang về; vị trí nổi tiếng tại Bình Thạnh. ; confidence=0.98 ; evidence=Múc lìa múc lìa mà vẫn không kịp bán, quán bánh canh cua này đông thật. | đồ ăn thì luôn nóng hỏi vì liên tục bưng lên do lượng khách rất nhiều. | nước lẹo của bánh canh cua tại đây thật sự đậm đà và thơm.",
-    "video_playcount": "60800"
+    "video_playcount": "60800",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7483362139034537234",
@@ -45,7 +49,9 @@
     "characteristic_vi": "vibe ấm cúng, không gian như khu rừng sách, địa điểm nằm trong hẻm nhỏ nhưng yên tĩnh giữa đường Hòa Hưng nhộn nhịp",
     "evidence": "Không nghĩ ở đường Hoà Hưng nhộn nhịp lại có chỗ như này | chiếc vibe nút hẻm nguyên mốt khu rừng sách | 91/1 Hoà Hung, P12, Q10",
     "characteristic_raw": "poi=Nhâm Café ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=vibe ấm cúng, không gian như khu rừng sách, địa điểm nằm trong hẻm nhỏ nhưng yên tĩnh giữa đường Hòa Hưng nhộn nhịp ; confidence=0.95 ; evidence=Không nghĩ ở đường Hoà Hưng nhộn nhịp lại có chỗ như này | chiếc vibe nút hẻm nguyên mốt khu rừng sách | 91/1 Hoà Hung, P12, Q10",
-    "video_playcount": "953500"
+    "video_playcount": "953500",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7483888181218249991",
@@ -61,7 +67,9 @@
     "characteristic_vi": "Cơ sở Thủ Đức: xa nội thành, có xe đưa đón, sân trường rộng, tòa nhà B (vàng) và A (xanh) 3 tầng, sân thể thao đa dạng (bóng rổ, bóng đá, cầu lông, yoga), căng tin nhiều món ăn, ăn trưa bán trú, nhà đa năng, phòng tắm có nước nóng, phòng học rộng sạch sẽ, đầy đủ tiện nghi (máy lạnh, chiếu, loa, tủ locker), tổ chức nhiều sự kiện (Orientation Week, Club Day, Hội Trại 26/3, Lễ Trưởng Thành).",
     "evidence": "Cơ sở Thủ Đức của trường tọa lạc tại khu đô thị ĐHQH TP.HCM Thủ Đức-Dĩ An là khu vực giáp giữa TP.HCM và TP.HCM. | Vì trường ở khu đô thị ĐHQH TP.HCM hay còn được gọi là làng đại học nên cảm giác sẽ khá xa cho các bạn học sinh ở nội thành TP.HCM. | trường có tổ chức rất nhiều chuyến xe đón học sinh từ các quận huyện TP.HCM cũng như là chỗ học sinh từ các khu vực Đồng Nai, Bình Dương, Long An, Bà Rịa Vũng Tàu đến cơ sở Thủ Đức nữa đó.",
     "characteristic_raw": "poi=High School for the Gifted VNUHCM ; city=Quận 5 ; stt_source=groq ; characteristic_vi=Cơ sở Thủ Đức: xa nội thành, có xe đưa đón, sân trường rộng, tòa nhà B (vàng) và A (xanh) 3 tầng, sân thể thao đa dạng (bóng rổ, bóng đá, cầu lông, yoga), căng tin nhiều món ăn, ăn trưa bán trú, nhà đa năng, phòng tắm có nước nóng, phòng học rộng sạch sẽ, đầy đủ tiện nghi (máy lạnh, chiếu, loa, tủ locker), tổ chức nhiều sự kiện (Orientation Week, Club Day, Hội Trại 26/3, Lễ Trưởng Thành). ; confidence=0.98 ; evidence=Cơ sở Thủ Đức của trường tọa lạc tại khu đô thị ĐHQH TP.HCM Thủ Đức-Dĩ An là khu vực giáp giữa TP.HCM và TP.HCM. | Vì trường ở khu đô thị ĐHQH TP.HCM hay còn được gọi là làng đại học nên cảm giác sẽ khá xa cho các bạn học sinh ở nội thành TP.HCM. | trường có tổ chức rất nhiều chuyến xe đón học sinh từ các quận huyện TP.HCM cũng như là chỗ học sinh từ các khu vực Đồng Nai, Bình Dương, Long An, Bà Rịa Vũng Tàu đến cơ sở Thủ Đức nữa đó.",
-    "video_playcount": "501100"
+    "video_playcount": "501100",
+    "location_type": "school",
+    "image_url": "images/school.jpg"
   },
   {
     "video_id": "7487574477103009079",
@@ -77,7 +85,9 @@
     "characteristic_vi": "Đa dạng sản phẩm (gia dụng, quần áo, mỹ phẩm, thực phẩm, hải sản), khu vực ăn uống phong phú (pizza, sushi, cơm gà, lẩu, bánh ngọt, bong miso), không gian ngồi ăn rộng rãi thoáng mát, sản phẩm chất lượng (rau củ chuẩn 3 số 5 phép), giá cả hợp lý, đông khách cuối tuần, chương trình ẩm thực bản sắc.",
     "evidence": "\"Anh tạc lót tay mắt quận 7 điểm đến lý tưởng để anh uống mua sắm đi nè mấy bà ơi\" | \"Có rất là nhiều đồ ăn cũng như là nhiều điều hời săn đồ cực đã luôn\" | \"Từ đồ gia dụng, quần áo, giày dép, mỹ phẩm, thực phẩm, hải sản\"",
     "characteristic_raw": "poi=LOTTE Mart - District 7 ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Đa dạng sản phẩm (gia dụng, quần áo, mỹ phẩm, thực phẩm, hải sản), khu vực ăn uống phong phú (pizza, sushi, cơm gà, lẩu, bánh ngọt, bong miso), không gian ngồi ăn rộng rãi thoáng mát, sản phẩm chất lượng (rau củ chuẩn 3 số 5 phép), giá cả hợp lý, đông khách cuối tuần, chương trình ẩm thực bản sắc. ; confidence=0.98 ; evidence=\"Anh tạc lót tay mắt quận 7 điểm đến lý tưởng để anh uống mua sắm đi nè mấy bà ơi\" | \"Có rất là nhiều đồ ăn cũng như là nhiều điều hời săn đồ cực đã luôn\" | \"Từ đồ gia dụng, quần áo, giày dép, mỹ phẩm, thực phẩm, hải sản\"",
-    "video_playcount": "79600"
+    "video_playcount": "79600",
+    "location_type": "shopping_mall",
+    "image_url": "images/shopping_mall.jpg"
   },
   {
     "video_id": "7491636853691469074",
@@ -93,7 +103,9 @@
     "characteristic_vi": "Quán trang trí hoa phong cách deco, không gian lịch sự sang trọng, thoải mái. Giá cả đầy đủ, menu gọn gàng. Món: đậu hủ trứng chiên (79k), chân gà rán muối hồng câu (giòn, không quá mặn), cua lột lăn bột (99k), lẩu bao tử hầm tiêu (189k, bao gồm rau/nấm/bún, bao tử xử lý tốt, không hôi, hầm mềm, nước nêm vừa). Âm nhạc du dương.",
     "evidence": "quán ăn ngừa hoa quận 5 | Menu gọn gàng, giá cả đầy đủ | Mấy món này chỉ từ 79 cành mà được deco tỉ mỉ",
     "characteristic_raw": "poi=Quán Lâm Gia ; stt_source=groq ; characteristic_vi=Quán trang trí hoa phong cách deco, không gian lịch sự sang trọng, thoải mái. Giá cả đầy đủ, menu gọn gàng. Món: đậu hủ trứng chiên (79k), chân gà rán muối hồng câu (giòn, không quá mặn), cua lột lăn bột (99k), lẩu bao tử hầm tiêu (189k, bao gồm rau/nấm/bún, bao tử xử lý tốt, không hôi, hầm mềm, nước nêm vừa). Âm nhạc du dương. ; confidence=0.98 ; evidence=quán ăn ngừa hoa quận 5 | Menu gọn gàng, giá cả đầy đủ | Mấy món này chỉ từ 79 cành mà được deco tỉ mỉ",
-    "video_playcount": "27800"
+    "video_playcount": "27800",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7491676691576933650",
@@ -109,7 +121,9 @@
     "characteristic_vi": "{\"food_quality\": \"đồ ăn cảm giác như nhà làm, rau tươi hoa quả tươi theo mùa, món salad ngon không cần sốt, sợi mì hơi cứng cần nhờ quán làm lại, pizza và mì là bestseller\", \"taste\": \"mì mềm, salad ngon, pizza ngon\", \"ambiance\": \"không gian xinh xắn, ấm cúng, nhiều thứ vui mắt, có chữ ký người nổi tiếng\", \"service\": null, \"vibe\": \"lý tưởng hẹn hò, đi nhóm bạn vui hơn\", \"price\": \"tầm trung khoảng 400k một người\", \"location\": null, \"waiting_time\": null}",
     "evidence": "\"Có bao giờ mọi người nhìn hình ảnh món ăn và biết được ngay đây là quán nào không?\" | \"1, 2, 3 Today with you Quá hot\" | \"Giá tầm trung khoảng 400 một người\"",
     "characteristic_raw": "poi=Today, with you ; stt_source=groq ; characteristic_vi={\"food_quality\": \"đồ ăn cảm giác như nhà làm, rau tươi hoa quả tươi theo mùa, món salad ngon không cần sốt, sợi mì hơi cứng cần nhờ quán làm lại, pizza và mì là bestseller\", \"taste\": \"mì mềm, salad ngon, pizza ngon\", \"ambiance\": \"không gian xinh xắn, ấm cúng, nhiều thứ vui mắt, có chữ ký người nổi tiếng\", \"service\": null, \"vibe\": \"lý tưởng hẹn hò, đi nhóm bạn vui hơn\", \"price\": \"tầm trung khoảng 400k một người\", \"location\": null, \"waiting_time\": null} ; confidence=0.98 ; evidence=\"Có bao giờ mọi người nhìn hình ảnh món ăn và biết được ngay đây là quán nào không?\" | \"1, 2, 3 Today with you Quá hot\" | \"Giá tầm trung khoảng 400 một người\"",
-    "video_playcount": "415800"
+    "video_playcount": "415800",
+    "location_type": "pizza",
+    "image_url": "images/pizza.jpg"
   },
   {
     "video_id": "7496433377885670664",
@@ -125,7 +139,9 @@
     "characteristic_vi": "Quán thoáng mát, mở cửa tới 4h sáng, menu đa dạng (món nướng, lẩu, chiên, xào, sashimi, bò đặc biệt cuốn rong biển, hào nướng phô mai, lỗ dê), đồ ăn ngon (bảo tử cá chiên giòn, gỏi bò bóp thấu, lỗ dê thơm mềm), trình bày đẹp mắt, hợp gu giới trẻ, không gian mát mẻ, phục vụ tụ tập bạn bè, phù hợp cú đêm.",
     "evidence": "Nếu bạn là cú đêm chính hiệu hay lăng tăng để tìm một chiếc quán thoáng mát, đồ ăn ngon, đặc biệt là mở cửa tới 4h sáng thì đây nè | Ở đây thì menu đa dạng từ các món nướng, lẩu, chiên, xào có đủ hết, giờ có thêm nhiều món mới nữa | bảo tử cá chiên giòn, vừa giòn vừa thơm, nhằm nhị đã nha",
     "characteristic_raw": "poi=TỚI BẾN FOOD & BEER ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Quán thoáng mát, mở cửa tới 4h sáng, menu đa dạng (món nướng, lẩu, chiên, xào, sashimi, bò đặc biệt cuốn rong biển, hào nướng phô mai, lỗ dê), đồ ăn ngon (bảo tử cá chiên giòn, gỏi bò bóp thấu, lỗ dê thơm mềm), trình bày đẹp mắt, hợp gu giới trẻ, không gian mát mẻ, phục vụ tụ tập bạn bè, phù hợp cú đêm. ; confidence=0.98 ; evidence=Nếu bạn là cú đêm chính hiệu hay lăng tăng để tìm một chiếc quán thoáng mát, đồ ăn ngon, đặc biệt là mở cửa tới 4h sáng thì đây nè | Ở đây thì menu đa dạng từ các món nướng, lẩu, chiên, xào có đủ hết, giờ có thêm nhiều món mới nữa | bảo tử cá chiên giòn, vừa giòn vừa thơm, nhằm nhị đã nha",
-    "video_playcount": "107000"
+    "video_playcount": "107000",
+    "location_type": "japanese",
+    "image_url": "images/japanese.png"
   },
   {
     "video_id": "7500483867955055879",
@@ -141,7 +157,9 @@
     "characteristic_vi": "Quán chuyên đồ Nhật (sushi, sashimi, udon), giá hợp lý (set trưa dưới 200k), vị ngon (udon tươi, sashimi tươi), không gian đông khách (đa số người Nhật), vị trí trung tâm quận 1, phục vụ nhanh (set trưa 11:30-15:00).",
     "evidence": "Sao mình thấy cái nhà hàng Nhật này cũng ngon. | Mình đi tới đây ăn buổi trưa. Khách full bàn luôn. Nhưng mà đa số là người Nhật không mà. | Quán này thì nằm ngay trung tâm quận nhất luôn á mọi người.",
     "characteristic_raw": "poi=Ebisu District1( Udon & Sushi) ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Quán chuyên đồ Nhật (sushi, sashimi, udon), giá hợp lý (set trưa dưới 200k), vị ngon (udon tươi, sashimi tươi), không gian đông khách (đa số người Nhật), vị trí trung tâm quận 1, phục vụ nhanh (set trưa 11:30-15:00). ; confidence=0.99 ; evidence=Sao mình thấy cái nhà hàng Nhật này cũng ngon. | Mình đi tới đây ăn buổi trưa. Khách full bàn luôn. Nhưng mà đa số là người Nhật không mà. | Quán này thì nằm ngay trung tâm quận nhất luôn á mọi người.",
-    "video_playcount": "1000000"
+    "video_playcount": "1000000",
+    "location_type": "japanese",
+    "image_url": "images/japanese.png"
   },
   {
     "video_id": "7508364603466747154",
@@ -157,7 +175,9 @@
     "characteristic_vi": "Khu vui chơi nông trại mini Eco Kids Farm (giá vé: 1 trẻ em + 1 phụ huynh = 0đ, vui chơi không giới hạn thời gian), khu vui chơi nước Skypack miễn phí (có bảo vệ, thay đồ, tắm, phù hợp buổi chiều), cụm trò chơi đại dương dưới sảnh (bạch tuộc to, màn hình trình chiếu đáy biển).",
     "evidence": "\"Mấy bà ơi dẫn con qua SCV Vox City quận 7 chơi đi Hè tới rồi lại còn 1 tháng 6 nữa\" | \"Bên này có rất là nhiều hoạt động dành cho mấy bạn nhỏ\" | \"Eco Kids Farm nằm ngay giữa sảnh luôn rất là dễ tìm\"",
     "characteristic_raw": "poi=LAC SC Vivo City ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Khu vui chơi nông trại mini Eco Kids Farm (giá vé: 1 trẻ em + 1 phụ huynh = 0đ, vui chơi không giới hạn thời gian), khu vui chơi nước Skypack miễn phí (có bảo vệ, thay đồ, tắm, phù hợp buổi chiều), cụm trò chơi đại dương dưới sảnh (bạch tuộc to, màn hình trình chiếu đáy biển). ; confidence=0.98 ; evidence=\"Mấy bà ơi dẫn con qua SCV Vox City quận 7 chơi đi Hè tới rồi lại còn 1 tháng 6 nữa\" | \"Bên này có rất là nhiều hoạt động dành cho mấy bạn nhỏ\" | \"Eco Kids Farm nằm ngay giữa sảnh luôn rất là dễ tìm\"",
-    "video_playcount": "352100"
+    "video_playcount": "352100",
+    "location_type": "amusement_park",
+    "image_url": "images/amusement_park.jpg"
   },
   {
     "video_id": "7509508859459816711",
@@ -173,7 +193,9 @@
     "characteristic_vi": "Khu vui chơi siêu rộng, nhiều trò chơi, giá vé 20.000đ, có massage, không gian thoáng đãng",
     "evidence": "# Khu vui chơi siêu rộng cho khối nghỉ hè | # Khu vui chơi siêu rộng cho khối nghỉ hè | # TRÒ CHOI PHI TIÊU BON *Mr. Kenda* với khá nhiều trò chơi!",
     "characteristic_raw": "poi=Nam sài gòn ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Khu vui chơi siêu rộng, nhiều trò chơi, giá vé 20.000đ, có massage, không gian thoáng đãng ; confidence=0.95 ; evidence=# Khu vui chơi siêu rộng cho khối nghỉ hè | # Khu vui chơi siêu rộng cho khối nghỉ hè | # TRÒ CHOI PHI TIÊU BON *Mr. Kenda* với khá nhiều trò chơi!",
-    "video_playcount": "360400"
+    "video_playcount": "360400",
+    "location_type": "amusement_park",
+    "image_url": "images/amusement_park.jpg"
   },
   {
     "video_id": "7509851333613243655",
@@ -189,7 +211,9 @@
     "characteristic_vi": "Không gian cafe mới toanh, tone màu ấm cúng và hiện đại, nhiều góc chụp ảnh đẹp, không gian trên lầu rộng rãi phù hợp làm việc/gặp gỡ bạn bè, menu đa dạng món nước và brunch, hình thức món ăn cực kỳ tinh tế, quầy bánh ấn tượng (Apple Pie 13K)",
     "evidence": "Không gian cafe mới toanh Tại quận 7 | Tone màu ấm cứng Và hiện đại | Nhiều góc chụp ảnh đẹp Lên hình cực xinh",
     "characteristic_raw": "poi=Phú Mỹ Hưng, Quận 7 ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian cafe mới toanh, tone màu ấm cúng và hiện đại, nhiều góc chụp ảnh đẹp, không gian trên lầu rộng rãi phù hợp làm việc/gặp gỡ bạn bè, menu đa dạng món nước và brunch, hình thức món ăn cực kỳ tinh tế, quầy bánh ấn tượng (Apple Pie 13K) ; confidence=0.98 ; evidence=Không gian cafe mới toanh Tại quận 7 | Tone màu ấm cứng Và hiện đại | Nhiều góc chụp ảnh đẹp Lên hình cực xinh",
-    "video_playcount": "47300"
+    "video_playcount": "47300",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7509855009262144776",
@@ -205,7 +229,9 @@
     "characteristic_vi": "Pizza thủ công ngon, bánh to (1 cái lớn ~200k), 2 người ăn no căng, quán gù (góc nhỏ) nhưng đồ ăn ổn áp, phù hợp mua về nhà ăn kèm phim",
     "evidence": "\"Thì pizza chất in Sài Gòn là quán gù của tôi luôn á\" | \"Ở đây người ta làm pizza thủ công thì không đạn nhạo bột luôn\" | \"Bếp còn là bếp nở, đừng có nên tha hồn ngắm mấy anh chị nấu nướng\"",
     "characteristic_raw": "poi=Pizza Chất in Saigon ; city=Thành phố Hồ Chí Minh ; characteristic_vi=Pizza thủ công ngon, bánh to (1 cái lớn ~200k), 2 người ăn no căng, quán gù (góc nhỏ) nhưng đồ ăn ổn áp, phù hợp mua về nhà ăn kèm phim ; confidence=0.98 ; evidence=\"Thì pizza chất in Sài Gòn là quán gù của tôi luôn á\" | \"Ở đây người ta làm pizza thủ công thì không đạn nhạo bột luôn\" | \"Bếp còn là bếp nở, đừng có nên tha hồn ngắm mấy anh chị nấu nướng\"",
-    "video_playcount": "47500"
+    "video_playcount": "47500",
+    "location_type": "pizza",
+    "image_url": "images/pizza.jpg"
   },
   {
     "video_id": "7511299969115082002",
@@ -221,7 +247,9 @@
     "characteristic_vi": "Công viên nước lớn nhất Việt Nam, 30 đường trượt nước (nhẹ đến mạnh), biển nhân tạo sóng 4m, sông kỳ diệu dài nhất Việt Nam, khu khô, sân tiên Amazon World, 18 tầng địa ngục, trò chơi trong nhà, trượt phao lạnh, thuyền kayak miễn phí, vé bao gồm khu nước + khô + tàu lửa, giá vé 490k (giảm còn 400k khi mua online), mã giảm 100k/250k, dịch vụ tốt, không giới hạn lượt chơi, phù hợp gia đình và trẻ em.",
     "evidence": "\"Điểm vàng trong làng công viên nước mùa hè năm nay gọi tên Sơn Tiên Amazon Bay\" | \"với hơn 45 phút chạy xe máy thôi\" | \"có nguyên một cái công viên nước to vật vả lớn nhất Việt Nam luôn\"",
     "characteristic_raw": "poi=The Amazing Bay ; city=Thành phố Biên Hòa ; stt_source=groq ; characteristic_vi=Công viên nước lớn nhất Việt Nam, 30 đường trượt nước (nhẹ đến mạnh), biển nhân tạo sóng 4m, sông kỳ diệu dài nhất Việt Nam, khu khô, sân tiên Amazon World, 18 tầng địa ngục, trò chơi trong nhà, trượt phao lạnh, thuyền kayak miễn phí, vé bao gồm khu nước + khô + tàu lửa, giá vé 490k (giảm còn 400k khi mua online), mã giảm 100k/250k, dịch vụ tốt, không giới hạn lượt chơi, phù hợp gia đình và trẻ em. ; confidence=0.98 ; evidence=\"Điểm vàng trong làng công viên nước mùa hè năm nay gọi tên Sơn Tiên Amazon Bay\" | \"với hơn 45 phút chạy xe máy thôi\" | \"có nguyên một cái công viên nước to vật vả lớn nhất Việt Nam luôn\"",
-    "video_playcount": "1400000"
+    "video_playcount": "1400000",
+    "location_type": "cruise",
+    "image_url": "images/cruise.jpg"
   },
   {
     "video_id": "7511722134578728210",
@@ -237,7 +265,9 @@
     "characteristic_vi": "Bún riêu ngon, tươi, định lượng nhiều; nước lèo ngọt thanh, ít gia vị; giá tô từ 30-50k; đông khách, chỗ ngồi ngoài chật và nóng; có giòi/xương trong tô; hành phi tóc mỡ ngon; địa chỉ tại 75 Hòa Hưng, Q.10",
     "evidence": "\"Ở ngay trung tâm quận 10\" | \"mình vừa phát hiện 1 quán bún riêu rất là chân ái\" | \"Nói thuốc đều của cô ở đây quá trời là hấp dẫn\"",
     "characteristic_raw": "poi=Quán bún riêu 75 Hòa Hưng ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Bún riêu ngon, tươi, định lượng nhiều; nước lèo ngọt thanh, ít gia vị; giá tô từ 30-50k; đông khách, chỗ ngồi ngoài chật và nóng; có giòi/xương trong tô; hành phi tóc mỡ ngon; địa chỉ tại 75 Hòa Hưng, Q.10 ; confidence=0.98 ; evidence=\"Ở ngay trung tâm quận 10\" | \"mình vừa phát hiện 1 quán bún riêu rất là chân ái\" | \"Nói thuốc đều của cô ở đây quá trời là hấp dẫn\"",
-    "video_playcount": "309100"
+    "video_playcount": "309100",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7514213085926771976",
@@ -253,7 +283,9 @@
     "characteristic_vi": "không gian ngoài trời thoáng mát, mì Mama khẩu phần to, topping đa dạng (cá, thịt viên, heo quay, mực), nước mì chua cay đủ vị nhưng chưa béo nước cốt dừa, hải sản tươi",
     "evidence": "mình siêu thích không gian ngoài trời ở đây luôn á | Mi Mama Samyum khẩu phần siêu to, topping dây ụ | chà cá thịt viên heo quay mực",
     "characteristic_raw": "poi=Ăn Cơm Uống Nước Garden ; city=Quận 3 ; stt_source=groq ; characteristic_vi=không gian ngoài trời thoáng mát, mì Mama khẩu phần to, topping đa dạng (cá, thịt viên, heo quay, mực), nước mì chua cay đủ vị nhưng chưa béo nước cốt dừa, hải sản tươi ; confidence=0.95 ; evidence=mình siêu thích không gian ngoài trời ở đây luôn á | Mi Mama Samyum khẩu phần siêu to, topping dây ụ | chà cá thịt viên heo quay mực",
-    "video_playcount": "6372"
+    "video_playcount": "6372",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7514295782003068178",
@@ -269,7 +301,9 @@
     "characteristic_vi": "Đồ ăn tươi, rau rác sạch sẽ; nước chấm đầu tư chỉnh chu (mắm me, ớt say bớt ngâm); lẩu mắm chăm, nồi lẩu hoành tráng (cá, tôm, mực to); heo quay ngon; nước lèo thơm, vị vừa phải; giá tổ thương 70K, tổ báo diệt 90K, nhỏ 250K, lớn 350K; quán nổi tiếng bún mắm Phượng.",
     "evidence": "\"Công nhận đồ ăn tươi, rau rác sạch sẽ lắm\" | \"Mà tôi thì mê nhất mấy cái nước chấm ở đây nha Nó được đầu tư làm chỉnh chu lắm Mắm me á, thêm ớt say bớt ngâm vô nữa là bá cháy\" | \"Nồi lẩu nhìn hoành tráng ha Từ cá là tôm với mực ở đây bự lắm\"",
     "characteristic_raw": "poi=Bún Mắm Phượng - Nguyễn Thiện Thuật ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Đồ ăn tươi, rau rác sạch sẽ; nước chấm đầu tư chỉnh chu (mắm me, ớt say bớt ngâm); lẩu mắm chăm, nồi lẩu hoành tráng (cá, tôm, mực to); heo quay ngon; nước lèo thơm, vị vừa phải; giá tổ thương 70K, tổ báo diệt 90K, nhỏ 250K, lớn 350K; quán nổi tiếng bún mắm Phượng. ; confidence=0.98 ; evidence=\"Công nhận đồ ăn tươi, rau rác sạch sẽ lắm\" | \"Mà tôi thì mê nhất mấy cái nước chấm ở đây nha Nó được đầu tư làm chỉnh chu lắm Mắm me á, thêm ớt say bớt ngâm vô nữa là bá cháy\" | \"Nồi lẩu nhìn hoành tráng ha Từ cá là tôm với mực ở đây bự lắm\"",
-    "video_playcount": "62400"
+    "video_playcount": "62400",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7515016529940073736",
@@ -285,7 +319,9 @@
     "characteristic_vi": "Nước lèo ngọt thơm, tô phở to, quầy nấu sạch sẽ, quán thoáng mát, giá tô nhỏ 60.000đ, tô thập cẩm 85.000đ, nhiều loại topping (tái, nạm, gầu, vè, gân, sụn, đuôi bò, bò viên, tiết, tiết trứng), rau giá đầy đủ, tương đen kiểu Nam Bộ, sa tế tự làm thơm, sử dụng năng lượng mặt trời, mở cửa sáng-tối, nghỉ trưa 14h-16h.",
     "evidence": "Cô đã bán phở trên 40 năm, 2 quán này là 2 năm liền là được Michelin vinh danh. | Nước lèo hầm xương và nấu theo kiểu phở Nam Bộ cho nên ngọt thơm hò vị với phút vô cùng luôn. | Ở đây tô nào cũng to hết, quầy nấu phở thì sạch sẽ, quán nằm ở bên bờ kẹt hoáng mát.",
     "characteristic_raw": "poi=Phở Nguyên - 932 AB Trường Sa ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Nước lèo ngọt thơm, tô phở to, quầy nấu sạch sẽ, quán thoáng mát, giá tô nhỏ 60.000đ, tô thập cẩm 85.000đ, nhiều loại topping (tái, nạm, gầu, vè, gân, sụn, đuôi bò, bò viên, tiết, tiết trứng), rau giá đầy đủ, tương đen kiểu Nam Bộ, sa tế tự làm thơm, sử dụng năng lượng mặt trời, mở cửa sáng-tối, nghỉ trưa 14h-16h. ; confidence=0.98 ; evidence=Cô đã bán phở trên 40 năm, 2 quán này là 2 năm liền là được Michelin vinh danh. | Nước lèo hầm xương và nấu theo kiểu phở Nam Bộ cho nên ngọt thơm hò vị với phút vô cùng luôn. | Ở đây tô nào cũng to hết, quầy nấu phở thì sạch sẽ, quán nằm ở bên bờ kẹt hoáng mát.",
-    "video_playcount": "351800"
+    "video_playcount": "351800",
+    "location_type": "school",
+    "image_url": "images/school.jpg"
   },
   {
     "video_id": "7517499015127190791",
@@ -301,7 +337,9 @@
     "characteristic_vi": "Món phở trộn chuẩn vị Hà Nội, nước lèo thơm phức hầm xương, gà xé dai giòn, mọc nêm nếm vừa ăn, lòng đào béo, trứng non tan, nấm đông cô, quẩy giòn nóng, tương ớt đặc biệt. Giá 40k/tô gà xé, 60k/hộp trộn. Quán phục vụ tươi mới, hàng nóng, nguyên liệu nhập từ Bắc. Khuyến mại: 4 người mua 1 tô được tặng 1 vỏ (tô).",
     "evidence": "Mình thật lòng xin lỗi các bạn, vì đến bây giờ mình mới tìm được một quán miếng trộn phở trộn chuẩn vị Hà Nội như thế này để giới thiệu đến các bạn. | Tủ đồ ăn hấp dẫn, với những miếng gà vàng ưm mơn mở như đang mời gọi. | Nước lèo thì thơm phức, được hầm với quái trời là các loại xương xí quát.",
     "characteristic_raw": "poi=White Rabbit Amusement Park ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Món phở trộn chuẩn vị Hà Nội, nước lèo thơm phức hầm xương, gà xé dai giòn, mọc nêm nếm vừa ăn, lòng đào béo, trứng non tan, nấm đông cô, quẩy giòn nóng, tương ớt đặc biệt. Giá 40k/tô gà xé, 60k/hộp trộn. Quán phục vụ tươi mới, hàng nóng, nguyên liệu nhập từ Bắc. Khuyến mại: 4 người mua 1 tô được tặng 1 vỏ (tô). ; confidence=0.98 ; evidence=Mình thật lòng xin lỗi các bạn, vì đến bây giờ mình mới tìm được một quán miếng trộn phở trộn chuẩn vị Hà Nội như thế này để giới thiệu đến các bạn. | Tủ đồ ăn hấp dẫn, với những miếng gà vàng ưm mơn mở như đang mời gọi. | Nước lèo thì thơm phức, được hầm với quái trời là các loại xương xí quát.",
-    "video_playcount": "623900"
+    "video_playcount": "623900",
+    "location_type": "amusement_park",
+    "image_url": "images/amusement_park.jpg"
   },
   {
     "video_id": "7517638220390141185",
@@ -317,7 +355,9 @@
     "characteristic_vi": "không gian buồn tẻ, thiếu hoạt động vui chơi giải trí, nhiều quán ăn uống nhưng không có không khí vui vẻ, tiếng cười ít, tình trạng mua bán tiền nông sản ảnh hưởng hình ảnh du lịch",
     "evidence": "\"Lan thang trên phố đi bộ Nguyễn Hoài Mình cảm thấy sao không gian đây này sao mà nó buồn buồn xáo đó thôi\" | \"Hầu như là các hoạt động vô chơi giải trí ở đây là không thấy luôn á mất tiêu rồi\" | \"Toàn ở ngay trên phố thì mọi người chỉ đi bộ lướt qua nhau thôi nha\"",
     "characteristic_raw": "poi=Ho Chi Minh Square ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=không gian buồn tẻ, thiếu hoạt động vui chơi giải trí, nhiều quán ăn uống nhưng không có không khí vui vẻ, tiếng cười ít, tình trạng mua bán tiền nông sản ảnh hưởng hình ảnh du lịch ; confidence=0.95 ; evidence=\"Lan thang trên phố đi bộ Nguyễn Hoài Mình cảm thấy sao không gian đây này sao mà nó buồn buồn xáo đó thôi\" | \"Hầu như là các hoạt động vô chơi giải trí ở đây là không thấy luôn á mất tiêu rồi\" | \"Toàn ở ngay trên phố thì mọi người chỉ đi bộ lướt qua nhau thôi nha\"",
-    "video_playcount": "115500"
+    "video_playcount": "115500",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7520118614754692370",
@@ -333,7 +373,9 @@
     "characteristic_vi": "Quán ăn vặt mới nổi 2 năm, đồ uống đa dạng (trà sữa, soda, sữa chua, cafe, cacao), giá từ 15k-35k, không gian mát lạnh dễ chịu, có tầng lầu, phục vụ nhanh, topping đa dạng (trân châu, pudding, phô mai, flan), nhận xét tiêu cực: cacao nhạt vị, matcha toàn vị chát.",
     "evidence": "# Khu ăn vặt xập xinh mới nổi 2 năm nay | CỬẮE NHẤT ### Trán chịu Full topping | TRÁ THỰA TRÁI CẤY TUỔI | 25k | 32k | CAFE ĐẠI | ## THU GIẢN TRONG KHÔNG KHÍ MÁT LẠNH VÀ DỄ CHỤ",
     "characteristic_raw": "poi=Làng Đại Học Thủ Đức ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Quán ăn vặt mới nổi 2 năm, đồ uống đa dạng (trà sữa, soda, sữa chua, cafe, cacao), giá từ 15k-35k, không gian mát lạnh dễ chịu, có tầng lầu, phục vụ nhanh, topping đa dạng (trân châu, pudding, phô mai, flan), nhận xét tiêu cực: cacao nhạt vị, matcha toàn vị chát. ; confidence=0.95 ; evidence=# Khu ăn vặt xập xinh mới nổi 2 năm nay | CỬẮE NHẤT ### Trán chịu Full topping | TRÁ THỰA TRÁI CẤY TUỔI | 25k | 32k | CAFE ĐẠI | ## THU GIẢN TRONG KHÔNG KHÍ MÁT LẠNH VÀ DỄ CHỤ",
-    "video_playcount": "69600"
+    "video_playcount": "69600",
+    "location_type": "school",
+    "image_url": "images/school.jpg"
   },
   {
     "video_id": "7525398704774237448",
@@ -349,7 +391,9 @@
     "characteristic_vi": "{\"food_quality\": \"đồ uống xịn, nhạt đỉnh, ú đái khủng, matcha kem đèo vị lẹ dễ sợ, chua nhẹ thơm mùi kem, bán thịt xưa hợp, bán sừng bò thơm bơ, bán mì quà gà phô mai ăn làm men, combo 89 Cảm Thô nhanh gọn chất lượng\", \"ambiance\": \"không gian ấm, tường treo chăn Cowboy Mỹ, bàn gây da, tông nâu đen, góc làm việc yên tĩnh, góc ngồi nhóm, chỗ riêng tư, nhiều góc làm việc + team work\", \"service\": \"nhanh gọn chất lượng\", \"price\": \"combo 89 Cảm Thô, voucher 20k cho cà phê phim size S, hoàn 50% hóa đơn lần sau vào ngày khai trương 11/7\", \"location\": \"490 Lý Thường Kiệt, Tân Bình, TP. HCM\", \"waiting_time\": \"không đề cập\"}",
     "evidence": "\"đồ uống xịn, nhạt đỉnh, ú đái khủng\" | \"Cowboy Zone Cafe\" | \"Quán có 2 tầng, có bàn công, view chợ Tân Bình luôn\"",
     "characteristic_raw": "poi=Cowboy Zone Café ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi={\"food_quality\": \"đồ uống xịn, nhạt đỉnh, ú đái khủng, matcha kem đèo vị lẹ dễ sợ, chua nhẹ thơm mùi kem, bán thịt xưa hợp, bán sừng bò thơm bơ, bán mì quà gà phô mai ăn làm men, combo 89 Cảm Thô nhanh gọn chất lượng\", \"ambiance\": \"không gian ấm, tường treo chăn Cowboy Mỹ, bàn gây da, tông nâu đen, góc làm việc yên tĩnh, góc ngồi nhóm, chỗ riêng tư, nhiều góc làm việc + team work\", \"service\": \"nhanh gọn chất lượng\", \"price\": \"combo 89 Cảm Thô, voucher 20k cho cà phê phim size S, hoàn 50% hóa đơn lần sau vào ngày khai trương 11/7\", \"location\": \"490 Lý Thường Kiệt, Tân Bình, TP. HCM\", \"waiting_time\": \"không đề cập\"} ; confidence=0.98 ; evidence=\"đồ uống xịn, nhạt đỉnh, ú đái khủng\" | \"Cowboy Zone Cafe\" | \"Quán có 2 tầng, có bàn công, view chợ Tân Bình luôn\"",
-    "video_playcount": "24200"
+    "video_playcount": "24200",
+    "location_type": "ice_cream",
+    "image_url": "images/ice_cream.webp"
   },
   {
     "video_id": "7528628519396527367",
@@ -365,7 +409,9 @@
     "characteristic_vi": "Bưu điện thành phố miễn phí tham quan, có quầy gửi thư, tem, sổ tay du lịch, đồ lưu niệm; kiến trúc hơn 130 tuổi, nằm trong top 11 bưu điện đẹp nhất thế giới; vị trí trung tâm thành phố; không gian quen thuộc với người dân Sài Gòn; nhiều góc chụp ảnh sống ảo; gần nhà thờ Đức Bà.",
     "evidence": "Vào cổng hoàn toàn miễn phí. | trong này có tham quan miễn phí | Bưu điện này đã tồn tại hơn 130 tuổi rồi",
     "characteristic_raw": "poi=Ho Chi Minh City Post Office ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Bưu điện thành phố miễn phí tham quan, có quầy gửi thư, tem, sổ tay du lịch, đồ lưu niệm; kiến trúc hơn 130 tuổi, nằm trong top 11 bưu điện đẹp nhất thế giới; vị trí trung tâm thành phố; không gian quen thuộc với người dân Sài Gòn; nhiều góc chụp ảnh sống ảo; gần nhà thờ Đức Bà. ; confidence=0.95 ; evidence=Vào cổng hoàn toàn miễn phí. | trong này có tham quan miễn phí | Bưu điện này đã tồn tại hơn 130 tuổi rồi",
-    "video_playcount": "241000"
+    "video_playcount": "241000",
+    "location_type": "cultural_center",
+    "image_url": "images/cultural_center.jpg"
   },
   {
     "video_id": "7529049966577306887",
@@ -381,7 +427,9 @@
     "characteristic_vi": "Món sườn xào chua ngọt ngon, mềm, ít mỡ, thấm đều sốt, không mùi hôi. Món bò lút lát mềm, miếng vừa phải. Cơm chiên cá mặn nóng hổi, tơi. Giá rẻ (15 ngàn). Quán nhỏ, gia đình, đồ ăn no. Nằm trong chợ Phú Nhuận, đường Cao Thắng.",
     "evidence": "\"Sườn xào chua ngọt hấp dẫn quá ha\" | \"Cái sườn bên đây là mỡ miệt nha... Ngon, mềm, mỏng nốt, thiên mỡ chua nhạt\" | \"Cực cháy tỏi, hơi khứa ra cho nên là thấm đều sốt lắm nha\"",
     "characteristic_raw": "poi=Phì Lủ Quán Chợ Phú Nhuận ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Món sườn xào chua ngọt ngon, mềm, ít mỡ, thấm đều sốt, không mùi hôi. Món bò lút lát mềm, miếng vừa phải. Cơm chiên cá mặn nóng hổi, tơi. Giá rẻ (15 ngàn). Quán nhỏ, gia đình, đồ ăn no. Nằm trong chợ Phú Nhuận, đường Cao Thắng. ; confidence=0.98 ; evidence=\"Sườn xào chua ngọt hấp dẫn quá ha\" | \"Cái sườn bên đây là mỡ miệt nha... Ngon, mềm, mỏng nốt, thiên mỡ chua nhạt\" | \"Cực cháy tỏi, hơi khứa ra cho nên là thấm đều sốt lắm nha\"",
-    "video_playcount": "24300"
+    "video_playcount": "24300",
+    "location_type": "steak_house",
+    "image_url": "images/steak_house.jpg"
   },
   {
     "video_id": "7529893490210180370",
@@ -397,7 +445,9 @@
     "characteristic_vi": "Quán rộng 3 lầu, menu đa dạng, món signature như chân giò hầm 6-8 tiếng, thịt heo chiên sốt, mì kiều mạch trộn rong biển, lẩu kimchi tặng nồi chả cá khi đặt bàn từ 3 người.",
     "evidence": "Nghe nói quán hàng này ngon nhất như phú nhụn, nay thưa tôi trải nghiệm xem thật hư ra sao nha. | Mới bước vô rồi thấy quán siêu siêu rộng rồi đó, 3 lầu luôn. | Menu thì đa dạng đủ các món, anh chủ người hàng đã thấy tinh tử đó nha.",
     "characteristic_raw": "poi=The Rán ; city=Thành phố Hồ Chí Minh ; characteristic_vi=Quán rộng 3 lầu, menu đa dạng, món signature như chân giò hầm 6-8 tiếng, thịt heo chiên sốt, mì kiều mạch trộn rong biển, lẩu kimchi tặng nồi chả cá khi đặt bàn từ 3 người. ; confidence=0.98 ; evidence=Nghe nói quán hàng này ngon nhất như phú nhụn, nay thưa tôi trải nghiệm xem thật hư ra sao nha. | Mới bước vô rồi thấy quán siêu siêu rộng rồi đó, 3 lầu luôn. | Menu thì đa dạng đủ các món, anh chủ người hàng đã thấy tinh tử đó nha.",
-    "video_playcount": "94500"
+    "video_playcount": "94500",
+    "location_type": "hotpot",
+    "image_url": "images/hotpot.jpg"
   },
   {
     "video_id": "7530623685707762945",
@@ -413,7 +463,9 @@
     "characteristic_vi": "Cơm tấm bình dân 20k, thêm trứng 25k. Địa chỉ: Nguyễn Thiện Thuật, Quận 3. Chất lượng bình dân, giá rẻ.",
     "evidence": "\"cơm tắm bình dân 20k\" | \"thêm trứng là hình như 25k nha\" | \"ngay Nguyễn Thiện Thuật\"",
     "characteristic_raw": "poi=Cơm tấm bình dân ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Cơm tấm bình dân 20k, thêm trứng 25k. Địa chỉ: Nguyễn Thiện Thuật, Quận 3. Chất lượng bình dân, giá rẻ. ; confidence=0.95 ; evidence=\"cơm tắm bình dân 20k\" | \"thêm trứng là hình như 25k nha\" | \"ngay Nguyễn Thiện Thuật\"",
-    "video_playcount": "7114"
+    "video_playcount": "7114",
+    "location_type": "street_food",
+    "image_url": "images/street_food.jpg"
   },
   {
     "video_id": "7533185271714581767",
@@ -429,7 +481,9 @@
     "characteristic_vi": "Trà sữa thơm, đậm trà, lớp kem bông mặn mặn. Có 3 vị kem: chuối, đậu, dừa nướng. Trà me muối ớt chua chua cuốn. Thạch phô mai nhìn núng na núng nính. Matcha hạt sen hợp hương vị. Tiệm nằm trung tâm quận 1, tiện lợi.",
     "evidence": "Trà sữa thơm, đậm trà, lớp kem bông mặn mặn lạ nha | Lớp kem này có 3 vị để chọn lẫn á chuối, dầu và dừa nướng | Quánh giá cao ly Trà Me Muối Ớt này nha, chua chua uống cuốn lắm",
     "characteristic_raw": "poi=Shancha - Lê Lợi, Q1 ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Trà sữa thơm, đậm trà, lớp kem bông mặn mặn. Có 3 vị kem: chuối, đậu, dừa nướng. Trà me muối ớt chua chua cuốn. Thạch phô mai nhìn núng na núng nính. Matcha hạt sen hợp hương vị. Tiệm nằm trung tâm quận 1, tiện lợi. ; confidence=0.95 ; evidence=Trà sữa thơm, đậm trà, lớp kem bông mặn mặn lạ nha | Lớp kem này có 3 vị để chọn lẫn á chuối, dầu và dừa nướng | Quánh giá cao ly Trà Me Muối Ớt này nha, chua chua uống cuốn lắm",
-    "video_playcount": "9046"
+    "video_playcount": "9046",
+    "location_type": "ice_cream",
+    "image_url": "images/ice_cream.webp"
   },
   {
     "video_id": "7534205146939641096",
@@ -445,7 +499,9 @@
     "characteristic_vi": "Không gian yên tĩnh, thoáng mát, hợp đọc sách/cà phê; giá nước 35-55k; đồ uống pha chế ổn; chờ hơi lâu; sách chủ yếu nghệ thuật/kiến trúc; có gác lửng; mở 8h-20h; giữ xe bên đường Lão Tử; không gian theo phong cách thập niên trước",
     "evidence": "\"Sam, Artbook & Coffee nếp mình một góc cũng khá là chill nha\" | \"Mình thấy không gian yên tĩnh mà lâu lâu có tiếng chim chóc cũng hợp để đến đọc sách hay là cà phê chuyển phim với bạn\" | \"Giá nước không có quá cao, giao động từ 35 đến 55 thôi\"",
     "characteristic_raw": "poi=Sam 穇 - Art books & coffee ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian yên tĩnh, thoáng mát, hợp đọc sách/cà phê; giá nước 35-55k; đồ uống pha chế ổn; chờ hơi lâu; sách chủ yếu nghệ thuật/kiến trúc; có gác lửng; mở 8h-20h; giữ xe bên đường Lão Tử; không gian theo phong cách thập niên trước ; confidence=0.98 ; evidence=\"Sam, Artbook & Coffee nếp mình một góc cũng khá là chill nha\" | \"Mình thấy không gian yên tĩnh mà lâu lâu có tiếng chim chóc cũng hợp để đến đọc sách hay là cà phê chuyển phim với bạn\" | \"Giá nước không có quá cao, giao động từ 35 đến 55 thôi\"",
-    "video_playcount": "9177"
+    "video_playcount": "9177",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7534311866160418066",
@@ -461,7 +517,9 @@
     "characteristic_vi": "Món ăn: hủ tiếu khô, miếng trộn thập cẩm, gà xé, nước chấm chua ngọt, muối chấm lá chanh. Chất lượng: sốt trộn đậm nhưng không mặn/ngán, hành phi xuất sắc, rau xanh sạch tươi, gà nấu mềm vừa, không dính/bón cụt. Giá: bình dân, sinh viên ủng hộ. Vị trí: mặt tiền, đối diện Đại học Kinh tế. Dịch vụ: có điện, đầy đủ gia vị (nước tương, nước mắm, sa tế, tương ớt) để tự pha.",
     "evidence": "Ở đây là quán đặc biệt có hủ tiếu khô với lại miếng trộn nha | Sốt trộn với top mỡ đỉnh lắm | Quán trộn đậm sốt nhưng ăn không bị mặn, không bị ngán",
     "characteristic_raw": "poi=Hủ Tiếu Gà Thuý Hiền Cn3 ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Món ăn: hủ tiếu khô, miếng trộn thập cẩm, gà xé, nước chấm chua ngọt, muối chấm lá chanh. Chất lượng: sốt trộn đậm nhưng không mặn/ngán, hành phi xuất sắc, rau xanh sạch tươi, gà nấu mềm vừa, không dính/bón cụt. Giá: bình dân, sinh viên ủng hộ. Vị trí: mặt tiền, đối diện Đại học Kinh tế. Dịch vụ: có điện, đầy đủ gia vị (nước tương, nước mắm, sa tế, tương ớt) để tự pha. ; confidence=0.98 ; evidence=Ở đây là quán đặc biệt có hủ tiếu khô với lại miếng trộn nha | Sốt trộn với top mỡ đỉnh lắm | Quán trộn đậm sốt nhưng ăn không bị mặn, không bị ngán",
-    "video_playcount": "605300"
+    "video_playcount": "605300",
+    "location_type": "street_food",
+    "image_url": "images/street_food.jpg"
   },
   {
     "video_id": "7535136991147560200",
@@ -477,7 +535,9 @@
     "characteristic_vi": "Cháo sườn mềm mịn, béo, sánh; xương hầm trong cháo thấm vị; giá 35.000đ; vị nhạt; thích hợp ăn kèm ớt; địa chỉ 339 Võ Thị Sáu, Tân Định, TP.HCM.",
     "evidence": "\"quán cháu sườn mà quán này Quốc ăn ít nhất là cũng được 12 năm rồi\" | \"Ở địa chỉ là 339-345 Võ Thị Sáu ngay ngã 3 Võ Thị Sáu với Trần Quốc Toản\" | \"Vừa sườn 2 cục sườn bự 1 cái trứng hốt thảo rồi thịt băm này Chỉ có 35 ngàn thôi\"",
     "characteristic_raw": "poi=Cháo sườn ; stt_source=groq ; characteristic_vi=Cháo sườn mềm mịn, béo, sánh; xương hầm trong cháo thấm vị; giá 35.000đ; vị nhạt; thích hợp ăn kèm ớt; địa chỉ 339 Võ Thị Sáu, Tân Định, TP.HCM. ; confidence=0.98 ; evidence=\"quán cháu sườn mà quán này Quốc ăn ít nhất là cũng được 12 năm rồi\" | \"Ở địa chỉ là 339-345 Võ Thị Sáu ngay ngã 3 Võ Thị Sáu với Trần Quốc Toản\" | \"Vừa sườn 2 cục sườn bự 1 cái trứng hốt thảo rồi thịt băm này Chỉ có 35 ngàn thôi\"",
-    "video_playcount": "1660"
+    "video_playcount": "1660",
+    "location_type": "restaurant",
+    "image_url": "images/restaurant.jpg"
   },
   {
     "video_id": "7537311862107524359",
@@ -493,7 +553,9 @@
     "characteristic_vi": "Mì tươi mỗi ngày, mì cà ri, heo chiên xù, mì sốt cua, không gian bếp mở, giá 15K (mì cà ri) và 95K (heo chiên xù)",
     "evidence": "Mì tươi mỗi ngày! | Mì cà ri - Heo chiên xù - Mì sốt cua - pepsi | MÌ CÀ RI HEO CHIÊNG XÙ 95K MÌ CÀ RI 15K HEO CHIÊNG XÙ",
     "characteristic_raw": "poi=XƯỞNG MÌ QUỐC TẾ ; city=Thành phố Hồ Chí Minh ; characteristic_vi=Mì tươi mỗi ngày, mì cà ri, heo chiên xù, mì sốt cua, không gian bếp mở, giá 15K (mì cà ri) và 95K (heo chiên xù) ; confidence=0.95 ; evidence=Mì tươi mỗi ngày! | Mì cà ri - Heo chiên xù - Mì sốt cua - pepsi | MÌ CÀ RI HEO CHIÊNG XÙ 95K MÌ CÀ RI 15K HEO CHIÊNG XÙ",
-    "video_playcount": "2206"
+    "video_playcount": "2206",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7538448954774637840",
@@ -509,7 +571,9 @@
     "characteristic_vi": "Menu đa dạng, giá hơi cao nhưng chất lượng tương đồng. Món mì xe đẩy gà lửa có hương vị vừa ăn, không quá đậm vị. Trà sữa Hồng Kông thơm sữa, không bỏ đường sẵn. Địa chỉ dễ tìm, nằm trong An Đông Plaza, số 18 An Dương Vương, Phường 9, Quận 5.",
     "evidence": "Nếu như mà mọi người hay xem kênh của Sài Gòn Béo nhiều thì mọi người chắc chắn là cũng cảm nhận được Sài Gòn Béo là một đứa rất là mê ẩm thực Trung Hoa | Vì quá mê trà sữa Hồng Kông cho nên là nhất định tôi phải đến đây để uống được cái ly trà sữa này nè | Menu thì Sài Gòn Béo đánh giá là đa dạng món nha mọi người Nhưng mà so với giá cả thì sẽ hơi cao một xíu Mà trước mắt thì Béo thấy là cũng tương đồng về chất lượng cho nên là cái giá này tôi ok",
     "characteristic_raw": "poi=An Đông Plaza ; city=Quận 5 ; stt_source=groq ; characteristic_vi=Menu đa dạng, giá hơi cao nhưng chất lượng tương đồng. Món mì xe đẩy gà lửa có hương vị vừa ăn, không quá đậm vị. Trà sữa Hồng Kông thơm sữa, không bỏ đường sẵn. Địa chỉ dễ tìm, nằm trong An Đông Plaza, số 18 An Dương Vương, Phường 9, Quận 5. ; confidence=0.98 ; evidence=Nếu như mà mọi người hay xem kênh của Sài Gòn Béo nhiều thì mọi người chắc chắn là cũng cảm nhận được Sài Gòn Béo là một đứa rất là mê ẩm thực Trung Hoa | Vì quá mê trà sữa Hồng Kông cho nên là nhất định tôi phải đến đây để uống được cái ly trà sữa này nè | Menu thì Sài Gòn Béo đánh giá là đa dạng món nha mọi người Nhưng mà so với giá cả thì sẽ hơi cao một xíu Mà trước mắt thì Béo thấy là cũng tương đồng về chất lượng cho nên là cái giá này tôi ok",
-    "video_playcount": "151600"
+    "video_playcount": "151600",
+    "location_type": "shopping_mall",
+    "image_url": "images/shopping_mall.jpg"
   },
   {
     "video_id": "7539377510497275157",
@@ -525,7 +589,9 @@
     "characteristic_vi": "Không gian rộng rãi, thoáng mát; phù hợp gia đình, bạn bè; nhiều góc chụp hình xinh; nhân viên thân thiện, vui vẻ; hỗ trợ nhiệt tình; địa chỉ: 50/25 Lê Thị Hồng, P.17, Gò Vấp; giờ mở cửa: 6:00 - 23:00",
     "evidence": "Không gian rộng rãi, thoáng mát Phù hợp cho gia đình, bạn bè | Quá trời góc chụp hình xinh | Nhân viên thân thiện, vui vẻ Hỗ trợ các bạn hết mình nha",
     "characteristic_raw": "poi=A.Q Coffee - Gò Vấp ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian rộng rãi, thoáng mát; phù hợp gia đình, bạn bè; nhiều góc chụp hình xinh; nhân viên thân thiện, vui vẻ; hỗ trợ nhiệt tình; địa chỉ: 50/25 Lê Thị Hồng, P.17, Gò Vấp; giờ mở cửa: 6:00 - 23:00 ; confidence=0.95 ; evidence=Không gian rộng rãi, thoáng mát Phù hợp cho gia đình, bạn bè | Quá trời góc chụp hình xinh | Nhân viên thân thiện, vui vẻ Hỗ trợ các bạn hết mình nha",
-    "video_playcount": "63400"
+    "video_playcount": "63400",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7539586928262368519",
@@ -541,7 +607,9 @@
     "characteristic_vi": "Món chả cá ngon, tươi, dai; lòng cá lăng chất lượng nhưng ít; mắm tôm thơm ngon; bánh đa/bánh phồng tôm ngon; cream bully béo thơm; menu ít món nhưng đông khách; chi nhánh Hồ Xuân Hương (Q3) và Phú Mỹ Hưng (Q7)",
     "evidence": "Món chả cá lã vọng này nè, không biết là có ai đã từng giống mình chưa | Chả cá cứ tưởng là chả cá của miền Nam không à Và nó là một cái miếng cá phê lê giống vậy nè Mình siêu thích cái món này luôn, ăn chung với bún với lại mắm tôm á, trời ơi nó ngon | Cái miếng cá ở đây rất là tươi và chắc nha Đặc biệt là ướt cũng ngon nữa Để khi mà xào hành với thị lạ lên nó không bị bể thịt Ăn vô nó sẽ dai dai ngon lắm",
     "characteristic_raw": "poi=Chả cá Lã Vọng ; stt_source=groq ; characteristic_vi=Món chả cá ngon, tươi, dai; lòng cá lăng chất lượng nhưng ít; mắm tôm thơm ngon; bánh đa/bánh phồng tôm ngon; cream bully béo thơm; menu ít món nhưng đông khách; chi nhánh Hồ Xuân Hương (Q3) và Phú Mỹ Hưng (Q7) ; confidence=0.98 ; evidence=Món chả cá lã vọng này nè, không biết là có ai đã từng giống mình chưa | Chả cá cứ tưởng là chả cá của miền Nam không à Và nó là một cái miếng cá phê lê giống vậy nè Mình siêu thích cái món này luôn, ăn chung với bún với lại mắm tôm á, trời ơi nó ngon | Cái miếng cá ở đây rất là tươi và chắc nha Đặc biệt là ướt cũng ngon nữa Để khi mà xào hành với thị lạ lên nó không bị bể thịt Ăn vô nó sẽ dai dai ngon lắm",
-    "video_playcount": "4346"
+    "video_playcount": "4346",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7542000318259744018",
@@ -557,7 +625,9 @@
     "characteristic_vi": "Máy gắp thú đa dạng, mức độ khó khác nhau. Nhân viên hỗ trợ nhiệt tình chỉnh gấu về sát ô. Có chương trình khuyến mại mua 200k được 1 phiếu bốc thăm, 600k được 3 phiếu, 1200k được 7 phiếu. Phần thưởng gồm màn hình di động 24 inch, đồ gia dụng, gấu bông, blindbox. Thẻ VIP tích điểm, có thể đổi quà.",
     "evidence": "Từ khi mà ghé Cát Du, tui bị dính cái thiên đường gấp thú này quá | Mà tui thì khoái máy dụ này lắm cho nên là chơi lớn | Mỗi máy có 1 mức độ khó khác nhau",
     "characteristic_raw": "poi=Catch U ; city=Quận 5 ; stt_source=groq ; characteristic_vi=Máy gắp thú đa dạng, mức độ khó khác nhau. Nhân viên hỗ trợ nhiệt tình chỉnh gấu về sát ô. Có chương trình khuyến mại mua 200k được 1 phiếu bốc thăm, 600k được 3 phiếu, 1200k được 7 phiếu. Phần thưởng gồm màn hình di động 24 inch, đồ gia dụng, gấu bông, blindbox. Thẻ VIP tích điểm, có thể đổi quà. ; confidence=0.98 ; evidence=Từ khi mà ghé Cát Du, tui bị dính cái thiên đường gấp thú này quá | Mà tui thì khoái máy dụ này lắm cho nên là chơi lớn | Mỗi máy có 1 mức độ khó khác nhau",
-    "video_playcount": "22000"
+    "video_playcount": "22000",
+    "location_type": "arcade",
+    "image_url": "images/arcade.jpg"
   },
   {
     "video_id": "7542111652586589447",
@@ -573,7 +643,9 @@
     "characteristic_vi": "Cơm gà luộc/hấp/chiên (48k-52k), gà mềm da mỏng ít mỡ, nước sốt mặn ngọt vừa, cơm nấu chung nước lột gà có chút bóng mỡ, bánh bao mặn/ngọt (14k-45k), sữa đậu nành thanh đạm, quán yên tĩnh có cây xanh, mở 8h-22h, phục vụ dân văn phòng, giá 30-58k, combo gà hấp + chiên 52k",
     "evidence": "Dù đây là 1 tiệm bán đồ uống và nước tráng miệng, sau lại có thêm xếp bánh ba sữa đầu nành ăn sáng, rồi trưa lại có thêm cơm gà nữa Hợp lý cho dân văn phòng gần đó rồi ha, mà giá chỉ từ 30-58k | Cơm gà có luộc, hấp và cá chiên, tùy theo khẩu vị mà mọi người lựa chọn ha | Một dĩa vừa đủ ăn cho phái nữ, có kèm thêm chén canh Long Nhân Sài Gòn khá thích phần nước sốt chấm gà, mặn ngọt vừa tới, lại có thêm 1 chút xíu gừng đâm nhuyễn thơm thơm",
     "characteristic_raw": "poi=Tee - Tiệm Sương Sáo ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Cơm gà luộc/hấp/chiên (48k-52k), gà mềm da mỏng ít mỡ, nước sốt mặn ngọt vừa, cơm nấu chung nước lột gà có chút bóng mỡ, bánh bao mặn/ngọt (14k-45k), sữa đậu nành thanh đạm, quán yên tĩnh có cây xanh, mở 8h-22h, phục vụ dân văn phòng, giá 30-58k, combo gà hấp + chiên 52k ; confidence=0.98 ; evidence=Dù đây là 1 tiệm bán đồ uống và nước tráng miệng, sau lại có thêm xếp bánh ba sữa đầu nành ăn sáng, rồi trưa lại có thêm cơm gà nữa Hợp lý cho dân văn phòng gần đó rồi ha, mà giá chỉ từ 30-58k | Cơm gà có luộc, hấp và cá chiên, tùy theo khẩu vị mà mọi người lựa chọn ha | Một dĩa vừa đủ ăn cho phái nữ, có kèm thêm chén canh Long Nhân Sài Gòn khá thích phần nước sốt chấm gà, mặn ngọt vừa tới, lại có thêm 1 chút xíu gừng đâm nhuyễn thơm thơm",
-    "video_playcount": "44600"
+    "video_playcount": "44600",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7543470395735674119",
@@ -589,7 +661,9 @@
     "characteristic_vi": "Decor lễ 2/9 xinh, hình nón lá đủ màu sắc, không gian check in gia đình, địa chỉ 77/21B Đường số 8, Tân Quý, Q.7, giờ mở cửa 8:00-21:00",
     "evidence": "Tiệm Cafe núp hẻm ở Quận 7 của check in Lễ 2/9 | Vé Nhà Decor Lễ 2/9 xinh tại Quận 7 | Có vẻ hình nón lá đủ màu sắc theo ý thích của mình",
     "characteristic_raw": "poi=Về nhà Cafe ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Decor lễ 2/9 xinh, hình nón lá đủ màu sắc, không gian check in gia đình, địa chỉ 77/21B Đường số 8, Tân Quý, Q.7, giờ mở cửa 8:00-21:00 ; confidence=0.95 ; evidence=Tiệm Cafe núp hẻm ở Quận 7 của check in Lễ 2/9 | Vé Nhà Decor Lễ 2/9 xinh tại Quận 7 | Có vẻ hình nón lá đủ màu sắc theo ý thích của mình",
-    "video_playcount": "18900"
+    "video_playcount": "18900",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7544692493623856385",
@@ -605,7 +679,9 @@
     "characteristic_vi": "Món ăn đa dạng (cá viên, hot dog, hamburger, khoai tây chiên, chè, trà sữa), chất lượng cao (ngon, sạch sẽ, nguyên liệu tươi), giá phải chăng (12-15k/món, combo 100k), đông khách, nhiều topping, nhân đầy đủ, vỏ bánh mềm ngọt, trà sữa đậm vị, địa điểm hút khách tại Quận 5.",
     "evidence": "\"Có một thiên đường ăn vặt tuổi thơ siêu đông siêu rỉ ở đường Trần Hưng Đạo quận 5\" | \"Món nào món này siêu ngon siêu chất lượng\" | \"Đến đây muốn ăn món nào cũng có hết trơn\"",
     "characteristic_raw": "poi=KA Tea - Trà/Trà sữa ; city=Quận 5 ; stt_source=groq ; characteristic_vi=Món ăn đa dạng (cá viên, hot dog, hamburger, khoai tây chiên, chè, trà sữa), chất lượng cao (ngon, sạch sẽ, nguyên liệu tươi), giá phải chăng (12-15k/món, combo 100k), đông khách, nhiều topping, nhân đầy đủ, vỏ bánh mềm ngọt, trà sữa đậm vị, địa điểm hút khách tại Quận 5. ; confidence=0.98 ; evidence=\"Có một thiên đường ăn vặt tuổi thơ siêu đông siêu rỉ ở đường Trần Hưng Đạo quận 5\" | \"Món nào món này siêu ngon siêu chất lượng\" | \"Đến đây muốn ăn món nào cũng có hết trơn\"",
-    "video_playcount": "458600"
+    "video_playcount": "458600",
+    "location_type": "tea_shop",
+    "image_url": "images/tea_shop.webp"
   },
   {
     "video_id": "7544711884323294471",
@@ -621,7 +697,9 @@
     "characteristic_vi": "view hoàng hôn đẹp, khung giờ vàng 15h30-17h30, có mái che, quạt mát, nước lọc miễn phí, acoustic chill vào thứ 7, có quán Su Garden gần đó để ăn uống",
     "evidence": "Tự tin là một địa điểm có view hoàng hôn siêu xịn xò. | Nếu khách yêu muốn make up thay đồ thì cứ tự tin qua vào khung giờ từ 3h30 đến 4h. | Nếu khách yêu qua từ lúc 4h đến 5h30 thì quậy đục nước cái quán này cho em. Bao giờ này là nắng dịu, hoàng hôn ngã mà tuyệt đẹp luôn á.",
     "characteristic_raw": "poi=SOFÉ ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=view hoàng hôn đẹp, khung giờ vàng 15h30-17h30, có mái che, quạt mát, nước lọc miễn phí, acoustic chill vào thứ 7, có quán Su Garden gần đó để ăn uống ; confidence=0.98 ; evidence=Tự tin là một địa điểm có view hoàng hôn siêu xịn xò. | Nếu khách yêu muốn make up thay đồ thì cứ tự tin qua vào khung giờ từ 3h30 đến 4h. | Nếu khách yêu qua từ lúc 4h đến 5h30 thì quậy đục nước cái quán này cho em. Bao giờ này là nắng dịu, hoàng hôn ngã mà tuyệt đẹp luôn á.",
-    "video_playcount": "333200"
+    "video_playcount": "333200",
+    "location_type": "restaurant",
+    "image_url": "images/restaurant.jpg"
   },
   {
     "video_id": "7546409780554812679",
@@ -637,7 +715,9 @@
     "characteristic_vi": "Quán có 2 tầng, rộng rãi, thoáng mát. Không gian sân vườn với nhiều cây xanh. Mở cửa 24/7. Có board game. Menu giá từ 32-60k. Có kem Tarot vào tối thứ 2,3,5 từ 19h.",
     "evidence": "Co 2 tầng, rộng rãi, thoáng mát | Không gian sân vườn Cây xanh ở khắp nơi | Quản mở 24/7 Không phụ thuộc qua đêm",
     "characteristic_raw": "poi=Bamos Coffee Quận 7 - Cà phê 24h 130 Đ. Số 65 ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Quán có 2 tầng, rộng rãi, thoáng mát. Không gian sân vườn với nhiều cây xanh. Mở cửa 24/7. Có board game. Menu giá từ 32-60k. Có kem Tarot vào tối thứ 2,3,5 từ 19h. ; confidence=0.98 ; evidence=Co 2 tầng, rộng rãi, thoáng mát | Không gian sân vườn Cây xanh ở khắp nơi | Quản mở 24/7 Không phụ thuộc qua đêm",
-    "video_playcount": "180900"
+    "video_playcount": "180900",
+    "location_type": "ice_cream",
+    "image_url": "images/ice_cream.webp"
   },
   {
     "video_id": "7547553388783799559",
@@ -653,7 +733,9 @@
     "characteristic_vi": "Món sườn to dày, mềm mọng nước, đậm vị; trứng ớp lòng đào béo ngậy; cơm dẻo tơi; nước mắm kẹo không quá mặn, hơi ngọt; giá 50k-60k/dĩa; quán đông khách; phục vụ đến nửa đêm; vị trí trong hẻm Bình Thạnh; đồ ăn nhiều, cơm ít",
     "evidence": "Nằm nứt trong một con hẹm ở Bình Thạnh nè | Ngoài sườn bì chả ở đây còn có xíu mại, heo quay, phá lấu, đùi gà nước, trứng kho | Giá giao động từ 50k một dĩa thôi",
     "characteristic_raw": "poi=Cơm tấm Huyền ; stt_source=groq ; characteristic_vi=Món sườn to dày, mềm mọng nước, đậm vị; trứng ớp lòng đào béo ngậy; cơm dẻo tơi; nước mắm kẹo không quá mặn, hơi ngọt; giá 50k-60k/dĩa; quán đông khách; phục vụ đến nửa đêm; vị trí trong hẻm Bình Thạnh; đồ ăn nhiều, cơm ít ; confidence=0.98 ; evidence=Nằm nứt trong một con hẹm ở Bình Thạnh nè | Ngoài sườn bì chả ở đây còn có xíu mại, heo quay, phá lấu, đùi gà nước, trứng kho | Giá giao động từ 50k một dĩa thôi",
-    "video_playcount": "124900"
+    "video_playcount": "124900",
+    "location_type": "restaurant",
+    "image_url": "images/restaurant.jpg"
   },
   {
     "video_id": "7549957879625813266",
@@ -669,7 +751,9 @@
     "characteristic_vi": "Phòng studio rộng rãi, thoáng mát, thiết kế hiện đại, đầy đủ tiện nghi (bếp điện, lò vi sóng, tủ lạnh, nồi niêu, gia vị), giường nệm êm, máy chiếu mới, phù hợp cho couple staycation, vị trí tại Quận 10, gần Sư Vạn Hạnh.",
     "evidence": "\"Hôm nay ngay quận 10 thì tới ngay My House\" | \"Thôi nên tôi chọn một cái phòng rất là to, rất là thoáng nha\" | \"Có đầy đủ tiện ích cho mọi người luôn\"",
     "characteristic_raw": "poi=Vạn Hạnh Mall ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Phòng studio rộng rãi, thoáng mát, thiết kế hiện đại, đầy đủ tiện nghi (bếp điện, lò vi sóng, tủ lạnh, nồi niêu, gia vị), giường nệm êm, máy chiếu mới, phù hợp cho couple staycation, vị trí tại Quận 10, gần Sư Vạn Hạnh. ; confidence=0.98 ; evidence=\"Hôm nay ngay quận 10 thì tới ngay My House\" | \"Thôi nên tôi chọn một cái phòng rất là to, rất là thoáng nha\" | \"Có đầy đủ tiện ích cho mọi người luôn\"",
-    "video_playcount": "44300"
+    "video_playcount": "44300",
+    "location_type": "shopping_mall",
+    "image_url": "images/shopping_mall.jpg"
   },
   {
     "video_id": "7553201926318394631",
@@ -685,7 +769,9 @@
     "characteristic_vi": "Thiết kế hiện đại tone gỗ, không gian cozy. Menu đa dạng cafe/trà/bánh. Đồ uống ổn, cốc to. Nằm ẩn mình trong con hẻm xinh đẹp Sài Gòn. Mùa thu ngoài vườn mát.",
     "evidence": "Bên trong được thiết kế hiện đại tone gỗ rất cozy | Menu da dạng cafe trà - bánh | Đồ uống ổn, cốc khá to nè",
     "characteristic_raw": "poi=Dabao concept - Dongdo ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Thiết kế hiện đại tone gỗ, không gian cozy. Menu đa dạng cafe/trà/bánh. Đồ uống ổn, cốc to. Nằm ẩn mình trong con hẻm xinh đẹp Sài Gòn. Mùa thu ngoài vườn mát. ; confidence=0.98 ; evidence=Bên trong được thiết kế hiện đại tone gỗ rất cozy | Menu da dạng cafe trà - bánh | Đồ uống ổn, cốc khá to nè",
-    "video_playcount": "749900"
+    "video_playcount": "749900",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7553490361033723143",
@@ -701,7 +787,9 @@
     "characteristic_vi": "Món ăn: canh khoai sọ nấu sườn, thịt luộc mắm đu đủ, đầu hủ tẩm hành. Giá: 100k/người. Vị trí: khu tài chính Q1, gần chung cư. Menu đa dạng: khoai tây xào thịt, lồng tuyết xào rau, sườn kho, cá nục chiên giòn, ốc nấu chuối đậu, măng xào tô, sữa chua.",
     "evidence": "Hôm nay Lâm Nhân Sài Gòn sẽ dắt mọi người đi ăn một tiệm cơm bát hidden ở ngay cua chung cư vụ nhất. | Lấy em một canh khoai sợ nấu sườn, một thịt luộc mắm đu đủ đó chị. Đầu hủ tẩm hành. | POV: Cám 100k ăn com trưa hidden khu tài chính Q1",
     "characteristic_raw": "poi=Ăn Tiệm G ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Món ăn: canh khoai sọ nấu sườn, thịt luộc mắm đu đủ, đầu hủ tẩm hành. Giá: 100k/người. Vị trí: khu tài chính Q1, gần chung cư. Menu đa dạng: khoai tây xào thịt, lồng tuyết xào rau, sườn kho, cá nục chiên giòn, ốc nấu chuối đậu, măng xào tô, sữa chua. ; confidence=0.95 ; evidence=Hôm nay Lâm Nhân Sài Gòn sẽ dắt mọi người đi ăn một tiệm cơm bát hidden ở ngay cua chung cư vụ nhất. | Lấy em một canh khoai sợ nấu sườn, một thịt luộc mắm đu đủ đó chị. Đầu hủ tẩm hành. | POV: Cám 100k ăn com trưa hidden khu tài chính Q1",
-    "video_playcount": "440700"
+    "video_playcount": "440700",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7553605465800838418",
@@ -717,7 +805,9 @@
     "characteristic_vi": "Giá sinh viên (món dưới 100k, trà sữa 20k, buffet nước ngọt 10k/20k), đồ ăn ổn (mì kim chi chả cá 55k, canh kim chi thịt heo, gà không xương phô mai), không gian mát mẻ tầng trên (view nhìn xuống trường), vị trí gần trường HUTECH, chủ quán người Hàn, menu đa dạng (trà sữa, nước ngọt, đồ ăn Hàn).",
     "evidence": "\"Bán đồ hàng giá rất là sinh viên nha\", \"Mấy món toàn dưới 100 ngàn không ạ\", \"trà sữa tốn 20 ngàn thôi\", \"Có 10 ngàn thôi, uống cũng thả ga\" | \"Bánh chanh sẽ có 3 thứ là cụ cải vàng, kim chi với salad\", \"Đồ ăn cũng ổn áp đó\" | \"Ví dụ như cái tô mì này có 55 ngàn à\", \"Mì kim chi chả cá 55 ngàn\", \"Cái vị nước súp nó sẽ hơi mặn mặn 1 xíu\", \"Thịt bầm nữa nè\", \"Đậu hú non nữa\", \"Cái xốt của gà sẽ thi hướng ngọt á\", \"Còn phô mai là nên ăn liền để kéo sợi được nha\", \"Cái phần thịt gà bên trong rất là mỏng và mềm\"",
     "characteristic_raw": "poi=Hankki Deli ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Giá sinh viên (món dưới 100k, trà sữa 20k, buffet nước ngọt 10k/20k), đồ ăn ổn (mì kim chi chả cá 55k, canh kim chi thịt heo, gà không xương phô mai), không gian mát mẻ tầng trên (view nhìn xuống trường), vị trí gần trường HUTECH, chủ quán người Hàn, menu đa dạng (trà sữa, nước ngọt, đồ ăn Hàn). ; confidence=0.98 ; evidence=\"Bán đồ hàng giá rất là sinh viên nha\", \"Mấy món toàn dưới 100 ngàn không ạ\", \"trà sữa tốn 20 ngàn thôi\", \"Có 10 ngàn thôi, uống cũng thả ga\" | \"Bánh chanh sẽ có 3 thứ là cụ cải vàng, kim chi với salad\", \"Đồ ăn cũng ổn áp đó\" | \"Ví dụ như cái tô mì này có 55 ngàn à\", \"Mì kim chi chả cá 55 ngàn\", \"Cái vị nước súp nó sẽ hơi mặn mặn 1 xíu\", \"Thịt bầm nữa nè\", \"Đậu hú non nữa\", \"Cái xốt của gà sẽ thi hướng ngọt á\", \"Còn phô mai là nên ăn liền để kéo sợi được nha\", \"Cái phần thịt gà bên trong rất là mỏng và mềm\"",
-    "video_playcount": "240800"
+    "video_playcount": "240800",
+    "location_type": "school",
+    "image_url": "images/school.jpg"
   },
   {
     "video_id": "7555100878450019592",
@@ -733,7 +823,9 @@
     "characteristic_vi": "Quán chuyên đồ nướng, lẩu bò Mông Cổ, bò Mỹ, hút cu bè, Wagyu, bánh mì bơ bắp, bơ tỏi, sốt trứng muối, sườn bò, lỗi vai, thăng cộ, dẻ sườn, ba chỉ cuộn, heo rừng, dú heo nướng, lẩu cay 290-390k, rau cải, nấm, đậu hộp, viên bò Mông Cổ, muối hẹ, muối ớt xanh, vị trí hẹp, gần bến Vân Đồn",
     "evidence": "U là trời ăn khắp Sài Gòn mới phát hiện ra một cái chỗ bán lẩu bò Mông Cổ rất là ngon ở gần nhà luôn. | Nói về bò thì ở đây đúng là thiên đường bò ở trong thiên đường ẩm thực của quận 4. | Sơ sơ thì có bò Mỹ, hút cu bè, ao cu bè, bò wagyu rồi từ đây sẽ có 1 ngàn lấy 1 món ăn với lấy bò thật.",
     "characteristic_raw": "poi=Thế Giới Bò - Nướng, Sốt và Lẩu ; city=Thành phố Hồ Chí Minh ; characteristic_vi=Quán chuyên đồ nướng, lẩu bò Mông Cổ, bò Mỹ, hút cu bè, Wagyu, bánh mì bơ bắp, bơ tỏi, sốt trứng muối, sườn bò, lỗi vai, thăng cộ, dẻ sườn, ba chỉ cuộn, heo rừng, dú heo nướng, lẩu cay 290-390k, rau cải, nấm, đậu hộp, viên bò Mông Cổ, muối hẹ, muối ớt xanh, vị trí hẹp, gần bến Vân Đồn ; confidence=0.98 ; evidence=U là trời ăn khắp Sài Gòn mới phát hiện ra một cái chỗ bán lẩu bò Mông Cổ rất là ngon ở gần nhà luôn. | Nói về bò thì ở đây đúng là thiên đường bò ở trong thiên đường ẩm thực của quận 4. | Sơ sơ thì có bò Mỹ, hút cu bè, ao cu bè, bò wagyu rồi từ đây sẽ có 1 ngàn lấy 1 món ăn với lấy bò thật.",
-    "video_playcount": "108300"
+    "video_playcount": "108300",
+    "location_type": "hotpot",
+    "image_url": "images/hotpot.jpg"
   },
   {
     "video_id": "7561094121587494152",
@@ -749,7 +841,9 @@
     "characteristic_vi": "Không gian rộng rãi, thiết kế mang vibe nhà cổ kiểu Hàn, tone nâu gỗ ấm cũng, bàn ghế rộng thoải mái. Góc cửa kính ngập nắng, ngắm view rất đẹp. Menu đa dạng, từ các loại nước đến bánh ngọt. Cafe kết hợp sâm Hàn Quốc uống rất ngon. Bánh nướng mềm, dầy nhân.",
     "evidence": "QUAN CAFE WORKSPACE MANG VIBE HAN CỰC YẾN TÍNH | Nằm ngay Rạch Bùng Bình Q3 cực yên tĩnh và ngập ánh nắng | Không gian rộng rãi, thiết kế mang vibe nhà cổ kiểu Hàn",
     "characteristic_raw": "poi=Samm Coffee ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Không gian rộng rãi, thiết kế mang vibe nhà cổ kiểu Hàn, tone nâu gỗ ấm cũng, bàn ghế rộng thoải mái. Góc cửa kính ngập nắng, ngắm view rất đẹp. Menu đa dạng, từ các loại nước đến bánh ngọt. Cafe kết hợp sâm Hàn Quốc uống rất ngon. Bánh nướng mềm, dầy nhân. ; confidence=0.98 ; evidence=QUAN CAFE WORKSPACE MANG VIBE HAN CỰC YẾN TÍNH | Nằm ngay Rạch Bùng Bình Q3 cực yên tĩnh và ngập ánh nắng | Không gian rộng rãi, thiết kế mang vibe nhà cổ kiểu Hàn",
-    "video_playcount": "21100"
+    "video_playcount": "21100",
+    "location_type": "korean",
+    "image_url": "images/korean.jpg"
   },
   {
     "video_id": "7561312933901389064",
@@ -765,7 +859,9 @@
     "characteristic_vi": "Không gian nhẹ nhàng, nhiều tranh họp để làm việc/gặp gỡ bạn bè. Menu đa dạng với cafe, trà nóng, matcha. Trà Velvet Rose thơm dịu nhẹ, matcha Oreo không bị át vị bởi Oreo. Cà phê kết hợp mật uống ngon, hương vị nhẹ phù hợp phái nữ. Nằm trong hẻm nhỏ yên tĩnh, sân xanh mát với cây thiết xinh.",
     "evidence": "Nằm trong con hẻm nhỏ yên tĩnh | Khoảng sân xanh mát, thoải mái với nhiều cây thiết xinh | Không gian nhẹ nhàng, nhiều tranh họp để làm việc hay gặp gỡ bạn bè",
     "characteristic_raw": "poi=Ỏ Station ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian nhẹ nhàng, nhiều tranh họp để làm việc/gặp gỡ bạn bè. Menu đa dạng với cafe, trà nóng, matcha. Trà Velvet Rose thơm dịu nhẹ, matcha Oreo không bị át vị bởi Oreo. Cà phê kết hợp mật uống ngon, hương vị nhẹ phù hợp phái nữ. Nằm trong hẻm nhỏ yên tĩnh, sân xanh mát với cây thiết xinh. ; confidence=0.95 ; evidence=Nằm trong con hẻm nhỏ yên tĩnh | Khoảng sân xanh mát, thoải mái với nhiều cây thiết xinh | Không gian nhẹ nhàng, nhiều tranh họp để làm việc hay gặp gỡ bạn bè",
-    "video_playcount": "83400"
+    "video_playcount": "83400",
+    "location_type": "tea_shop",
+    "image_url": "images/tea_shop.webp"
   },
   {
     "video_id": "7563108883036753172",
@@ -781,7 +877,9 @@
     "characteristic_vi": "Món gà chiên (gà phô mai, gà rút xương cream) giòn, nhiều, ngon; mì tương đen ngon, không đắng; súp sườn bò ngọt, ấm bụng; bánh gạo dẻo, to; giá rẻ (món từ 49k-69k); đông sinh viên; phục vụ nhanh; đồ ăn nhiều, ngon, đáng quay lại.",
     "evidence": "\"Mọi người cứ bóc đại món nào trong menu cũng đều rẻ, ngon và rất nhiều\" | \"Mì tương đen 59, cơm trộn 59, súp sườn bò cũng chỉ có 69 cành thôi\" | \"Công nhận ăn xứng đáng thiệt chứ\"",
     "characteristic_raw": "poi=Osan Food ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Món gà chiên (gà phô mai, gà rút xương cream) giòn, nhiều, ngon; mì tương đen ngon, không đắng; súp sườn bò ngọt, ấm bụng; bánh gạo dẻo, to; giá rẻ (món từ 49k-69k); đông sinh viên; phục vụ nhanh; đồ ăn nhiều, ngon, đáng quay lại. ; confidence=0.98 ; evidence=\"Mọi người cứ bóc đại món nào trong menu cũng đều rẻ, ngon và rất nhiều\" | \"Mì tương đen 59, cơm trộn 59, súp sườn bò cũng chỉ có 69 cành thôi\" | \"Công nhận ăn xứng đáng thiệt chứ\"",
-    "video_playcount": "660900"
+    "video_playcount": "660900",
+    "location_type": "steak_house",
+    "image_url": "images/steak_house.jpg"
   },
   {
     "video_id": "7563223039932992776",
@@ -797,7 +895,9 @@
     "characteristic_vi": "không gian siêu rộng, nhiều khu ngồi, tầng trệt + 1 lầu, thoải mái nhóm đông/đãi tiệc",
     "evidence": "chi nhánh này siêu rộng luôn á | có khu vực tầng trệt và 1 lầu nhưng có rất nhiều khu để ngồi | mà khu nào cũng rộng cỡ này",
     "characteristic_raw": "poi=PACHO POCHA EXPRESS ; stt_source=groq ; characteristic_vi=không gian siêu rộng, nhiều khu ngồi, tầng trệt + 1 lầu, thoải mái nhóm đông/đãi tiệc ; confidence=0.98 ; evidence=chi nhánh này siêu rộng luôn á | có khu vực tầng trệt và 1 lầu nhưng có rất nhiều khu để ngồi | mà khu nào cũng rộng cỡ này",
-    "video_playcount": "41600"
+    "video_playcount": "41600",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7563909651813698823",
@@ -813,7 +913,9 @@
     "characteristic_vi": "Đồ ăn ngon, giá cả bình dân, không gian rộng rãi, khoáng mát, có phòng riêng, hầm rượu, buffet sinh tố lúa mạch, combo 5 món + tháp sinh tố giá 899k, MET gà 5 món giá 269k, buffet sinh tố lúa mạch 109k, tặng bánh kem khi tổ chức liên hoan/sinh nhật, đặc sản dê, đồ rừng, mực đùi Lý Sơn, lươn, cá kèo, ếch, lẩu mắm",
     "evidence": "\"Đồ ăn ngon, giá cả bình dân, không gian thì rộng rãi, khoáng mát\" | \"quán A Phát, đặc sản dê, đồ rừng và các món ăn đồng quê\" | \"quán chuyên bán các món đặc sản đồng quê như mực đùi lý sơn hấp, lươn, cá kèo, ếch, đặc biệt là lẩu mắm mà giá thì cực kỳ bình dân\"",
     "characteristic_raw": "poi=Cơm Niêu A Phát ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Đồ ăn ngon, giá cả bình dân, không gian rộng rãi, khoáng mát, có phòng riêng, hầm rượu, buffet sinh tố lúa mạch, combo 5 món + tháp sinh tố giá 899k, MET gà 5 món giá 269k, buffet sinh tố lúa mạch 109k, tặng bánh kem khi tổ chức liên hoan/sinh nhật, đặc sản dê, đồ rừng, mực đùi Lý Sơn, lươn, cá kèo, ếch, lẩu mắm ; confidence=0.98 ; evidence=\"Đồ ăn ngon, giá cả bình dân, không gian thì rộng rãi, khoáng mát\" | \"quán A Phát, đặc sản dê, đồ rừng và các món ăn đồng quê\" | \"quán chuyên bán các món đặc sản đồng quê như mực đùi lý sơn hấp, lươn, cá kèo, ếch, đặc biệt là lẩu mắm mà giá thì cực kỳ bình dân\"",
-    "video_playcount": "191200"
+    "video_playcount": "191200",
+    "location_type": "ice_cream",
+    "image_url": "images/ice_cream.webp"
   },
   {
     "video_id": "7563971319633677589",
@@ -829,7 +931,9 @@
     "characteristic_vi": "Quán Hàn Quốc sinh viên thân thiện, giá bình dân, không gian rộng rãi 3 tầng, phục vụ trà đá miễn phí, kem tươi không giới hạn, món Tadak Chon (bánh kết thịt gà) tặng khi đặt bàn 3 người, thịt heo chiên sốt Hàn Quốc giòn rụm, mì kiều mạch thơm mát, khẩu phần lớn phù hợp nhóm 2-3 người.",
     "evidence": "nếu bạn đã đang và sẽ có một nhóm bạn sinh viên với chiếc bụng không đấy nhưng có chiếc ví không quá đầy thì nhất định phải bấm nút lưu lại cho quán Hàn Quốc này liền | ra món mới cũng tặng trà đá uống miễn phí thì không nói mà nguyên bình trà đào như thế này tặng nốt luôn kem tươi mỗi ngày một vị muốn lấy bao nhiêu cũng được | 3 anh chanh 7 loại ăn tới khi nào ngán thì thôi",
     "characteristic_raw": "poi=The Rán - Korean Local Food Restaurant CYH VINA ; city=Thành phố Hồ Chí Minh ; characteristic_vi=Quán Hàn Quốc sinh viên thân thiện, giá bình dân, không gian rộng rãi 3 tầng, phục vụ trà đá miễn phí, kem tươi không giới hạn, món Tadak Chon (bánh kết thịt gà) tặng khi đặt bàn 3 người, thịt heo chiên sốt Hàn Quốc giòn rụm, mì kiều mạch thơm mát, khẩu phần lớn phù hợp nhóm 2-3 người. ; confidence=0.98 ; evidence=nếu bạn đã đang và sẽ có một nhóm bạn sinh viên với chiếc bụng không đấy nhưng có chiếc ví không quá đầy thì nhất định phải bấm nút lưu lại cho quán Hàn Quốc này liền | ra món mới cũng tặng trà đá uống miễn phí thì không nói mà nguyên bình trà đào như thế này tặng nốt luôn kem tươi mỗi ngày một vị muốn lấy bao nhiêu cũng được | 3 anh chanh 7 loại ăn tới khi nào ngán thì thôi",
-    "video_playcount": "73600"
+    "video_playcount": "73600",
+    "location_type": "ice_cream",
+    "image_url": "images/ice_cream.webp"
   },
   {
     "video_id": "7564014888331250964",
@@ -845,7 +949,9 @@
     "characteristic_vi": "Tiệm kem gelato xinh xắn kết hợp Cafe tại Thảo Điền. Không gian decor tông ấm kết hợp trang trí nhiều figure. Menu đa dạng gồm cà phê, bánh ăn kèm gelato. Có seasonal menu (PISTACHIO Gelato toast, MATCHA Strawberry Richmond Gelato, RASPBERRY Sorbet).",
     "evidence": "Tiệm kem gelato xinh xắn kết hợp Cafe tại Thảo Diền | Không gian decor tông ấm kết hợp trang bày cực nhiều figure | Menu đa dạng nhiều món Cà phê, bánh ăn kèm gelato",
     "characteristic_raw": "poi=2089 Gelato & Coffee ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Tiệm kem gelato xinh xắn kết hợp Cafe tại Thảo Điền. Không gian decor tông ấm kết hợp trang trí nhiều figure. Menu đa dạng gồm cà phê, bánh ăn kèm gelato. Có seasonal menu (PISTACHIO Gelato toast, MATCHA Strawberry Richmond Gelato, RASPBERRY Sorbet). ; confidence=0.98 ; evidence=Tiệm kem gelato xinh xắn kết hợp Cafe tại Thảo Diền | Không gian decor tông ấm kết hợp trang bày cực nhiều figure | Menu đa dạng nhiều món Cà phê, bánh ăn kèm gelato",
-    "video_playcount": "52800"
+    "video_playcount": "52800",
+    "location_type": "ice_cream",
+    "image_url": "images/ice_cream.webp"
   },
   {
     "video_id": "7564277233477766407",
@@ -861,7 +967,9 @@
     "characteristic_vi": "Không gian sang trọng, bồn tắm ngoài trời, decor Giáng sinh, giá hợp lý, đồ uống thanh mát (latte, trà trái cây), đồ ăn ngon (bánh), nhân viên thân thiện (tặng quà bất ngờ), nước ngon, không gian đẹp và tối giản",
     "evidence": "Ai mà lại để cái bồn tắm ngoài trời vậy ta | Cà phê ở Thảo Điệt mà tưởng như đi nghỉ dưỡng ở villa luôn | Cái quán vai tông trắng bê tối giả rất sang",
     "characteristic_raw": "poi=Faro Cafe - Thảo Điền Villa ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian sang trọng, bồn tắm ngoài trời, decor Giáng sinh, giá hợp lý, đồ uống thanh mát (latte, trà trái cây), đồ ăn ngon (bánh), nhân viên thân thiện (tặng quà bất ngờ), nước ngon, không gian đẹp và tối giản ; confidence=0.98 ; evidence=Ai mà lại để cái bồn tắm ngoài trời vậy ta | Cà phê ở Thảo Điệt mà tưởng như đi nghỉ dưỡng ở villa luôn | Cái quán vai tông trắng bê tối giả rất sang",
-    "video_playcount": "30400"
+    "video_playcount": "30400",
+    "location_type": "tea_shop",
+    "image_url": "images/tea_shop.webp"
   },
   {
     "video_id": "7564378613529824513",
@@ -877,7 +985,9 @@
     "characteristic_vi": "Món ăn đa dạng (mì trộn, gà rán, xà xiu, trứng cuộn, súp bò viên), giá 35K-50K, vị ngon (chua ngọt, cay, kem), đông khách sinh viên, địa chỉ 259 Trần Hưng Đạo, Quận 5, TP.HCM.",
     "evidence": "\"Quán bán vĩ hề ở quận 5 nha, rất là hó\" | \"Sợi mì mềm mềm, da nhẹ, hòa quyện với sốt bò bằm đậm đà\" | \"Chua chua, ngọt ngọt, chỉ 35k thôi mà ăn cuốn lắm\"",
     "characteristic_raw": "poi=KA Tea - Trà/Trà sữa ; city=Quận 5 ; stt_source=groq ; characteristic_vi=Món ăn đa dạng (mì trộn, gà rán, xà xiu, trứng cuộn, súp bò viên), giá 35K-50K, vị ngon (chua ngọt, cay, kem), đông khách sinh viên, địa chỉ 259 Trần Hưng Đạo, Quận 5, TP.HCM. ; confidence=0.98 ; evidence=\"Quán bán vĩ hề ở quận 5 nha, rất là hó\" | \"Sợi mì mềm mềm, da nhẹ, hòa quyện với sốt bò bằm đậm đà\" | \"Chua chua, ngọt ngọt, chỉ 35k thôi mà ăn cuốn lắm\"",
-    "video_playcount": "97800"
+    "video_playcount": "97800",
+    "location_type": "ice_cream",
+    "image_url": "images/ice_cream.webp"
   },
   {
     "video_id": "7565899102211296532",
@@ -893,7 +1003,9 @@
     "characteristic_vi": "Không gian rộng rãi, bàn ghế cao phù hợp ngồi chill/học bài. Tone màu nhẹ nhàng, decor xinh xắn, chín chu. Menu đồ uống & bánh ngon, hình ảnh bắt mắt. Vibe Hàn Quốc, nhiều khung cửa sổ đón nắng.",
     "evidence": "Quần caffe Vibe Hàn Với nhiều khung cửa sổ đón nắng | I do enjoy your Decor xinh xắn, chín chu Như buộc ra từ pinterest | Không gian rộng rãi, bản ghế cao Mất mẻ phụ hợp gề ngôi Chill, học bài",
     "characteristic_raw": "poi=Cafe Forest ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian rộng rãi, bàn ghế cao phù hợp ngồi chill/học bài. Tone màu nhẹ nhàng, decor xinh xắn, chín chu. Menu đồ uống & bánh ngon, hình ảnh bắt mắt. Vibe Hàn Quốc, nhiều khung cửa sổ đón nắng. ; confidence=0.95 ; evidence=Quần caffe Vibe Hàn Với nhiều khung cửa sổ đón nắng | I do enjoy your Decor xinh xắn, chín chu Như buộc ra từ pinterest | Không gian rộng rãi, bản ghế cao Mất mẻ phụ hợp gề ngôi Chill, học bài",
-    "video_playcount": "49100"
+    "video_playcount": "49100",
+    "location_type": "korean",
+    "image_url": "images/korean.jpg"
   },
   {
     "video_id": "7567718155791944967",
@@ -909,7 +1021,9 @@
     "characteristic_vi": "Không gian gần gũi, mộc mạc; menu đa dạng, giá hợp lý; món kho tộ ngon, cơm nóng hổi; nước dùng trong lu 25xu (rau má, nước sâm, nước mơ/sâu); gói ngó sen tôm thịt chất lượng, nước mắm pha siêu ngon; món chín chu, vừa miệng.",
     "evidence": "Không gian gần gũi mộc mạc | Menu da dạng - giá hợp lý thêm món nào “của mẹ” cùng có | Các món kho tộ ở đây thật sự rất ngon!",
     "characteristic_raw": "poi=Tiệm Cơm Kho Tộ Quận 3 ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Không gian gần gũi, mộc mạc; menu đa dạng, giá hợp lý; món kho tộ ngon, cơm nóng hổi; nước dùng trong lu 25xu (rau má, nước sâm, nước mơ/sâu); gói ngó sen tôm thịt chất lượng, nước mắm pha siêu ngon; món chín chu, vừa miệng. ; confidence=0.98 ; evidence=Không gian gần gũi mộc mạc | Menu da dạng - giá hợp lý thêm món nào “của mẹ” cùng có | Các món kho tộ ở đây thật sự rất ngon!",
-    "video_playcount": "123300"
+    "video_playcount": "123300",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7567991354601590032",
@@ -925,7 +1039,9 @@
     "characteristic_vi": "Không gian cổ điển phương Tây, ấm cúng, decor đẹp, tranh cổ điển, nhạc phù hợp, chỗ ngồi hạn chế, giá đồ uống 30-55k, đồ uống điều chỉnh độ ngọt",
     "evidence": "# ROME Chiếc quán cafe kiểu Âu cổ điển ở Tân Bình | # Classic CAFE Rome Chiêc quan cafe kiểu Âu cổ điển ở Tân Bình | Một chiếc cafe ấm cúng mới mở ở Tân Bình",
     "characteristic_raw": "poi=Rome Cafe ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian cổ điển phương Tây, ấm cúng, decor đẹp, tranh cổ điển, nhạc phù hợp, chỗ ngồi hạn chế, giá đồ uống 30-55k, đồ uống điều chỉnh độ ngọt ; confidence=0.98 ; evidence=# ROME Chiếc quán cafe kiểu Âu cổ điển ở Tân Bình | # Classic CAFE Rome Chiêc quan cafe kiểu Âu cổ điển ở Tân Bình | Một chiếc cafe ấm cúng mới mở ở Tân Bình",
-    "video_playcount": "27500"
+    "video_playcount": "27500",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7569933829117463816",
@@ -941,7 +1057,9 @@
     "characteristic_vi": "Bên trong ấm cúng, decor chín chu. 3 tầng rộng rãi nhiều góc check-in sống ảo. Không gian yên tĩnh thích hợp cafe, học tập hay làm việc. Địa chỉ: 2/15C Cao Thắng, P5, Q3, giờ mở cửa 7:00-22:00.",
     "evidence": "Bên trong ấm cung được decor chín chu. | Bên trong ấm cúng duoc decor chin chu. | 3 tầng rộng rãi nhiều góc check-in sống ảo",
     "characteristic_raw": "poi=Hinae Coffee and Tea ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Bên trong ấm cúng, decor chín chu. 3 tầng rộng rãi nhiều góc check-in sống ảo. Không gian yên tĩnh thích hợp cafe, học tập hay làm việc. Địa chỉ: 2/15C Cao Thắng, P5, Q3, giờ mở cửa 7:00-22:00. ; confidence=0.95 ; evidence=Bên trong ấm cung được decor chín chu. | Bên trong ấm cúng duoc decor chin chu. | 3 tầng rộng rãi nhiều góc check-in sống ảo",
-    "video_playcount": "82400"
+    "video_playcount": "82400",
+    "location_type": "tea_shop",
+    "image_url": "images/tea_shop.webp"
   },
   {
     "video_id": "7570651991689481490",
@@ -957,7 +1075,9 @@
     "characteristic_vi": "Không gian rộng, có cả trong và ngoài; phở Bắc kiểu Hà Nội (tái nạm, gầu, gân, gà), không kèm nhiều rau; thịt bò mềm béo; giá hợp lý; vị trí trung tâm quận 1, gần công an thành phố; tiện di chuyển; thích hợp ăn sáng.",
     "evidence": "Ở đây thì không gian siêu rộng luôn, có cả bên trong và bên ngoài kiểu vỉ hè như thế này | Phở ở đây là kiểu Hà Nội, các bạn có thể gọi tái nạm, gầu, gân hoặc là phở gà nè | Mà đặc biệt là phở Bắc kiểu không có kèm rau nhiều như kiểu phở ở Sài Gòn",
     "characteristic_raw": "poi=Cafe Tèo premium - Quận 1 ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian rộng, có cả trong và ngoài; phở Bắc kiểu Hà Nội (tái nạm, gầu, gân, gà), không kèm nhiều rau; thịt bò mềm béo; giá hợp lý; vị trí trung tâm quận 1, gần công an thành phố; tiện di chuyển; thích hợp ăn sáng. ; confidence=0.98 ; evidence=Ở đây thì không gian siêu rộng luôn, có cả bên trong và bên ngoài kiểu vỉ hè như thế này | Phở ở đây là kiểu Hà Nội, các bạn có thể gọi tái nạm, gầu, gân hoặc là phở gà nè | Mà đặc biệt là phở Bắc kiểu không có kèm rau nhiều như kiểu phở ở Sài Gòn",
-    "video_playcount": "98400"
+    "video_playcount": "98400",
+    "location_type": "steak_house",
+    "image_url": "images/steak_house.jpg"
   },
   {
     "video_id": "7571058561753566471",
@@ -973,7 +1093,9 @@
     "characteristic_vi": "{'food_quality': 'ngon, dễ ăn, chua chua ngọt ngọt', 'taste': 'chua chua ngọt ngọt, sốt bột mai ở bên trong', 'price': '49, 59, 89', 'location': '175B Cao Thắng, phường 12, quận 10, Thành phố Hồ Chí Minh', 'ambiance': 'quán đặt tên đúng, ốc quái trời ốc', 'service': 'không có ai ra, máy quái trời', 'vibe': 'quán đông người, đứng đầy ảnh chứ không thấy lèo tèo', 'waiting_time': 'không đề cập'}",
     "evidence": "Mình thấy giá ở đây là 49, 59, 89 thôi mà. | Ốc quái trời ốc | Mọi người có thể là ra cái bộ 10 Bên Cao Thắng cái này cái quán là tên là quán Ốc Quá Trời Ốc ở 175D, Cao Thắng, phường 12, quận Mầu Thủ.",
     "characteristic_raw": "poi=Ốc Quá Trời Ốc ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi={'food_quality': 'ngon, dễ ăn, chua chua ngọt ngọt', 'taste': 'chua chua ngọt ngọt, sốt bột mai ở bên trong', 'price': '49, 59, 89', 'location': '175B Cao Thắng, phường 12, quận 10, Thành phố Hồ Chí Minh', 'ambiance': 'quán đặt tên đúng, ốc quái trời ốc', 'service': 'không có ai ra, máy quái trời', 'vibe': 'quán đông người, đứng đầy ảnh chứ không thấy lèo tèo', 'waiting_time': 'không đề cập'} ; confidence=0.95 ; evidence=Mình thấy giá ở đây là 49, 59, 89 thôi mà. | Ốc quái trời ốc | Mọi người có thể là ra cái bộ 10 Bên Cao Thắng cái này cái quán là tên là quán Ốc Quá Trời Ốc ở 175D, Cao Thắng, phường 12, quận Mầu Thủ.",
-    "video_playcount": "104900"
+    "video_playcount": "104900",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7575915725215304980",
@@ -989,7 +1111,9 @@
     "characteristic_vi": "Không gian ngoài trời rộng rãi, ngồi buổi tối siêu chill; có khu vực nhà kính mới; nhiều góc check-in nghệ thuật; cây thông khổng lồ cao hơn 7m; khu vườn Giáng sinh rộng hơn 12.000m2; con đường phủ đầy thông trắng",
     "evidence": "Không gian ngoài trời rộng rãi, ngồi buổi tối siêu chill | Quán vừa mới làm thêm khu vực nhà kính | Nhiều góc chụp sang chảnh & nghệ thuật",
     "characteristic_raw": "poi=SOFÉ ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian ngoài trời rộng rãi, ngồi buổi tối siêu chill; có khu vực nhà kính mới; nhiều góc check-in nghệ thuật; cây thông khổng lồ cao hơn 7m; khu vườn Giáng sinh rộng hơn 12.000m2; con đường phủ đầy thông trắng ; confidence=0.95 ; evidence=Không gian ngoài trời rộng rãi, ngồi buổi tối siêu chill | Quán vừa mới làm thêm khu vực nhà kính | Nhiều góc chụp sang chảnh & nghệ thuật",
-    "video_playcount": "80800"
+    "video_playcount": "80800",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7576479582937828629",
@@ -1005,7 +1129,9 @@
     "characteristic_vi": "Diện tích rộng, không gian lạnh xịn, kiến trúc châu Âu sang trọng, nhiều góc check-in, phí chỉ tính nước, menu bánh nước từ 50k, đông khách buổi chiều, vắng buổi sáng/trưa, hoàng hôn đẹp lúc 17h",
     "evidence": "Quán cà phê vibes địa Trung Hải có diện tích cực khủng đã chính thức mở cửa | Không hề thu phí chỉ cần dùng nước là chụp tất cả các view | Hiện tại khá đông nên đi buổi sáng sớm hoặc trưa tầm 12h sẽ khá vắng thoải mái chụp hình",
     "characteristic_raw": "poi=Maan Legend Coffee ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Diện tích rộng, không gian lạnh xịn, kiến trúc châu Âu sang trọng, nhiều góc check-in, phí chỉ tính nước, menu bánh nước từ 50k, đông khách buổi chiều, vắng buổi sáng/trưa, hoàng hôn đẹp lúc 17h ; confidence=0.98 ; evidence=Quán cà phê vibes địa Trung Hải có diện tích cực khủng đã chính thức mở cửa | Không hề thu phí chỉ cần dùng nước là chụp tất cả các view | Hiện tại khá đông nên đi buổi sáng sớm hoặc trưa tầm 12h sẽ khá vắng thoải mái chụp hình",
-    "video_playcount": "303000"
+    "video_playcount": "303000",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7576630723520498952",
@@ -1021,7 +1147,9 @@
     "characteristic_vi": "{'food_quality': 'sườn nướng ngon, nghêu nướng vừa ngon vừa lạ, chân gà nướng ngon, tôm nướng ngon, mực chiên giòn bắc vị, trứng non cháy tỏi ngon', 'taste': 'sườn cay to, nhiều thịt, tẩm ướp đậm đà, nghêu nướng thơm và mọng nước hơn, món nướng tròn vị', 'ambiance': 'quán mèo mập, bữa đi ăn trời mưa lất phớt', 'service': 'sườn không nướng sẵn, khách order mới nướng nên chờ khá lâu', 'vibe': 'chuyên về các món nướng, đồ nướng đặc biệt là sườn cây', 'price': 'sườn 70k/cây, bữa 5 người tổng thiệt hại 200 mấy ngàn', 'location': '51/12 Cao Thắng, Phường 3, Quận 3, TP.HCM', 'waiting_time': 'chờ khá lâu do sườn nướng theo order'}",
     "evidence": "Mình mới kiếm ra được một cái quán bán sườn nướng ngon điên đảo. | Đã vậy mấy món lai ra như là nghêu nướng, chân gà nướng, tôm nướng, trứng non cháy tỏi, mực chiên giòn cũng cực kỳ là bắc vị. | Đặc sản mèo mập trước tiên là sườn nướng. Sườn cay to, nhiều thịt. Một cây sườn là 70k nha.",
     "characteristic_raw": "poi=Quán Ăn Mèo Mập ; city=Quận 3 ; stt_source=groq ; characteristic_vi={'food_quality': 'sườn nướng ngon, nghêu nướng vừa ngon vừa lạ, chân gà nướng ngon, tôm nướng ngon, mực chiên giòn bắc vị, trứng non cháy tỏi ngon', 'taste': 'sườn cay to, nhiều thịt, tẩm ướp đậm đà, nghêu nướng thơm và mọng nước hơn, món nướng tròn vị', 'ambiance': 'quán mèo mập, bữa đi ăn trời mưa lất phớt', 'service': 'sườn không nướng sẵn, khách order mới nướng nên chờ khá lâu', 'vibe': 'chuyên về các món nướng, đồ nướng đặc biệt là sườn cây', 'price': 'sườn 70k/cây, bữa 5 người tổng thiệt hại 200 mấy ngàn', 'location': '51/12 Cao Thắng, Phường 3, Quận 3, TP.HCM', 'waiting_time': 'chờ khá lâu do sườn nướng theo order'} ; confidence=0.98 ; evidence=Mình mới kiếm ra được một cái quán bán sườn nướng ngon điên đảo. | Đã vậy mấy món lai ra như là nghêu nướng, chân gà nướng, tôm nướng, trứng non cháy tỏi, mực chiên giòn cũng cực kỳ là bắc vị. | Đặc sản mèo mập trước tiên là sườn nướng. Sườn cay to, nhiều thịt. Một cây sườn là 70k nha.",
-    "video_playcount": "109400"
+    "video_playcount": "109400",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7576986137722473749",
@@ -1037,7 +1165,9 @@
     "characteristic_vi": "Nội thất sang trọng, vibe châu Âu. Không gian rộng rãi, view ngắm hoàng hôn chất lượng. Thiết kế đẹp mắt. View trụi đỏ cực xịn giữa Thảo Điền.",
     "evidence": "Nội thất sang trọng vibe châu Âu | Không gian rộng rãi view ngầm hoàng hôn chất lượng | Thiết kế đẹp mắt",
     "characteristic_raw": "poi=Maan Legend Coffee ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Nội thất sang trọng, vibe châu Âu. Không gian rộng rãi, view ngắm hoàng hôn chất lượng. Thiết kế đẹp mắt. View trụi đỏ cực xịn giữa Thảo Điền. ; confidence=0.95 ; evidence=Nội thất sang trọng vibe châu Âu | Không gian rộng rãi view ngầm hoàng hôn chất lượng | Thiết kế đẹp mắt",
-    "video_playcount": "29800"
+    "video_playcount": "29800",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7577771202987576584",
@@ -1053,7 +1183,9 @@
     "characteristic_vi": "Bánh Flan Bình Thuận: giá rẻ (9k-11k/cái), nhiều vị (trứng, trà xanh, cacao, phô mai), đông sinh viên, không gian rộng, đồ uống (trà trái cây) đông khách, chủ dễ thương, phục vụ nhanh, topping trái cây tươi, giá 22k-26k",
     "evidence": "\"Bán rẻ lắm luôn, có 9.000 cái à\" | \"Thường mấy bạn kêu từ 2 cá trở lên người ta mới mix vô 1 cái dĩa như vậy\" | \"Nhờ cái điểm ăn tiền của quán này đó chính là cái phần trân châu dừa siêu ngon luôn\"",
     "characteristic_raw": "poi=Bánh Flan Bình Thuận ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Bánh Flan Bình Thuận: giá rẻ (9k-11k/cái), nhiều vị (trứng, trà xanh, cacao, phô mai), đông sinh viên, không gian rộng, đồ uống (trà trái cây) đông khách, chủ dễ thương, phục vụ nhanh, topping trái cây tươi, giá 22k-26k ; confidence=0.98 ; evidence=\"Bán rẻ lắm luôn, có 9.000 cái à\" | \"Thường mấy bạn kêu từ 2 cá trở lên người ta mới mix vô 1 cái dĩa như vậy\" | \"Nhờ cái điểm ăn tiền của quán này đó chính là cái phần trân châu dừa siêu ngon luôn\"",
-    "video_playcount": "354200"
+    "video_playcount": "354200",
+    "location_type": "tea_shop",
+    "image_url": "images/tea_shop.webp"
   },
   {
     "video_id": "7578008585930640647",
@@ -1069,7 +1201,9 @@
     "characteristic_vi": "Món Omurice ngon nứt tiếng, kết hợp ốc super guy, bò bít tết, lương nhập hấp dẫn. Pashushi có không gian nhỏ nhưng chất lượng bùng nổ. Món Omurice Oc Super Guy: cơm chiên ẩm mềm, trứng Omelette vàng mịn, ốc giòn sần sật, xốt trứng muối phô mai béo ngậy. Món cơm bò út Omurice: thịt bò mềm tan, xốt trứng muối béo mặn. Cuộn bò út: bò mềm ngọt, sốt phô mai, cơm dẻo, bơ, khoai tây chiên sợi giòn. Canh cá hồi đẫm sốt phô mai: cá hồi chín tái béo mềm. Inari cá hồi/tôm: đậu hủ chiên mềm ngọt, nhân đầy đặn. Sashimi: bạch tuộc, sò đỏ, cá hồi, cá trích ép trứng, wasabi. Không gian quán mở rộng, nhiều chỗ ngồi. Chương trình khuyến mãi: đố vui có thưởng, tặng quà, ly trà tắc hạt chia (11h-13h, T2-T6 đến 31/12).",
     "evidence": "Ở Sài Gòn có một nơi bán những phần Omurice ngon nứt tiếng, ngon đến siêu lòng. | Omurice ở đây không đơn giản chỉ là cơm chiên phủ trứng omelette đặc trưng của Nhật Bản mà còn được kết hợp bùng nổ với ốc super guy, bò bít tết và lương nhập siêu hấp dẫn. | Món khiến mình mê nhất là Omurice Oc Super Guy Xót Trứng Muối Phô Mai Phần cơm chiên minh dưới ẩm mềm, bên trên là lớp trứng Omelette vàng mịn, ốc ả Thịt Oc Super Guy thì giòn sần sật, kết hợp với xót trứng muối béo ngậy, tạo thành một hương vị bùng nổ khó tả.",
     "characteristic_raw": "poi=Fast Sushi ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Món Omurice ngon nứt tiếng, kết hợp ốc super guy, bò bít tết, lương nhập hấp dẫn. Pashushi có không gian nhỏ nhưng chất lượng bùng nổ. Món Omurice Oc Super Guy: cơm chiên ẩm mềm, trứng Omelette vàng mịn, ốc giòn sần sật, xốt trứng muối phô mai béo ngậy. Món cơm bò út Omurice: thịt bò mềm tan, xốt trứng muối béo mặn. Cuộn bò út: bò mềm ngọt, sốt phô mai, cơm dẻo, bơ, khoai tây chiên sợi giòn. Canh cá hồi đẫm sốt phô mai: cá hồi chín tái béo mềm. Inari cá hồi/tôm: đậu hủ chiên mềm ngọt, nhân đầy đặn. Sashimi: bạch tuộc, sò đỏ, cá hồi, cá trích ép trứng, wasabi. Không gian quán mở rộng, nhiều chỗ ngồi. Chương trình khuyến mãi: đố vui có thưởng, tặng quà, ly trà tắc hạt chia (11h-13h, T2-T6 đến 31/12). ; confidence=0.98 ; evidence=Ở Sài Gòn có một nơi bán những phần Omurice ngon nứt tiếng, ngon đến siêu lòng. | Omurice ở đây không đơn giản chỉ là cơm chiên phủ trứng omelette đặc trưng của Nhật Bản mà còn được kết hợp bùng nổ với ốc super guy, bò bít tết và lương nhập siêu hấp dẫn. | Món khiến mình mê nhất là Omurice Oc Super Guy Xót Trứng Muối Phô Mai Phần cơm chiên minh dưới ẩm mềm, bên trên là lớp trứng Omelette vàng mịn, ốc ả Thịt Oc Super Guy thì giòn sần sật, kết hợp với xót trứng muối béo ngậy, tạo thành một hương vị bùng nổ khó tả.",
-    "video_playcount": "704200"
+    "video_playcount": "704200",
+    "location_type": "japanese",
+    "image_url": "images/japanese.png"
   },
   {
     "video_id": "7578810947050016008",
@@ -1085,7 +1219,9 @@
     "characteristic_vi": "quán có 2 vibe sang chảnh, không gian thoải mái chụp hình, thiết kế sang trọng như resort 5 sao",
     "evidence": "# *Maan Legend* Cafe mái toanh ở Thảo Điền với 2 vihe sang chảnh | # *Shaan Legend* Cafe múi toanh ở Thảo Diên với 2 viền sang chảnh | # *Maan Legend* Cafe múi toanh ở Thảo Điền với 2 vibe sang chánh",
     "characteristic_raw": "poi=Maan Legend Coffee ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=quán có 2 vibe sang chảnh, không gian thoải mái chụp hình, thiết kế sang trọng như resort 5 sao ; confidence=0.95 ; evidence=# *Maan Legend* Cafe mái toanh ở Thảo Điền với 2 vihe sang chảnh | # *Shaan Legend* Cafe múi toanh ở Thảo Diên với 2 viền sang chảnh | # *Maan Legend* Cafe múi toanh ở Thảo Điền với 2 vibe sang chánh",
-    "video_playcount": "59400"
+    "video_playcount": "59400",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7579102401085312276",
@@ -1101,7 +1237,9 @@
     "characteristic_vi": "Không gian biệt thự sang trọng, ấm cúng, buổi tối lung linh; bàn ăn set up chín chu; combo 3 (659k) gồm 2 phần steak bò mềm, sốt tự chọn, gà cay phô mai kéo sợi; salad Burrata tươi mát; phục vụ tiệc sinh nhật",
     "evidence": "Không gian biệt thự sịu đẹp, buổi tối lên đến lung linh | Không gian trong nhà ấm cúng, sang trọng | Bàn ăn được set up chín chu",
     "characteristic_raw": "poi=Chamie Steak ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Không gian biệt thự sang trọng, ấm cúng, buổi tối lung linh; bàn ăn set up chín chu; combo 3 (659k) gồm 2 phần steak bò mềm, sốt tự chọn, gà cay phô mai kéo sợi; salad Burrata tươi mát; phục vụ tiệc sinh nhật ; confidence=0.98 ; evidence=Không gian biệt thự sịu đẹp, buổi tối lên đến lung linh | Không gian trong nhà ấm cúng, sang trọng | Bàn ăn được set up chín chu",
-    "video_playcount": "101200"
+    "video_playcount": "101200",
+    "location_type": "japanese",
+    "image_url": "images/japanese.png"
   },
   {
     "video_id": "7579497692070448404",
@@ -1117,7 +1255,9 @@
     "characteristic_vi": "Không khí giáng sinh ngập tràn, decor đẹp mắt, menu đa dạng, không gian nhẹ nhàng tinh tế, nhiều góc check-in.",
     "evidence": "Không khí giáng sinh ngập tràn trong quán | Decor góc mão cùng xinh Tha hổ mũi sống ảo | Menu då dang và đẹp mắt Thơm ngon và đậm vị trà",
     "characteristic_raw": "poi=Faro Cafe - Thảo Điền Villa ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không khí giáng sinh ngập tràn, decor đẹp mắt, menu đa dạng, không gian nhẹ nhàng tinh tế, nhiều góc check-in. ; confidence=0.95 ; evidence=Không khí giáng sinh ngập tràn trong quán | Decor góc mão cùng xinh Tha hổ mũi sống ảo | Menu då dang và đẹp mắt Thơm ngon và đậm vị trà",
-    "video_playcount": "3951"
+    "video_playcount": "3951",
+    "location_type": "tea_shop",
+    "image_url": "images/tea_shop.webp"
   },
   {
     "video_id": "7579943007873469717",
@@ -1133,7 +1273,9 @@
     "characteristic_vi": "view hồ bơi, vibe Địa Trung Hải, sang chảnh, check in được, thay đồ chụp hình thoải mái, không phụ thu",
     "evidence": "\"Bây giờ đâu ra cắm 55ca mà check in được cafe sang trọng ở Sài Gòn?!\" | \"Đây không phải Park Hyatt, mà đây là \\\"cafe Thảo Điền\\\" view sang chảnh hồ xịn sò\" | \"View nhìn căng đủ chấn động\"",
     "characteristic_raw": "poi=Maan Legend Coffee ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=view hồ bơi, vibe Địa Trung Hải, sang chảnh, check in được, thay đồ chụp hình thoải mái, không phụ thu ; confidence=0.95 ; evidence=\"Bây giờ đâu ra cắm 55ca mà check in được cafe sang trọng ở Sài Gòn?!\" | \"Đây không phải Park Hyatt, mà đây là \\\"cafe Thảo Điền\\\" view sang chảnh hồ xịn sò\" | \"View nhìn căng đủ chấn động\"",
-    "video_playcount": "118800"
+    "video_playcount": "118800",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7579963603151801620",
@@ -1149,7 +1291,9 @@
     "characteristic_vi": "Không gian rộng rãi, nhiều bàn lớn phù hợp học tập/làm việc. Decor bắt mắt với nhiều góc decor khác nhau. Menu nước đa dạng (cà phê trứng, trà trái cây, oreo dã xanh, matcha...). Signature cà phê trứng ngon. Giá cả phải chăng (từ 36k). Có chương trình đổi sách lấy nước (5kg sách đổi 1 ly nước).",
     "evidence": "Không gian rộng rãi Nhiều bàn lớn, thích hợp học tập, làm việc | Decor bắt mắt Nhiều góc decor khác nhau | Menu nước đa dạng Cà phê trứng, trà trái cây, oreo đã xanh, matcha...",
     "characteristic_raw": "poi=AQUARIUS COFFEE ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian rộng rãi, nhiều bàn lớn phù hợp học tập/làm việc. Decor bắt mắt với nhiều góc decor khác nhau. Menu nước đa dạng (cà phê trứng, trà trái cây, oreo dã xanh, matcha...). Signature cà phê trứng ngon. Giá cả phải chăng (từ 36k). Có chương trình đổi sách lấy nước (5kg sách đổi 1 ly nước). ; confidence=0.98 ; evidence=Không gian rộng rãi Nhiều bàn lớn, thích hợp học tập, làm việc | Decor bắt mắt Nhiều góc decor khác nhau | Menu nước đa dạng Cà phê trứng, trà trái cây, oreo đã xanh, matcha...",
-    "video_playcount": "51300"
+    "video_playcount": "51300",
+    "location_type": "tea_shop",
+    "image_url": "images/tea_shop.webp"
   },
   {
     "video_id": "7580297249188564242",
@@ -1165,7 +1309,9 @@
     "characteristic_vi": "Món ăn đa dạng, bình dân, hải sản tươi sống, trứng cá lóc kho quẹt, gỏi lưỡi bò, đùi dê quay tỏi, ốc hương cồ, gân bò xào saté, gà hấp muối Quảng Đông, lẩu bò tứ xuyên to, nước lẩu bậm đà, nhà vệ sinh sạch, có máy lạnh, xem đá banh trực tiếp.",
     "evidence": "Ai ở quận 5 mà không biết chỗ này thì tiếc lắm luôn | Mà đây là một trong những quán lâu đời Có thăm niên qua mười mấy năm luôn rồi | Mà các món ở đây rất là nhiều và to nha",
     "characteristic_raw": "poi=Tân Quán Đêm ; city=Quận 5 ; stt_source=groq ; characteristic_vi=Món ăn đa dạng, bình dân, hải sản tươi sống, trứng cá lóc kho quẹt, gỏi lưỡi bò, đùi dê quay tỏi, ốc hương cồ, gân bò xào saté, gà hấp muối Quảng Đông, lẩu bò tứ xuyên to, nước lẩu bậm đà, nhà vệ sinh sạch, có máy lạnh, xem đá banh trực tiếp. ; confidence=0.98 ; evidence=Ai ở quận 5 mà không biết chỗ này thì tiếc lắm luôn | Mà đây là một trong những quán lâu đời Có thăm niên qua mười mấy năm luôn rồi | Mà các món ở đây rất là nhiều và to nha",
-    "video_playcount": "127700"
+    "video_playcount": "127700",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7580403308666408212",
@@ -1181,7 +1327,9 @@
     "characteristic_vi": "View ngắm đường phố và cầu Bason, ngồi tám với bạn bè hay chill 1 mình, menu từ 33k, đa dạng món",
     "evidence": "View ngắm đường phố và cầu Bason | Ngồi tám với bạn bè Hay chill 1 mình cần rất ok nha | Menu từ 33 xu",
     "characteristic_raw": "poi=GÓC Cà Phê ; city=Thành phố Hồ Chí Minh ; characteristic_vi=View ngắm đường phố và cầu Bason, ngồi tám với bạn bè hay chill 1 mình, menu từ 33k, đa dạng món ; confidence=0.95 ; evidence=View ngắm đường phố và cầu Bason | Ngồi tám với bạn bè Hay chill 1 mình cần rất ok nha | Menu từ 33 xu",
-    "video_playcount": "25400"
+    "video_playcount": "25400",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7580602154751134994",
@@ -1197,7 +1345,9 @@
     "characteristic_vi": "{'food_quality': 'nước mắm bún chả mặn theo khẩu vị người Nam Bộ, hợp với người lớn tuổi; bún chả 50 có nhiều thịt đu đủ ngâm chua; nem chiên 15k/1 khoai, nem cua bể 40k/1 cái, lớp thịt cua dày', 'taste': 'không thể hợp tất cả mọi người, hợp vị người Sài Gòn lâu năm', 'ambiance': 'không rõ', 'service': 'nhân viên phục vụ toàn bạn trẻ nhanh nhưng thiếu đồ, bị khách mắng; bếp do chị lớn tuổi đảm nhiệm cẩn thận, tỉ mỉ, sạch sẽ', 'vibe': 'nhịp sống Sài Gòn, đông khách vào buổi tối (700-800 phần)', 'price': 'nem chiên 15k/1 khoai, nem cua bể 40k/1 cái', 'location': '243/1 Tô Hiến Thành, phường 13, quận 10 (nay phường Hòa Hưng), có chỗ đậu ô tô', 'waiting_time': 'không rõ'}",
     "evidence": "\"Mấy hôm nay mưa đẹp ế lắm anh ơi, trên có những hôm đông thì em cũng bán đến 700-800 phần.\" | \"Cơ bản thì Phúc thấy quán này nấu hòa vị với người Nam Bộ.\" | \"Nước mắm thì em pha theo phẩu vị của em. Nói chung là không thể hợp được hết tất cả mọi người.\"",
     "characteristic_raw": "poi=Bún chả Một góc Hà Nội ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi={'food_quality': 'nước mắm bún chả mặn theo khẩu vị người Nam Bộ, hợp với người lớn tuổi; bún chả 50 có nhiều thịt đu đủ ngâm chua; nem chiên 15k/1 khoai, nem cua bể 40k/1 cái, lớp thịt cua dày', 'taste': 'không thể hợp tất cả mọi người, hợp vị người Sài Gòn lâu năm', 'ambiance': 'không rõ', 'service': 'nhân viên phục vụ toàn bạn trẻ nhanh nhưng thiếu đồ, bị khách mắng; bếp do chị lớn tuổi đảm nhiệm cẩn thận, tỉ mỉ, sạch sẽ', 'vibe': 'nhịp sống Sài Gòn, đông khách vào buổi tối (700-800 phần)', 'price': 'nem chiên 15k/1 khoai, nem cua bể 40k/1 cái', 'location': '243/1 Tô Hiến Thành, phường 13, quận 10 (nay phường Hòa Hưng), có chỗ đậu ô tô', 'waiting_time': 'không rõ'} ; confidence=0.98 ; evidence=\"Mấy hôm nay mưa đẹp ế lắm anh ơi, trên có những hôm đông thì em cũng bán đến 700-800 phần.\" | \"Cơ bản thì Phúc thấy quán này nấu hòa vị với người Nam Bộ.\" | \"Nước mắm thì em pha theo phẩu vị của em. Nói chung là không thể hợp được hết tất cả mọi người.\"",
-    "video_playcount": "202400"
+    "video_playcount": "202400",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7580689713762274578",
@@ -1213,7 +1363,9 @@
     "characteristic_vi": "Quán cafe vibe cổ trang mới toanh, ngập tràn concept chụp hình, decor chín chu, góc decor đa dạng, hình ảnh cực xinh, menu nước từ 39k",
     "evidence": "SÀI GÒN ## LẬN PHÒNG TRẦN Quán cafe vibe cổ trang mới toanh ngập tràn concept chụp hình cực xinh | Các góc decor chín chu ti mi | Lên hình cực xinh nha",
     "characteristic_raw": "poi=Lan Phong Trấn Studio Coffee ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Quán cafe vibe cổ trang mới toanh, ngập tràn concept chụp hình, decor chín chu, góc decor đa dạng, hình ảnh cực xinh, menu nước từ 39k ; confidence=0.95 ; evidence=SÀI GÒN ## LẬN PHÒNG TRẦN Quán cafe vibe cổ trang mới toanh ngập tràn concept chụp hình cực xinh | Các góc decor chín chu ti mi | Lên hình cực xinh nha",
-    "video_playcount": "5240"
+    "video_playcount": "5240",
+    "location_type": "tea_shop",
+    "image_url": "images/tea_shop.webp"
   },
   {
     "video_id": "7583187037008825618",
@@ -1229,7 +1381,9 @@
     "characteristic_vi": "Giá bình dân, trang trí quầy bắt mắt, đồ ăn tạm ổn (sườn đậm đà, chả cá quyệt miếng to), nhưng không tươi mới, vị không hợp khẩu vị, cấp mỡ ăn thêm ok.",
     "evidence": "\"Công Tâm quận 1, nhìn được cái giá rất là bình dân\" | \"Nhìn quầy bày trí được cũng bắt mắt hấp dẫn lắm à\" | \"ở đây ăn tạm ổn à, chưa có ngon\"",
     "characteristic_raw": "poi=Đường Cô Giang - Quận 1. ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Giá bình dân, trang trí quầy bắt mắt, đồ ăn tạm ổn (sườn đậm đà, chả cá quyệt miếng to), nhưng không tươi mới, vị không hợp khẩu vị, cấp mỡ ăn thêm ok. ; confidence=0.98 ; evidence=\"Công Tâm quận 1, nhìn được cái giá rất là bình dân\" | \"Nhìn quầy bày trí được cũng bắt mắt hấp dẫn lắm à\" | \"ở đây ăn tạm ổn à, chưa có ngon\"",
-    "video_playcount": "18500"
+    "video_playcount": "18500",
+    "location_type": "street_food",
+    "image_url": "images/street_food.jpg"
   },
   {
     "video_id": "7583195039103274261",
@@ -1245,7 +1399,9 @@
     "characteristic_vi": "Không gian phủ ánh sao, gợi cảm hứng chiêm tinh phương Tây. Trần quán mô phỏng dải ngân hà lấp lánh. Không gian lý tưởng cho hẹn hò, hoạt động gắn kết. Có board game, cờ các loại, tarot. Menu đa dạng: trà, cà phê, matcha từ 40k. Món nổi bật: Pistachio, Matcha latte. Vị trí gần ga metro Thảo Điền.",
     "evidence": "Không gian phủ ánh sao, gợi cảm hứng chiêm tinh phương Tây. | Trần quán mô phỏng dải ngân hà lấp lánh đầy mê hoặc. | Không gian lý tưởng cho hẹn hò và các hoạt động gắn kết.",
     "characteristic_raw": "poi=Astral Café & Patisserie ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian phủ ánh sao, gợi cảm hứng chiêm tinh phương Tây. Trần quán mô phỏng dải ngân hà lấp lánh. Không gian lý tưởng cho hẹn hò, hoạt động gắn kết. Có board game, cờ các loại, tarot. Menu đa dạng: trà, cà phê, matcha từ 40k. Món nổi bật: Pistachio, Matcha latte. Vị trí gần ga metro Thảo Điền. ; confidence=0.98 ; evidence=Không gian phủ ánh sao, gợi cảm hứng chiêm tinh phương Tây. | Trần quán mô phỏng dải ngân hà lấp lánh đầy mê hoặc. | Không gian lý tưởng cho hẹn hò và các hoạt động gắn kết.",
-    "video_playcount": "14300"
+    "video_playcount": "14300",
+    "location_type": "tea_shop",
+    "image_url": "images/tea_shop.webp"
   },
   {
     "video_id": "7586232271888207112",
@@ -1261,7 +1417,9 @@
     "characteristic_vi": "Không gian rộng rãi, decor Tết hoành tráng, có máy lạnh, giá kem nước 80k/30k, nhiều góc check-in đẹp",
     "evidence": "Chơi ơi cafe SG decor tết cỡ này luôn á hả | Không gian siêu rộng rãi với 7749 góc décor hoành tráng | Quân cổ phồng máy lạnh luôn nhẹ",
     "characteristic_raw": "poi=Tiệm Cà Phê Trạm Hoàng Hôn ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian rộng rãi, decor Tết hoành tráng, có máy lạnh, giá kem nước 80k/30k, nhiều góc check-in đẹp ; confidence=0.95 ; evidence=Chơi ơi cafe SG decor tết cỡ này luôn á hả | Không gian siêu rộng rãi với 7749 góc décor hoành tráng | Quân cổ phồng máy lạnh luôn nhẹ",
-    "video_playcount": "3243"
+    "video_playcount": "3243",
+    "location_type": "ice_cream",
+    "image_url": "images/ice_cream.webp"
   },
   {
     "video_id": "7586912868633808149",
@@ -1277,7 +1435,9 @@
     "characteristic_vi": "Bánh mì chấm: trứng, chả, thịt, pate, bơ; chả cá cuốn rau răm; bánh mì nướng lưu (thịt nướng, chả ram, đồ chua); nem nướng; cà phê kem, cà phê nước dừa. Vị ngon, béo, giòn, chua chua, thơm thơm. Ăn sáng chất lượng, đủ món. Ngồi ngoài nhìn xe cộ vui, vào trong yên tĩnh. Thời gian: dậy sớm 6-7h.",
     "evidence": "\"Ở bên đây là bán cái món bánh mì chấm\" | \"Với cái món chả cá cuốn râu răm đặc sản quy nhân ngon lắm\" | \"Bà tê bên đây siêu béo luôn ngon lắm\"",
     "characteristic_raw": "poi=Bánh mì chấm Hung Tubes ; city=Quận 3 ; stt_source=groq ; characteristic_vi=Bánh mì chấm: trứng, chả, thịt, pate, bơ; chả cá cuốn rau răm; bánh mì nướng lưu (thịt nướng, chả ram, đồ chua); nem nướng; cà phê kem, cà phê nước dừa. Vị ngon, béo, giòn, chua chua, thơm thơm. Ăn sáng chất lượng, đủ món. Ngồi ngoài nhìn xe cộ vui, vào trong yên tĩnh. Thời gian: dậy sớm 6-7h. ; confidence=0.98 ; evidence=\"Ở bên đây là bán cái món bánh mì chấm\" | \"Với cái món chả cá cuốn râu răm đặc sản quy nhân ngon lắm\" | \"Bà tê bên đây siêu béo luôn ngon lắm\"",
-    "video_playcount": "331400"
+    "video_playcount": "331400",
+    "location_type": "ice_cream",
+    "image_url": "images/ice_cream.webp"
   },
   {
     "video_id": "7587238187018276116",
@@ -1293,7 +1453,9 @@
     "characteristic_vi": "Không gian mới toanh, thoải mái và hiện đại. Chảo nướng siêu lạ. Thịt được xếp sẵn, rất hấp dẫn. Set 4 người ăn no căng. Nước chấm ngon, rau củ đa dạng.",
     "evidence": "Không gian mới toanh giữa khu nhận nhịp Thảo Điền | Không gian thoải mái và hiện đại | Có chảo nướng siêu lạ",
     "characteristic_raw": "poi=목구멍 MOGGUMUNG KOREAN BBQ THẢO ĐIỀN ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian mới toanh, thoải mái và hiện đại. Chảo nướng siêu lạ. Thịt được xếp sẵn, rất hấp dẫn. Set 4 người ăn no căng. Nước chấm ngon, rau củ đa dạng. ; confidence=0.95 ; evidence=Không gian mới toanh giữa khu nhận nhịp Thảo Điền | Không gian thoải mái và hiện đại | Có chảo nướng siêu lạ",
-    "video_playcount": "17000"
+    "video_playcount": "17000",
+    "location_type": "korean",
+    "image_url": "images/korean.jpg"
   },
   {
     "video_id": "7587381028394634504",
@@ -1309,7 +1471,9 @@
     "characteristic_vi": "Bánh mì xíu mại, bánh tằm bì, bún thịt nướng, nem, thịt nướng, chả giò, bánh mì chả cá, nước mắm đậm đà, nguyên liệu tươi ngon, giá bình dân (20k-30k), khung giờ bán 6h-9h sáng và 15h-19h, topping đa dạng, mùi thơm hấp dẫn, phục vụ nhanh, quán góc người miền Tây, khéo tay, ngon",
     "evidence": "Cái bánh mì gạch cua của cô này chưa hết hot nữa là bà ra cái món mới á Bánh tằm bì miền Tây là 1 cái món mà tôi siêu thích luôn | Bà nấu cái món gì là chấn động cái món đó | Vừa bước tới cái gánh thôi nghe cái mùi xíu mại chịu không có nổi",
     "characteristic_raw": "poi=Mì sụa Tân Hương Nam ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Bánh mì xíu mại, bánh tằm bì, bún thịt nướng, nem, thịt nướng, chả giò, bánh mì chả cá, nước mắm đậm đà, nguyên liệu tươi ngon, giá bình dân (20k-30k), khung giờ bán 6h-9h sáng và 15h-19h, topping đa dạng, mùi thơm hấp dẫn, phục vụ nhanh, quán góc người miền Tây, khéo tay, ngon ; confidence=0.98 ; evidence=Cái bánh mì gạch cua của cô này chưa hết hot nữa là bà ra cái món mới á Bánh tằm bì miền Tây là 1 cái món mà tôi siêu thích luôn | Bà nấu cái món gì là chấn động cái món đó | Vừa bước tới cái gánh thôi nghe cái mùi xíu mại chịu không có nổi",
-    "video_playcount": "18100"
+    "video_playcount": "18100",
+    "location_type": "steak_house",
+    "image_url": "images/steak_house.jpg"
   },
   {
     "video_id": "7588131668490226965",
@@ -1325,7 +1489,9 @@
     "characteristic_vi": "Quán nhỏ xinh, ẩm thực Hàn Quốc, giá hợp lý (79k-99k/món), món mì trộn 99k, canh đậu hủ non + cơm 89k (Size F) / 99k (Size M), combo 3 sốt gà ngon, không gian ấm cúng, địa chỉ 90C Võ Thị Sáu, Tân Định, Quận 1.",
     "evidence": "\"Chiếc quán này nhỏ nhỏ xinh xinh nhưng mà bán ẩm thực Hàn Quốc nha.\" | \"giá cả là rất là hợp lý khi từ 79 cành, 89 cành, 99 cành trở lên một món thôi.\" | \"Ê, y như là cái phần mì trộn trước mắt mọi người đang thấy mà có 99 cành thôi à.\"",
     "characteristic_raw": "poi=Kitchen Ăn Gì Cũng Được ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Quán nhỏ xinh, ẩm thực Hàn Quốc, giá hợp lý (79k-99k/món), món mì trộn 99k, canh đậu hủ non + cơm 89k (Size F) / 99k (Size M), combo 3 sốt gà ngon, không gian ấm cúng, địa chỉ 90C Võ Thị Sáu, Tân Định, Quận 1. ; confidence=0.98 ; evidence=\"Chiếc quán này nhỏ nhỏ xinh xinh nhưng mà bán ẩm thực Hàn Quốc nha.\" | \"giá cả là rất là hợp lý khi từ 79 cành, 89 cành, 99 cành trở lên một món thôi.\" | \"Ê, y như là cái phần mì trộn trước mắt mọi người đang thấy mà có 99 cành thôi à.\"",
-    "video_playcount": "39800"
+    "video_playcount": "39800",
+    "location_type": "korean",
+    "image_url": "images/korean.jpg"
   },
   {
     "video_id": "7588151059479055623",
@@ -1341,7 +1507,9 @@
     "characteristic_vi": "Không gian tầng thượng rộng rãi, decor siêu đẹp, có phòng lạnh thoáng mát, view ngắm máy bay và hoàng hôn cực chill, góc nào cũng xinh.",
     "evidence": "Không gian tầng thượng rộng rãi | Tầng dưới decor siu đẹp | Có phòng lạnh thoáng mát",
     "characteristic_raw": "poi=A5 Airport Coffee & Acoustic ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian tầng thượng rộng rãi, decor siêu đẹp, có phòng lạnh thoáng mát, view ngắm máy bay và hoàng hôn cực chill, góc nào cũng xinh. ; confidence=0.95 ; evidence=Không gian tầng thượng rộng rãi | Tầng dưới decor siu đẹp | Có phòng lạnh thoáng mát",
-    "video_playcount": "31700"
+    "video_playcount": "31700",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7588354732897406228",
@@ -1357,7 +1525,9 @@
     "characteristic_vi": "Không gian thiết kế tối giản theo phong cách châu Âu, khu vườn nhiệt đới mát mẻ, tầng 1-2 đón ánh sáng tự nhiên phù hợp đọc sách, tầng 3 dành cho họp/ làm việc tập trung, menu đa dạng từ 38k, ưu đãi sinh viên SIU (mua 1 tặng 1).",
     "evidence": "# ROMAN CAFE Tiệm cafe mới mở trong Thảo Điền Campus | Được thiết kế tối giản theo phong cách Châu Âu thanh lịch | Bên ngoài là khu vườn nhiệt đới tạo cảm giác mát mẻ, gần gũi với thiên nhiên",
     "characteristic_raw": "poi=Roman Cafe ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian thiết kế tối giản theo phong cách châu Âu, khu vườn nhiệt đới mát mẻ, tầng 1-2 đón ánh sáng tự nhiên phù hợp đọc sách, tầng 3 dành cho họp/ làm việc tập trung, menu đa dạng từ 38k, ưu đãi sinh viên SIU (mua 1 tặng 1). ; confidence=0.95 ; evidence=# ROMAN CAFE Tiệm cafe mới mở trong Thảo Điền Campus | Được thiết kế tối giản theo phong cách Châu Âu thanh lịch | Bên ngoài là khu vườn nhiệt đới tạo cảm giác mát mẻ, gần gũi với thiên nhiên",
-    "video_playcount": "19700"
+    "video_playcount": "19700",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7589478231443655956",
@@ -1373,7 +1543,9 @@
     "characteristic_vi": "Không gian tone gỗ trắng nâu sang trọng, ấm cúng. Nhiều góc checkin xịn xò bên ngoài. Phù hợp làm việc, học bài, nhóm đông. Menu đa dạng từ 35k (trà, cafe, matcha, bánh ngọt). Địa chỉ: 15 đường số 3, Tân Hưng, Q.7. Giờ mở cửa: 7:00 - 22:00.",
     "evidence": "Tiệm cafe mới toanh siu cozy ở quận 7 | Không gian tone gỗ trắng nâu sang trọng, ấm cúng | Bên ngoài có nhiều góc checkin xịn xò",
     "characteristic_raw": "poi=LA COFFEE CN2 ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian tone gỗ trắng nâu sang trọng, ấm cúng. Nhiều góc checkin xịn xò bên ngoài. Phù hợp làm việc, học bài, nhóm đông. Menu đa dạng từ 35k (trà, cafe, matcha, bánh ngọt). Địa chỉ: 15 đường số 3, Tân Hưng, Q.7. Giờ mở cửa: 7:00 - 22:00. ; confidence=0.98 ; evidence=Tiệm cafe mới toanh siu cozy ở quận 7 | Không gian tone gỗ trắng nâu sang trọng, ấm cúng | Bên ngoài có nhiều góc checkin xịn xò",
-    "video_playcount": "18900"
+    "video_playcount": "18900",
+    "location_type": "tea_shop",
+    "image_url": "images/tea_shop.webp"
   },
   {
     "video_id": "7590637248077499666",
@@ -1389,7 +1561,9 @@
     "characteristic_vi": "Đa dạng món ăn đậm chất Tây Nguyên, không gian chill thiết kế chỉnh chu (bàn ghế gỗ, còng chiên, bếp lửa), món mẹt 7 món thơm ngon (gà xào sả ớt, đọt su xào, măng xào, cá hấp, heo nướng mỏi, canh bột lá dao), muối ngò gai/ghiền sả ớt nướng cuốn, chương trình ưu đãi nhóm (tặng gỏi đu đủ kiến vàng, gỏi gà nõ chuối, ống cơm lam, setup tiệc).",
     "evidence": "Tại vì hiếm lắm tôi mới thấy có một chỗ bán đa dạng các món ăn Đậm chất, đặc trưng văn hóa ẩm thực của người Ê Đê nói riêng và của người Tây Nguyên nói chung | Lại còn được ngồi trong một cái không gian rất là chill Thiết kế và bài trí rất là chỉnh chu đến từng chi tiết như là bàn ghế gỗ, còng chiên hay là bếp lửa | Hôm nay tôi order một cái mẹt 7 món dành cho 2 người Gồm có đọt su xào, đu đủ đâm, măng xào, cá hấp, lá mì xào Đồ mặn thì có heo nướng mỏi với gà xào, sả ớt Canh thì sẽ có 2 loại, thay đổi theo ngày Hôm nay tôi đến là có canh bột lá dao",
     "characteristic_raw": "poi=Ẩm Thực Buôn Mê ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Đa dạng món ăn đậm chất Tây Nguyên, không gian chill thiết kế chỉnh chu (bàn ghế gỗ, còng chiên, bếp lửa), món mẹt 7 món thơm ngon (gà xào sả ớt, đọt su xào, măng xào, cá hấp, heo nướng mỏi, canh bột lá dao), muối ngò gai/ghiền sả ớt nướng cuốn, chương trình ưu đãi nhóm (tặng gỏi đu đủ kiến vàng, gỏi gà nõ chuối, ống cơm lam, setup tiệc). ; confidence=0.98 ; evidence=Tại vì hiếm lắm tôi mới thấy có một chỗ bán đa dạng các món ăn Đậm chất, đặc trưng văn hóa ẩm thực của người Ê Đê nói riêng và của người Tây Nguyên nói chung | Lại còn được ngồi trong một cái không gian rất là chill Thiết kế và bài trí rất là chỉnh chu đến từng chi tiết như là bàn ghế gỗ, còng chiên hay là bếp lửa | Hôm nay tôi order một cái mẹt 7 món dành cho 2 người Gồm có đọt su xào, đu đủ đâm, măng xào, cá hấp, lá mì xào Đồ mặn thì có heo nướng mỏi với gà xào, sả ớt Canh thì sẽ có 2 loại, thay đổi theo ngày Hôm nay tôi đến là có canh bột lá dao",
-    "video_playcount": "46000"
+    "video_playcount": "46000",
+    "location_type": "steak_house",
+    "image_url": "images/steak_house.jpg"
   },
   {
     "video_id": "7591511016245136661",
@@ -1405,7 +1579,9 @@
     "characteristic_vi": "Quán ăn vặt nổi tiếng Thủ Đức, giá rẻ (món ~25k-100k), đông khách, đồ tươi ngon (khô bò xịn, trứng cốt lòng đào, da heo, khô mực, bánh tráng trộn, lẩu nướng, mì cay, gỏi chân gà), có món mới (nem nướng, tôm thịt cuốn), tăng giá nhẹ do thuế/nguyên liệu, không gian quen thuộc (từ thời sinh viên), có thử thách ăn uống, phục vụ nhanh, phù hợp sinh viên.",
     "evidence": "\"Các bạn này chưa tới 500 đâu em\" | \"Học thì là 25 Hôn bò, hôn, hôn mực\" | \"Ai là sinh viên ở Thủ Đức mà không biết cái quán ăn vặt của bà chị này\"",
     "characteristic_raw": "poi=IDOL Quán ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Quán ăn vặt nổi tiếng Thủ Đức, giá rẻ (món ~25k-100k), đông khách, đồ tươi ngon (khô bò xịn, trứng cốt lòng đào, da heo, khô mực, bánh tráng trộn, lẩu nướng, mì cay, gỏi chân gà), có món mới (nem nướng, tôm thịt cuốn), tăng giá nhẹ do thuế/nguyên liệu, không gian quen thuộc (từ thời sinh viên), có thử thách ăn uống, phục vụ nhanh, phù hợp sinh viên. ; confidence=0.98 ; evidence=\"Các bạn này chưa tới 500 đâu em\" | \"Học thì là 25 Hôn bò, hôn, hôn mực\" | \"Ai là sinh viên ở Thủ Đức mà không biết cái quán ăn vặt của bà chị này\"",
-    "video_playcount": "25600"
+    "video_playcount": "25600",
+    "location_type": "korean",
+    "image_url": "images/korean.jpg"
   },
   {
     "video_id": "7593582164629785863",
@@ -1421,7 +1597,9 @@
     "characteristic_vi": "Cháo sườn thập cẩm nóng hổi, kèm trứng bách thảo, giá 35.000đ. Chất lượng đồ nhà làm, có sườn non, thịt băm nhiều. Nằm ở ngã 3 chợ Tân Định, địa chỉ 339 Hai Bà Trưng, Quận 3. Ăn vào đúng mùa lạnh rất ấm bụng.",
     "evidence": "# Cháo Sườn Đêm đã mở hơn 30 năm tuổi | # Nằm ở khúc ngã 3 chợ Tân Định có hàng chảo sườn lâu đời | Cháo sườn thập cẩm kèm trứng bách thảo cổ 35cảnh thôi",
     "characteristic_raw": "poi=Tân Định Market ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Cháo sườn thập cẩm nóng hổi, kèm trứng bách thảo, giá 35.000đ. Chất lượng đồ nhà làm, có sườn non, thịt băm nhiều. Nằm ở ngã 3 chợ Tân Định, địa chỉ 339 Hai Bà Trưng, Quận 3. Ăn vào đúng mùa lạnh rất ấm bụng. ; confidence=0.95 ; evidence=# Cháo Sườn Đêm đã mở hơn 30 năm tuổi | # Nằm ở khúc ngã 3 chợ Tân Định có hàng chảo sườn lâu đời | Cháo sườn thập cẩm kèm trứng bách thảo cổ 35cảnh thôi",
-    "video_playcount": "25900"
+    "video_playcount": "25900",
+    "location_type": "restaurant",
+    "image_url": "images/restaurant.jpg"
   },
   {
     "video_id": "7594316494750682389",
@@ -1437,7 +1615,9 @@
     "characteristic_vi": "Đồ nướng theo lạng (22k-39k/100g), thịt ướp gia vị đỏ đặc trưng, nướng trên miếng vàng, chỉ có 2 loại nước chấm (chao, muối ớt xanh), không cho mang đồ ngoài vào, đông khách ngay cả ngày thường, nằm trong hẻm 197 Ngô Quyền, quận 10",
     "evidence": "Đi ăn nướng ở trong chợ, nghe lạ nhưng có thật nha mọi người | Nằm trong hẻm 197, đường Ngô Quyền, quận 10 | Mình đi ăn ngày trong tuần mà thấy full chỗ luôn",
     "characteristic_raw": "poi=Hẻm nướng 197 Ngô Quyền ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Đồ nướng theo lạng (22k-39k/100g), thịt ướp gia vị đỏ đặc trưng, nướng trên miếng vàng, chỉ có 2 loại nước chấm (chao, muối ớt xanh), không cho mang đồ ngoài vào, đông khách ngay cả ngày thường, nằm trong hẻm 197 Ngô Quyền, quận 10 ; confidence=0.98 ; evidence=Đi ăn nướng ở trong chợ, nghe lạ nhưng có thật nha mọi người | Nằm trong hẻm 197, đường Ngô Quyền, quận 10 | Mình đi ăn ngày trong tuần mà thấy full chỗ luôn",
-    "video_playcount": "59600"
+    "video_playcount": "59600",
+    "location_type": "steak_house",
+    "image_url": "images/steak_house.jpg"
   },
   {
     "video_id": "7594476899062123796",
@@ -1453,7 +1633,9 @@
     "characteristic_vi": "Món chè trắng mịn, tầu hủ đá ngon, nhiều loại chè (bưởi, flan, thập cẩm), giá 17k/ly, địa chỉ 252 Ngô Quyền, quận 10, giờ mở cửa 16h-22h.",
     "evidence": "# QUẢN TẬU HỦ DÀ NÀO MÀ ĐỒNG XẾP HÀNG CƠ NÀY? | # DẤY DỦ CÁC MÔN CHẾ TRẮNG MIỄNG ĐỒNG NHỮNG CÓ MÓN NHANH LÂM | # GHẾ ĐẾN THÌ CHẮC CHẤN PHẢI THỬ MỘT LY TẤU HỦ ĐÃ 17 CẢ",
     "characteristic_raw": "poi=Chè Bưởi & Tàu hủ đá Ngô Quyền ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Món chè trắng mịn, tầu hủ đá ngon, nhiều loại chè (bưởi, flan, thập cẩm), giá 17k/ly, địa chỉ 252 Ngô Quyền, quận 10, giờ mở cửa 16h-22h. ; confidence=0.95 ; evidence=# QUẢN TẬU HỦ DÀ NÀO MÀ ĐỒNG XẾP HÀNG CƠ NÀY? | # DẤY DỦ CÁC MÔN CHẾ TRẮNG MIỄNG ĐỒNG NHỮNG CÓ MÓN NHANH LÂM | # GHẾ ĐẾN THÌ CHẮC CHẤN PHẢI THỬ MỘT LY TẤU HỦ ĐÃ 17 CẢ",
-    "video_playcount": "38700"
+    "video_playcount": "38700",
+    "location_type": "street_food",
+    "image_url": "images/street_food.jpg"
   },
   {
     "video_id": "7596665879069330709",
@@ -1469,7 +1651,9 @@
     "characteristic_vi": "Không gian sang trọng, thanh lịch, ngập tràn hoa xinh rực rỡ. Đậm chất châu Âu vừa cổ điển vừa hiện đại. Thích hợp chụp ảnh áo dài Tết.",
     "evidence": "# Không gian sang trọng và thanh lịch Ngập tràn hoa xinh rực rỡ | # Không gian đậm chất châu Âu vừa có điển lại hiện đại | # Thích hợp cho các nàng thơ chụp áo dài Tết",
     "characteristic_raw": "poi=Lilia Café URBAN HILL ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian sang trọng, thanh lịch, ngập tràn hoa xinh rực rỡ. Đậm chất châu Âu vừa cổ điển vừa hiện đại. Thích hợp chụp ảnh áo dài Tết. ; confidence=0.95 ; evidence=# Không gian sang trọng và thanh lịch Ngập tràn hoa xinh rực rỡ | # Không gian đậm chất châu Âu vừa có điển lại hiện đại | # Thích hợp cho các nàng thơ chụp áo dài Tết",
-    "video_playcount": "103100"
+    "video_playcount": "103100",
+    "location_type": "tea_shop",
+    "image_url": "images/tea_shop.webp"
   },
   {
     "video_id": "7596926722889583890",
@@ -1485,7 +1669,9 @@
     "characteristic_vi": "Không gian sang trọng, thoáng mát (máy lạnh, kính lớn), view sông Sài Gòn 360 độ, đồ ăn ngon (salad bạch tục đông nho, sức cua, cá hấp nấm, bò Black Angus nướng, Manacosta), phù hợp hẹn hò/tiệc riêng, không gian check-in đẹp.",
     "evidence": "\"Không gian trong nhà, máy lạnh mát mẻ, xung quanh đều là kính lớn, ngắm trọn sông Sài Gòn về đêm\" | \"Không gian ngoài trời vừa đón gió, ngắm trọn view 360 độ, nhìn thấy toàn cảnh Bistecco, cầu Ba Son, Sài Gòn Maria, Lan Mát 81\" | \"Mở đầu là món salad bạch tục đông nho với vị tươi nhẹ, sức cua nấu với bắp béo vừa, cá thì mềm, vị thanh siêu ngon, bò Black Angus nướng thang ăn kẹt với sốt tiêu tứ xuyên, Manacosta sữa đậu nền phủ kem dừa tươi\"",
     "characteristic_raw": "poi=ICON SAIGON CRUISE ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian sang trọng, thoáng mát (máy lạnh, kính lớn), view sông Sài Gòn 360 độ, đồ ăn ngon (salad bạch tục đông nho, sức cua, cá hấp nấm, bò Black Angus nướng, Manacosta), phù hợp hẹn hò/tiệc riêng, không gian check-in đẹp. ; confidence=0.98 ; evidence=\"Không gian trong nhà, máy lạnh mát mẻ, xung quanh đều là kính lớn, ngắm trọn sông Sài Gòn về đêm\" | \"Không gian ngoài trời vừa đón gió, ngắm trọn view 360 độ, nhìn thấy toàn cảnh Bistecco, cầu Ba Son, Sài Gòn Maria, Lan Mát 81\" | \"Mở đầu là món salad bạch tục đông nho với vị tươi nhẹ, sức cua nấu với bắp béo vừa, cá thì mềm, vị thanh siêu ngon, bò Black Angus nướng thang ăn kẹt với sốt tiêu tứ xuyên, Manacosta sữa đậu nền phủ kem dừa tươi\"",
-    "video_playcount": "69600"
+    "video_playcount": "69600",
+    "location_type": "cruise",
+    "image_url": "images/cruise.jpg"
   },
   {
     "video_id": "7596939954723376392",
@@ -1501,7 +1687,9 @@
     "characteristic_vi": "Cua tươi, nhiều loại sốt (Singapore, trứng muối, me, cháy tỏi, tiêu đen), chả giò cua, xào tôm cua, đồ ăn ngập răng, phục vụ tận nơi, chỗ đậu xe hơi, đặt bàn trước có ưu đãi",
     "evidence": "\"Cua thì mọi người có thể lựa cua thịt hoặc là cua gà Tươi sống bò ngang bò dọc vậy nè\" | \"Cua thì có nhiều sốt cho mọi người lựa chọn lắm Sốt Singapore, sốt trứng muối, sốt me, cháy tỏi Rồi có sốt tiêu đen nữa\" | \"chất lượng cua ở đây rất tươi luôn Cái size nó cũng to nữa mọi người Mọi người nhìn cái càng là hiểu rồi đó Cắn một phát mà thịt cua ngập răng luôn\"",
     "characteristic_raw": "poi=Cua Tươi Trà Vinh ; city=Thành phố Hồ Chí Minh ; characteristic_vi=Cua tươi, nhiều loại sốt (Singapore, trứng muối, me, cháy tỏi, tiêu đen), chả giò cua, xào tôm cua, đồ ăn ngập răng, phục vụ tận nơi, chỗ đậu xe hơi, đặt bàn trước có ưu đãi ; confidence=0.98 ; evidence=\"Cua thì mọi người có thể lựa cua thịt hoặc là cua gà Tươi sống bò ngang bò dọc vậy nè\" | \"Cua thì có nhiều sốt cho mọi người lựa chọn lắm Sốt Singapore, sốt trứng muối, sốt me, cháy tỏi Rồi có sốt tiêu đen nữa\" | \"chất lượng cua ở đây rất tươi luôn Cái size nó cũng to nữa mọi người Mọi người nhìn cái càng là hiểu rồi đó Cắn một phát mà thịt cua ngập răng luôn\"",
-    "video_playcount": "37800"
+    "video_playcount": "37800",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7598163350710832405",
@@ -1517,7 +1705,9 @@
     "characteristic_vi": "Món mì cay chăm bông to, nặng, nước cay vừa phải ngọt thanh, nhiều hải sản; thịt chiên sườn sốt chua ngọt; kim bắp cá ngừ khô; bánh chanh miễn phí; đồ ăn lên sau 10 phút chờ",
     "evidence": "Dạ cho em 1 cái thịt chiên sụn sốt chua ngọt | Một cái mì cây chanh bông | Một cái mì tương đen",
     "characteristic_raw": "poi=Truyền Thuyết Champong Phú Nhuận - 전설의짬뽕 푸년 ; city=Thành phố Hồ Chí Minh ; characteristic_vi=Món mì cay chăm bông to, nặng, nước cay vừa phải ngọt thanh, nhiều hải sản; thịt chiên sườn sốt chua ngọt; kim bắp cá ngừ khô; bánh chanh miễn phí; đồ ăn lên sau 10 phút chờ ; confidence=0.98 ; evidence=Dạ cho em 1 cái thịt chiên sụn sốt chua ngọt | Một cái mì cây chanh bông | Một cái mì tương đen",
-    "video_playcount": "13500"
+    "video_playcount": "13500",
+    "location_type": "korean",
+    "image_url": "images/korean.jpg"
   },
   {
     "video_id": "7598812727607299346",
@@ -1533,7 +1723,9 @@
     "characteristic_vi": "Quán ốc gừng phục vụ 24h, đồ ăn tươi sống, nhiều món ốc/bò/hải sản, gia vị đậm đà, không khí vui nhộn, đông khách, phục vụ xiên suốt, có đồ chua kèm, lẩu đa dạng, địa chỉ 306 Phan Văn Trị, Bình Thạnh.",
     "evidence": "\"Khách của anh là nhậu tới giờ đó luôn á\" | \"Món ăn anh làm rất là ngon, có tâm lắm là tính nhật tươi sống mỗi ngày luôn\" | \"Ở ngay trời cây thị Bình Thạnh á, có quán ốc gừng này bán hơn 10 năm\"",
     "characteristic_raw": "poi=Ốc Rừng ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Quán ốc gừng phục vụ 24h, đồ ăn tươi sống, nhiều món ốc/bò/hải sản, gia vị đậm đà, không khí vui nhộn, đông khách, phục vụ xiên suốt, có đồ chua kèm, lẩu đa dạng, địa chỉ 306 Phan Văn Trị, Bình Thạnh. ; confidence=0.98 ; evidence=\"Khách của anh là nhậu tới giờ đó luôn á\" | \"Món ăn anh làm rất là ngon, có tâm lắm là tính nhật tươi sống mỗi ngày luôn\" | \"Ở ngay trời cây thị Bình Thạnh á, có quán ốc gừng này bán hơn 10 năm\"",
-    "video_playcount": "280800"
+    "video_playcount": "280800",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7599259838593502484",
@@ -1549,7 +1741,9 @@
     "characteristic_vi": "Không gian rộng rãi, thoáng mát, nhiều chỗ ngồi, view sông thoải mái, menu từ 3x xu, đồ uống gợi ý: Coconut matcha & Apple mulberry tea, có máy lạnh, yên tĩnh, phù hợp trò chuyện bạn bè hoặc làm việc",
     "evidence": "Quán cafe ngay bờ sông tại Thảo Điền | Siêu chili để ngắm hoàng hôn | Không gian rộng rãi, thoáng mát",
     "characteristic_raw": "poi=Catch Up Trúc Đường ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian rộng rãi, thoáng mát, nhiều chỗ ngồi, view sông thoải mái, menu từ 3x xu, đồ uống gợi ý: Coconut matcha & Apple mulberry tea, có máy lạnh, yên tĩnh, phù hợp trò chuyện bạn bè hoặc làm việc ; confidence=0.98 ; evidence=Quán cafe ngay bờ sông tại Thảo Điền | Siêu chili để ngắm hoàng hôn | Không gian rộng rãi, thoáng mát",
-    "video_playcount": "109100"
+    "video_playcount": "109100",
+    "location_type": "cruise",
+    "image_url": "images/cruise.jpg"
   },
   {
     "video_id": "7599624905717583124",
@@ -1565,7 +1759,9 @@
     "characteristic_vi": "{'ambiance': 'nằm sau trong một con hẻm ở Phú Nhuận, được bao phủ bởi nhiều cây xanh, có không gian trong nhà và ngoài trời, mát mẻ', 'food_quality': {'gỏi_khoai_môn_khô_mực': 'khoai môn chiên với khô mực chiên giòn, gia vị trộn vừa ăn, mặn mặn ngọt ngọt, càng ăn càng dính', 'sườn_non_nướng_xốt_tỏi': 'sườn non nướng xốt tỏi đặc biệt, mướt, thơm, mềm không cứng, có ớt chung với mật ong', 'tôm_khô_nổ_muối_tiêu': 'vị mặn mặn cay cay, tôm khô càng nha càng ngọt', 'chả_mực_giả_tay': 'giòn sợt sợt, thơm dai, đóng gói để tặng quà tết', 'cá_hát_lát_nguyên_con_chiên_gion_mắm_me': 'dai thơm, chấm mắm me ngon', 'nghêu_xào_lá_quế': 'thơm, mứt rợp', 'mật_ong_đá_hành_tỏi': 'mật giữ độ tươi và ngọt, đá củi nung nóng, hơi nóng từ đá làm chín mật'}, 'price': 'giao động từ vài chục nghìn cho một món', 'service': 'phải đặt bàn trước do đông khách vào buổi chiều tối, phục vụ dân văn phòng', 'location': 'nằm trong hẻm ở Phú Nhuận, địa chỉ 159/6 Đường Hoàng Văn Thụ, Phường 8, Phú Nhuận', 'waiting_time': 'chiều tối đông nên cần đặt bàn trước', 'vibe': 'quán xịn xịn, không cần quảng cáo rầm rộ, phù hợp nhóm đông, có ưu đãi tặng đồ uống hoặc quà tặng khi gọi món nhất định'}",
     "evidence": "Mọi người có công nhận với Tú một điều á Mấy cái quán ăn mà nấp hẻm không cần phải làm rầm rộ Toàn là mấy cái quán mà xịn xịn không đó Giống như cái quán này nè Nằm sau trong một con hẻm ở Phú Nhuận | Mọi người muốn ăn là phải đặt bàn trước nha Tại vì chiều tối ở đây là rất là đông luôn á Toàn là mấy anh chị dân văn phòng ghé không à | Được bao phủ bởi rất là nhiều cây xanh là mát lắm Có cả không gian ở bên trong và ngoài trời luôn",
     "characteristic_raw": "poi=TỘ Grill N Beer ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi={'ambiance': 'nằm sau trong một con hẻm ở Phú Nhuận, được bao phủ bởi nhiều cây xanh, có không gian trong nhà và ngoài trời, mát mẻ', 'food_quality': {'gỏi_khoai_môn_khô_mực': 'khoai môn chiên với khô mực chiên giòn, gia vị trộn vừa ăn, mặn mặn ngọt ngọt, càng ăn càng dính', 'sườn_non_nướng_xốt_tỏi': 'sườn non nướng xốt tỏi đặc biệt, mướt, thơm, mềm không cứng, có ớt chung với mật ong', 'tôm_khô_nổ_muối_tiêu': 'vị mặn mặn cay cay, tôm khô càng nha càng ngọt', 'chả_mực_giả_tay': 'giòn sợt sợt, thơm dai, đóng gói để tặng quà tết', 'cá_hát_lát_nguyên_con_chiên_gion_mắm_me': 'dai thơm, chấm mắm me ngon', 'nghêu_xào_lá_quế': 'thơm, mứt rợp', 'mật_ong_đá_hành_tỏi': 'mật giữ độ tươi và ngọt, đá củi nung nóng, hơi nóng từ đá làm chín mật'}, 'price': 'giao động từ vài chục nghìn cho một món', 'service': 'phải đặt bàn trước do đông khách vào buổi chiều tối, phục vụ dân văn phòng', 'location': 'nằm trong hẻm ở Phú Nhuận, địa chỉ 159/6 Đường Hoàng Văn Thụ, Phường 8, Phú Nhuận', 'waiting_time': 'chiều tối đông nên cần đặt bàn trước', 'vibe': 'quán xịn xịn, không cần quảng cáo rầm rộ, phù hợp nhóm đông, có ưu đãi tặng đồ uống hoặc quà tặng khi gọi món nhất định'} ; confidence=0.98 ; evidence=Mọi người có công nhận với Tú một điều á Mấy cái quán ăn mà nấp hẻm không cần phải làm rầm rộ Toàn là mấy cái quán mà xịn xịn không đó Giống như cái quán này nè Nằm sau trong một con hẻm ở Phú Nhuận | Mọi người muốn ăn là phải đặt bàn trước nha Tại vì chiều tối ở đây là rất là đông luôn á Toàn là mấy anh chị dân văn phòng ghé không à | Được bao phủ bởi rất là nhiều cây xanh là mát lắm Có cả không gian ở bên trong và ngoài trời luôn",
-    "video_playcount": "29800"
+    "video_playcount": "29800",
+    "location_type": "korean",
+    "image_url": "images/korean.jpg"
   },
   {
     "video_id": "7599632819060624648",
@@ -1581,7 +1777,9 @@
     "characteristic_vi": "Không gian xanh mát, vibe Đà Lạt, nhiều góc check-in độc đáo, menu đa dạng (35-60k), quán cafe mới toanh tại quận 7",
     "evidence": "# TNT ZONE Quán cafe vibe Đà Lạt mới toanh tại quận 7 | Không gian xanh mát vibe Đà Lạt tuyệt đẹp | Chiều tối ngắm được cả hoàng hôn",
     "characteristic_raw": "poi=TNT ZONE CAFE ; city=Bình Chánh ; stt_source=groq ; characteristic_vi=Không gian xanh mát, vibe Đà Lạt, nhiều góc check-in độc đáo, menu đa dạng (35-60k), quán cafe mới toanh tại quận 7 ; confidence=0.95 ; evidence=# TNT ZONE Quán cafe vibe Đà Lạt mới toanh tại quận 7 | Không gian xanh mát vibe Đà Lạt tuyệt đẹp | Chiều tối ngắm được cả hoàng hôn",
-    "video_playcount": "477700"
+    "video_playcount": "477700",
+    "location_type": "cafe",
+    "image_url": "images/cafe.webp"
   },
   {
     "video_id": "7600750267050593556",
@@ -1597,7 +1795,9 @@
     "characteristic_vi": "Món ăn: cơm tấm ngon, thịt nạt dâm ướt kỷ, nước mắm pha ngon, chả trộn trứng muối, bì kèm thịt cắt lát, bún thịt nướng 35k, đồ chua, dưa leo, mỡ hành. Giá: dĩa cơm thịt dâm 35k, chả/bì 5k. Thời gian: 5h30-13h. Địa điểm: trong cư xá Chu Văn An, ngã tư đường số 5 và 6. Đám đông: buổi sáng đông học sinh sinh viên, buổi trưa đông dân địa phương. Chất lượng: thịt nạt không xương, cơm tơi hạt, miếng thịt nướng đẹp không đen. Dịch vụ: đôi khi nướng không kịp gây chờ đợi.",
     "evidence": "Mọi người có hiểu cảm xúc của một cái đứa mà thích ăn cơm tắm mà tìm được một cái quán cơm tắm vừa bình dân mà ngon từ cái miếng thịt nạt dâm ướt kỷ cho đến nước mắm pha. | chị chủ đã có kinh nghiệm bán cơm hơn 20 năm rồi đó. Chị kể ngày xưa chị khởi điểm là đi bán cơm mướn cho người ta 15 năm trời. | bà chế chủ quán thì chị bán thịt nạt dâm thôi không có bán thịt cốc lớt đâu nha",
     "characteristic_raw": "poi=Cơm Tấm Hà ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Món ăn: cơm tấm ngon, thịt nạt dâm ướt kỷ, nước mắm pha ngon, chả trộn trứng muối, bì kèm thịt cắt lát, bún thịt nướng 35k, đồ chua, dưa leo, mỡ hành. Giá: dĩa cơm thịt dâm 35k, chả/bì 5k. Thời gian: 5h30-13h. Địa điểm: trong cư xá Chu Văn An, ngã tư đường số 5 và 6. Đám đông: buổi sáng đông học sinh sinh viên, buổi trưa đông dân địa phương. Chất lượng: thịt nạt không xương, cơm tơi hạt, miếng thịt nướng đẹp không đen. Dịch vụ: đôi khi nướng không kịp gây chờ đợi. ; confidence=0.98 ; evidence=Mọi người có hiểu cảm xúc của một cái đứa mà thích ăn cơm tắm mà tìm được một cái quán cơm tắm vừa bình dân mà ngon từ cái miếng thịt nạt dâm ướt kỷ cho đến nước mắm pha. | chị chủ đã có kinh nghiệm bán cơm hơn 20 năm rồi đó. Chị kể ngày xưa chị khởi điểm là đi bán cơm mướn cho người ta 15 năm trời. | bà chế chủ quán thì chị bán thịt nạt dâm thôi không có bán thịt cốc lớt đâu nha",
-    "video_playcount": "99600"
+    "video_playcount": "99600",
+    "location_type": "korean",
+    "image_url": "images/korean.jpg"
   },
   {
     "video_id": "7601465664292785428",
@@ -1613,7 +1813,9 @@
     "characteristic_vi": "Không gian xanh mát, nhiều cây xanh, thác nước, nhiều góc checkin Tết, khu ẩm thực, đồ uống mùa Tết (trà đào hạt dẻ, cafe sữa tiramisu, măng cầu phong lan), quà tặng bốc thăm, ghế ngồi thoải mái, chill",
     "evidence": "Không gian xanh mát, có thác nước & nhiều cây xanh | Rất nhiều góc che đèn Tết | Rất nhiều góc checkin Tết",
     "characteristic_raw": "poi=Lề Coffee ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian xanh mát, nhiều cây xanh, thác nước, nhiều góc checkin Tết, khu ẩm thực, đồ uống mùa Tết (trà đào hạt dẻ, cafe sữa tiramisu, măng cầu phong lan), quà tặng bốc thăm, ghế ngồi thoải mái, chill ; confidence=0.98 ; evidence=Không gian xanh mát, có thác nước & nhiều cây xanh | Rất nhiều góc che đèn Tết | Rất nhiều góc checkin Tết",
-    "video_playcount": "13900"
+    "video_playcount": "13900",
+    "location_type": "seafood",
+    "image_url": "images/seafood.jpg"
   },
   {
     "video_id": "7601576933238770964",
@@ -1629,7 +1831,9 @@
     "characteristic_vi": "Thực đơn châu Âu hiện đại, tinh tế; nguyên liệu tươi, nêm nếm vừa phải; không gian mở thoáng đãng, thiết kế mộc mạc sang trọng; vị matcha, cacao, cà phê rõ ràng, hậu vị sạch; phù hợp brunch/trưa/tối; tầng 5 tòa nhà IBC 1A Công trường Mê Linh; đóng cửa 22:00.",
     "evidence": "\"Thực đơn ở đây mang hơi hướng châu Âu, hiện đại, nhẹ nhàng và tinh tế.\" | \"Nguyên liệu tươi, nêm nếm vừa phải, ăn vào là không ngấy mà rất là thả luôn nha.\" | \"Không gian là lý do khiến thực khách muốn ở lại lâu hơn nơi này. Thiết kế mở với trần là cây uống lượt mềm mại, ánh sáng tự nhiên ngập tràn.\"",
     "characteristic_raw": "poi=Cocoa Kitchen ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Thực đơn châu Âu hiện đại, tinh tế; nguyên liệu tươi, nêm nếm vừa phải; không gian mở thoáng đãng, thiết kế mộc mạc sang trọng; vị matcha, cacao, cà phê rõ ràng, hậu vị sạch; phù hợp brunch/trưa/tối; tầng 5 tòa nhà IBC 1A Công trường Mê Linh; đóng cửa 22:00. ; confidence=0.98 ; evidence=\"Thực đơn ở đây mang hơi hướng châu Âu, hiện đại, nhẹ nhàng và tinh tế.\" | \"Nguyên liệu tươi, nêm nếm vừa phải, ăn vào là không ngấy mà rất là thả luôn nha.\" | \"Không gian là lý do khiến thực khách muốn ở lại lâu hơn nơi này. Thiết kế mở với trần là cây uống lượt mềm mại, ánh sáng tự nhiên ngập tràn.\"",
-    "video_playcount": "56500"
+    "video_playcount": "56500",
+    "location_type": "school",
+    "image_url": "images/school.jpg"
   },
   {
     "video_id": "7604030862975421716",
@@ -1645,7 +1849,9 @@
     "characteristic_vi": "Không gian quán xinh xắn, menu đa dạng (Á Âu), giá sinh viên 25-45k, học sinh 59-65k. Phần ăn đầy đặn, no. Món nổi bật: cơm cuộn truyền thống chắc tay, canh kimchi đậm đà, cơm gà sốt mayo béo thơm, mì ý sốt kem béo không ngậy, mì tương đen trứng lòng đào phô mai ngon. Combo 3 sốt gà (cay ngọt, bơ tỏi, phô mai) không ngán, gà nhiều. Buổi tối đông khách, vui vẻ.",
     "evidence": "Không gian thì sẽ là một chiếc quán hàng xinh xắn nhưng mà menu Á Âu có đủ nên lựa đã luôn | Mặc bằng gần chợ Tân Định nhưng mà menu thì học sinh sinh viên giá có 25-45 Rồi 59-65 cành à rẻ mà phần ăn đầy đặn no nha | Ví dụ cơm cuộn truyền thống này cuộn siêu chắc tay và to",
     "characteristic_raw": "poi=Kitchen Ăn Gì Cũng Được ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian quán xinh xắn, menu đa dạng (Á Âu), giá sinh viên 25-45k, học sinh 59-65k. Phần ăn đầy đặn, no. Món nổi bật: cơm cuộn truyền thống chắc tay, canh kimchi đậm đà, cơm gà sốt mayo béo thơm, mì ý sốt kem béo không ngậy, mì tương đen trứng lòng đào phô mai ngon. Combo 3 sốt gà (cay ngọt, bơ tỏi, phô mai) không ngán, gà nhiều. Buổi tối đông khách, vui vẻ. ; confidence=0.98 ; evidence=Không gian thì sẽ là một chiếc quán hàng xinh xắn nhưng mà menu Á Âu có đủ nên lựa đã luôn | Mặc bằng gần chợ Tân Định nhưng mà menu thì học sinh sinh viên giá có 25-45 Rồi 59-65 cành à rẻ mà phần ăn đầy đặn no nha | Ví dụ cơm cuộn truyền thống này cuộn siêu chắc tay và to",
-    "video_playcount": "68500"
+    "video_playcount": "68500",
+    "location_type": "ice_cream",
+    "image_url": "images/ice_cream.webp"
   },
   {
     "video_id": "7607346377722432788",
@@ -1661,7 +1867,9 @@
     "characteristic_vi": "Không gian rộng >5000m2, nhiều cây xanh, hồ cá, ngựa, cừu, thú cưng. Giá vé người lớn 90-100k, trẻ em 50-60k (theo mô hình vé kèm nước). Mở cửa 7h30-22h. Không gian yên bình, phù hợp gia đình. Có sự kiện bắn pháo hoa mùng 2 Tết. Địa chỉ: 77/50/9 Đường Chuyên Dùng Chính, Phú Mỹ, Quận 7.",
     "evidence": "Mời bạn bè, người thân gia đình đến đây thưởng thức cà phê, chiêu chiêu, không gian cảnh đẹp y như Đà Lạt, ma lại ở quận 7 nha. | Có xương khỏi mịt mù, hoa nở khắp trời luôn | Mình thấy giá thành ở đây rất là ok luôn á Bởi vì bán theo mô hình là vé kèm nước Người lớn chỉ tầm 90 đến 100 cành tùy loại nước nha Còn trẻ em thì chỉ từ 50 đến 60 cành thôi",
     "characteristic_raw": "poi=Mây Farm Quận 7 ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian rộng >5000m2, nhiều cây xanh, hồ cá, ngựa, cừu, thú cưng. Giá vé người lớn 90-100k, trẻ em 50-60k (theo mô hình vé kèm nước). Mở cửa 7h30-22h. Không gian yên bình, phù hợp gia đình. Có sự kiện bắn pháo hoa mùng 2 Tết. Địa chỉ: 77/50/9 Đường Chuyên Dùng Chính, Phú Mỹ, Quận 7. ; confidence=0.98 ; evidence=Mời bạn bè, người thân gia đình đến đây thưởng thức cà phê, chiêu chiêu, không gian cảnh đẹp y như Đà Lạt, ma lại ở quận 7 nha. | Có xương khỏi mịt mù, hoa nở khắp trời luôn | Mình thấy giá thành ở đây rất là ok luôn á Bởi vì bán theo mô hình là vé kèm nước Người lớn chỉ tầm 90 đến 100 cành tùy loại nước nha Còn trẻ em thì chỉ từ 50 đến 60 cành thôi",
-    "video_playcount": "5702"
+    "video_playcount": "5702",
+    "location_type": "farm_park",
+    "image_url": "images/farm_park.jpg"
   },
   {
     "video_id": "7609530212581215496",
@@ -1677,6 +1885,8 @@
     "characteristic_vi": "Không gian ấm cúng, nhân viên chu đáo, tô mì bò chất lượng, nước dùng đậm đà, ba rọi trộn vị vừa miệng, gà rán kiểu Đài Loan giòn trong mềm, nước sâm thảo mộc và chanh mật ông xí muội ngon",
     "evidence": "# Không gian ấm cúng nhân viên chu đáo lắm luôn | # Tô mì bò chất lượng dây ụ topping | # Sợ mì dai ngon nước dùng cực đậm đà",
     "characteristic_raw": "poi=Cow Mee Inn-Mỳ bò Đài Loan Taiwan Beef Noodle Q1 ; city=Thành phố Hồ Chí Minh ; stt_source=groq ; characteristic_vi=Không gian ấm cúng, nhân viên chu đáo, tô mì bò chất lượng, nước dùng đậm đà, ba rọi trộn vị vừa miệng, gà rán kiểu Đài Loan giòn trong mềm, nước sâm thảo mộc và chanh mật ông xí muội ngon ; confidence=0.95 ; evidence=# Không gian ấm cúng nhân viên chu đáo lắm luôn | # Tô mì bò chất lượng dây ụ topping | # Sợ mì dai ngon nước dùng cực đậm đà",
-    "video_playcount": "373500"
+    "video_playcount": "373500",
+    "location_type": "steak_house",
+    "image_url": "images/steak_house.jpg"
   }
 ]

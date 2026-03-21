@@ -61,6 +61,7 @@ export function SocialMap(props: {
   participants: SocialParticipant[];
   recommendations: Poi[];
   currentParticipantId?: string;
+  currentLocation?: { lat: number; lng: number };
   className?: string;
   fullscreen?: boolean;
 }) {
@@ -70,8 +71,11 @@ export function SocialMap(props: {
     [props.participants]
   );
   const currentParticipant = useMemo(
-    () => liveParticipants.find((p) => p.id === props.currentParticipantId) ?? liveParticipants[0],
+    () => liveParticipants.find((p) => p.id === props.currentParticipantId),
     [liveParticipants, props.currentParticipantId]
+  );
+  const pulsePosition = props.currentLocation ?? (
+    currentParticipant ? { lat: currentParticipant.lat as number, lng: currentParticipant.lng as number } : null
   );
 
   useEffect(() => {
@@ -97,11 +101,11 @@ export function SocialMap(props: {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
 
-        {currentParticipant && (
+        {pulsePosition && (
           <Marker
-            key={`${currentParticipant.id}_pulse`}
-            position={[currentParticipant.lat as number, currentParticipant.lng as number]}
-            icon={pulseIcon(currentParticipant.avatarSeed || currentParticipant.displayName)}
+            key="current_user_pulse"
+            position={[pulsePosition.lat, pulsePosition.lng]}
+            icon={pulseIcon((currentParticipant?.avatarSeed || currentParticipant?.displayName || props.currentParticipantId || 'me'))}
           >
             <Tooltip direction="top" offset={[0, -18]} opacity={1}>
               You are here

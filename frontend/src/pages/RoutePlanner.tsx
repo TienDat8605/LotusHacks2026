@@ -86,7 +86,7 @@ function withHcmcContext(query: string) {
 
 export default function RoutePlanner() {
   usePageMeta({
-    title: 'VibeMap — Route Planner',
+    title: 'Kompas — Route Planner',
     description: 'Design a time-boxed curated route.',
   });
 

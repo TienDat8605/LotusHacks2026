@@ -52,7 +52,7 @@ function buildRouteSummary(origin: string, pois: Poi[]) {
 
 export default function AiAssistant() {
   usePageMeta({
-    title: 'VibeMap - AI Assistant',
+    title: 'Kompas - AI Assistant',
     description: 'Ask for places and routes by vibe.',
   });
 

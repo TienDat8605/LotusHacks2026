@@ -42,6 +42,7 @@ func (h *Handler) Router() http.Handler {
 	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 	})
+	r.Get("/assets/*", h.handleAsset)
 
 	r.Route("/api", func(apiR chi.Router) {
 		apiR.Get("/geocode/search", h.handleGeocodeSearch)
@@ -114,7 +115,7 @@ func (h *Handler) corsMiddleware(next http.Handler) http.Handler {
 
 func jsonMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.Contains(r.URL.Path, "/stream") {
+		if strings.Contains(r.URL.Path, "/stream") || strings.HasPrefix(r.URL.Path, "/assets/") {
 			next.ServeHTTP(w, r)
 			return
 		}

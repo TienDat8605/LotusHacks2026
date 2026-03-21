@@ -30,9 +30,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'pwa-icon.svg'],
       manifest: {
-        name: 'VibeMap',
-        short_name: 'VibeMap',
-        description: 'Vibe-first route planning and discovery in Ho Chi Minh City.',
+        name: 'Kompas',
+        short_name: 'Kompas',
+        description: 'Kompas route planning and discovery in Ho Chi Minh City.',
         theme_color: '#004be3',
         background_color: '#f5f6f7',
         display: 'standalone',
