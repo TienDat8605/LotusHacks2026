@@ -20,18 +20,12 @@ services:
     restart: unless-stopped
 
   ai-service:
-    # Keep Debian slim for binary wheel compatibility (e.g. pymilvus/grpc).
-    image: python:3.11-slim
+    build:
+      context: ./backend/services
+      dockerfile: Dockerfile.dev
+    image: lotus-hacks-ai-service:dev
     init: true
     working_dir: /workspace/backend/services
-    command: >
-      sh -lc "if [ ! -x /opt/venv/bin/python ]; then python -m venv /opt/venv; fi &&
-      if [ ! -f /opt/venv/requirements.sha ] || ! sha256sum -c /opt/venv/requirements.sha >/dev/null 2>&1; then
-      /opt/venv/bin/pip install --no-cache-dir -r requirements.txt &&
-      sha256sum requirements.txt > /opt/venv/requirements.sha; fi &&
-      if ! /opt/venv/bin/python -c 'import multipart' >/dev/null 2>&1; then
-      /opt/venv/bin/pip install --no-cache-dir python-multipart; fi &&
-      /opt/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8090"
     environment:
       PYTHONUNBUFFERED: "1"
       AI_SERVICE_HOST: 0.0.0.0
@@ -47,12 +41,10 @@ services:
     volumes:
       - ./backend/services:/workspace/backend/services
       - ./data:/workspace/data
-      - pip-cache:/root/.cache/pip
-      - ai-venv:/opt/venv
     restart: unless-stopped
 
   backend:
-    image: golang:1.22-alpine
+    image: golang:1.22
     init: true
     working_dir: /workspace/backend
     command: sh -lc "go run ./cmd/api"
@@ -97,8 +89,6 @@ services:
 volumes:
   caddy-data:
   caddy-config:
-  pip-cache:
-  ai-venv:
   go-mod-cache:
   go-build-cache:
   frontend-node-modules:
