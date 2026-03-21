@@ -33,6 +33,15 @@ export function createRealApiClient(): ApiClient {
         method: 'POST',
         body: JSON.stringify({ displayName }),
       }),
+    updateSocialLocation: (sessionId, participantId, lat, lng) =>
+      jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/location`, {
+        method: 'POST',
+        body: JSON.stringify({ participantId, lat, lng }),
+      }),
+    listParticipants: (sessionId) =>
+      jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/participants`),
+    listRecommendations: (sessionId) =>
+      jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/recommendations`),
     listSessionMessages: (sessionId) =>
       jsonFetch(`${base}/api/social/sessions/${encodeURIComponent(sessionId)}/messages`),
     sendSessionMessage: (sessionId, text) =>
@@ -46,4 +55,3 @@ export function createRealApiClient(): ApiClient {
       }),
   };
 }
-

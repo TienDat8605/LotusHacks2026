@@ -1,15 +1,71 @@
+import { useEffect, useMemo, useRef } from 'react';
+import L from 'leaflet';
+import { MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'react-leaflet';
 import { cn } from '@/lib/utils';
-import type { Poi, RoutePlan } from '@/api/types';
+import type { LatLng, Poi, RoutePlan } from '@/api/types';
 
-function markerStyle(i: number) {
-  const positions = [
-    { top: '48%', left: '18%' },
-    { top: '38%', left: '34%' },
-    { top: '54%', left: '54%' },
-    { top: '36%', left: '72%' },
-    { top: '44%', left: '84%' },
-  ];
-  return positions[i % positions.length];
+const legColors = ['#004be3', '#b90037', '#006763', '#7c3aed', '#ea580c', '#0ea5e9'];
+
+function toLatLng(p: LatLng): [number, number] {
+  return [p.lat, p.lng];
+}
+
+function BoundsFitter(props: { points: LatLng[] }) {
+  const map = useMap();
+  const hasFittedRef = useRef(false);
+  const pointsKey = useMemo(() => props.points.map((p) => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join('|'), [props.points]);
+
+  useEffect(() => {
+    hasFittedRef.current = false;
+  }, [pointsKey]);
+
+  useEffect(() => {
+    if (props.points.length === 0 || hasFittedRef.current) return;
+    const bounds = L.latLngBounds(props.points.map((p) => L.latLng(p.lat, p.lng)));
+    map.fitBounds(bounds.pad(0.2), { animate: true });
+    hasFittedRef.current = true;
+  }, [map, props.points]);
+
+  return null;
+}
+
+function poiIcon(index: number, active: boolean) {
+  const bg = active ? '#b90037' : 'rgba(0,75,227,0.92)';
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:36px;height:36px;border-radius:9999px;background:${bg};color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:ui-sans-serif;font-size:12px;box-shadow:0 14px 30px rgba(0,0,0,0.20);border:4px solid rgba(255,255,255,0.65);">${index}</div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+  });
+}
+
+function pinIcon(label: string) {
+  return L.divIcon({
+    className: '',
+    html: `<div style="padding:8px 12px;border-radius:9999px;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.85);box-shadow:0 14px 30px rgba(0,0,0,0.18);font-weight:800;font-family:ui-sans-serif;font-size:12px;color:#0f172a;">${label}</div>`,
+    iconSize: [90, 34],
+    iconAnchor: [45, 17],
+  });
+}
+
+function buildLegPath(route: RoutePlan, legIndex: number): LatLng[] {
+  const leg = route.legs[legIndex];
+  if (leg?.path?.length) return leg.path;
+
+  const origin = route.origin?.location;
+  const destination = route.destination?.location;
+  const stops = route.pois;
+
+  if (!origin || !destination || stops.length === 0) {
+    const pts = stops.map((p) => p.location);
+    if (pts.length >= 2 && legIndex < pts.length - 1) return [pts[legIndex], pts[legIndex + 1]];
+    return pts;
+  }
+
+  const from = legIndex === 0 ? origin : stops[legIndex - 1]?.location;
+  const to = legIndex === stops.length ? destination : stops[legIndex]?.location;
+  if (!from || !to) return [];
+  return [from, to];
 }
 
 export function MapCanvas(props: {
@@ -20,55 +76,85 @@ export function MapCanvas(props: {
   activePoiId?: string;
   onPoiClick?: (poi: Poi) => void;
 }) {
-  const pois = props.route?.pois ?? [];
+  const route = props.route;
+  const pois = route?.pois ?? [];
+  const origin = route?.origin?.location;
+  const destination = route?.destination?.location;
+
+  const fitPoints = useMemo(() => {
+    const pts = [] as LatLng[];
+    if (origin) pts.push(origin);
+    for (const p of pois) pts.push(p.location);
+    if (destination) pts.push(destination);
+    return pts;
+  }, [destination, origin, pois]);
+
+  const center: [number, number] = useMemo(() => {
+    if (fitPoints.length > 0) return toLatLng(fitPoints[0]);
+    return [10.7757, 106.7008];
+  }, [fitPoints]);
 
   return (
-    <div
-      className={cn(
-        'relative h-full w-full overflow-hidden rounded-lg bg-surface-container map-mesh',
-        props.className
-      )}
-    >
-      <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-background" />
-      <div className="absolute inset-0 opacity-20 mix-blend-multiply bg-[radial-gradient(circle_at_20%_20%,rgba(0,75,227,0.15),transparent_40%),radial-gradient(circle_at_70%_40%,rgba(185,0,55,0.12),transparent_45%),radial-gradient(circle_at_40%_80%,rgba(0,103,99,0.10),transparent_50%)]" />
-
+    <div className={cn('relative h-full w-full overflow-hidden rounded-lg bg-surface-container', props.className)}>
       {(props.title || props.subtitle) && (
-        <div className="absolute top-4 left-4 z-10 glass-card rounded-full px-3 py-2 shadow-float">
+        <div className="pointer-events-none absolute top-4 left-4 z-[1000] glass-card rounded-full px-3 py-2 shadow-float">
           {props.title && <div className="text-xs font-bold text-on-surface">{props.title}</div>}
           {props.subtitle && <div className="text-[10px] font-semibold text-on-surface-variant">{props.subtitle}</div>}
         </div>
       )}
 
-      {pois.map((poi, i) => {
-        const active = poi.id === props.activePoiId;
-        const pos = markerStyle(i + 1);
-        const tone = active ? 'bg-tertiary text-white' : 'bg-primary-container/70 text-on-primary-container';
-        return (
-          <button
+      <MapContainer center={center} zoom={13} scrollWheelZoom className="h-full w-full">
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        {route && <BoundsFitter points={fitPoints} />}
+
+        {origin && (
+          <Marker position={toLatLng(origin)} icon={pinIcon('Start')}>
+            <Tooltip direction="top" offset={[0, -10]} opacity={1}>
+              {route?.origin?.name ?? 'Origin'}
+            </Tooltip>
+          </Marker>
+        )}
+
+        {destination && (
+          <Marker position={toLatLng(destination)} icon={pinIcon('End')}>
+            <Tooltip direction="top" offset={[0, -10]} opacity={1}>
+              {route?.destination?.name ?? 'Destination'}
+            </Tooltip>
+          </Marker>
+        )}
+
+        {route?.legs?.map((_, i) => {
+          const path = buildLegPath(route, i);
+          if (path.length < 2) return null;
+          const color = legColors[i % legColors.length];
+          return (
+            <Polyline
+              key={`leg_${i}`}
+              positions={path.map(toLatLng)}
+              pathOptions={{ color, weight: 6, opacity: 0.9 }}
+            />
+          );
+        })}
+
+        {pois.map((poi, i) => (
+          <Marker
             key={poi.id}
-            type="button"
-            onClick={() => props.onPoiClick?.(poi)}
-            className={cn(
-              'absolute z-10 flex flex-col items-center group cursor-pointer',
-              active ? 'scale-105' : 'hover:scale-105'
-            )}
-            style={pos}
+            position={toLatLng(poi.location)}
+            icon={poiIcon(i + 1, poi.id === props.activePoiId)}
+            eventHandlers={{
+              click: () => props.onPoiClick?.(poi),
+            }}
           >
-            <div
-              className={cn(
-                'w-9 h-9 rounded-full flex items-center justify-center shadow-float ring-4 ring-white/50 transition-transform font-headline font-extrabold text-xs',
-                tone
-              )}
-            >
-              {i + 1}
-            </div>
-            <div className="mt-2 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold shadow-float border border-white/60">
+            <Tooltip direction="top" offset={[0, -14]} opacity={1}>
               {poi.name}
-            </div>
-          </button>
-        );
-      })}
+            </Tooltip>
+          </Marker>
+        ))}
+      </MapContainer>
     </div>
   );
 }
-

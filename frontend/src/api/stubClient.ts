@@ -1,5 +1,5 @@
 import type { ApiClient } from '@/api/client';
-import type { AssistantResponse, ChatMessage, Poi, RoutePlan, RoutePlanRequest, SocialSession } from '@/api/types';
+import type { AssistantResponse, ChatMessage, Poi, RoutePlan, RoutePlanRequest, SocialParticipant, SocialSession } from '@/api/types';
 
 function nowIso() {
   return new Date().toISOString();
@@ -66,6 +66,8 @@ type StubState = {
   assistantThreads: Record<string, ChatMessage[]>;
   sessionMessages: Record<string, ChatMessage[]>;
   sessions: SocialSession[];
+  participants: Record<string, SocialParticipant[]>;
+  recommendations: Record<string, Poi[]>;
 };
 
 const state: StubState = {
@@ -80,6 +82,15 @@ const state: StubState = {
     { id: 'session_urban_pulse', destinationName: 'Pasteur Street Brewing Co.', participantCount: 12, status: 'live' },
     { id: 'session_rooftop', destinationName: 'Twilight Rooftop', participantCount: 6, status: 'scheduled' },
   ],
+  participants: {
+    session_urban_pulse: [
+      { id: id('p'), displayName: 'Minh Tran', avatarSeed: 'minh', lastSeen: nowIso(), lat: 10.772, lng: 106.698 },
+      { id: id('p'), displayName: 'Linh Nguyen', avatarSeed: 'linh', lastSeen: nowIso(), lat: 10.775, lng: 106.705 },
+    ],
+  },
+  recommendations: {
+    session_urban_pulse: samplePois(true),
+  },
 };
 
 export function createStubApiClient(): ApiClient {
@@ -143,7 +154,30 @@ export function createStubApiClient(): ApiClient {
       await sleep(250);
       const s = state.sessions.find((x) => x.id === sessionId);
       if (s) s.participantCount += 1;
-      return { participantId: id('participant') };
+      return { participantId: id('participant'), avatarSeed: id('avatar') };
+    },
+
+    updateSocialLocation: async (sessionId: string, participantId: string, lat: number, lng: number) => {
+      await sleep(120);
+      const list = state.participants[sessionId] ?? [];
+      const p = list.find((x) => x.id === participantId);
+      if (p) {
+        p.lat = lat;
+        p.lng = lng;
+        p.lastSeen = nowIso();
+      }
+      state.participants[sessionId] = list;
+      return { ok: true };
+    },
+
+    listParticipants: async (sessionId: string) => {
+      await sleep(120);
+      return [...(state.participants[sessionId] ?? [])];
+    },
+
+    listRecommendations: async (sessionId: string) => {
+      await sleep(140);
+      return [...(state.recommendations[sessionId] ?? samplePois(true))];
     },
 
     listSessionMessages: async (sessionId: string) => {
@@ -164,4 +198,3 @@ export function createStubApiClient(): ApiClient {
     },
   };
 }
-

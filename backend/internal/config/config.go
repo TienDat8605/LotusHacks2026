@@ -33,7 +33,7 @@ func Load() (*Config, error) {
 
 	poiPath := strings.TrimSpace(os.Getenv("POI_DATA_PATH"))
 	if poiPath == "" {
-		poiPath = "../data/pois.json"
+		poiPath = "../data/data.json"
 	}
 
 	cfg := &Config{

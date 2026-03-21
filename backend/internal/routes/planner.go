@@ -65,19 +65,24 @@ func (p *Planner) Plan(req api.RoutePlanRequest) api.RoutePlan {
 
 	legs := make([]api.RouteLeg, 0, max(1, len(picked)-1))
 	totalLegMinutes := 0
-	for i := 0; i < max(1, len(picked)-1); i++ {
-		from := picked[i]
-		to := picked[i+1]
-		minutes := estimateTravelMinutes(from.Location, to.Location, mode)
-		totalLegMinutes += minutes
-		fromID := from.ID
-		toID := to.ID
-		legs = append(legs, api.RouteLeg{
-			FromPoiID:       &fromID,
-			ToPoiID:         &toID,
-			DurationMinutes: minutes,
-			Steps:           stepsForLeg(from.Name, to.Name, minutes),
-		})
+	if len(picked) >= 2 {
+		legs = make([]api.RouteLeg, 0, len(picked)-1)
+		for i := 0; i < len(picked)-1; i++ {
+			from := picked[i]
+			to := picked[i+1]
+			minutes := estimateTravelMinutes(from.Location, to.Location, mode)
+			totalLegMinutes += minutes
+			fromID := from.ID
+			toID := to.ID
+			legs = append(legs, api.RouteLeg{
+				FromPoiID:       &fromID,
+				ToPoiID:         &toID,
+				DurationMinutes: minutes,
+				Steps:           stepsForLeg(from.Name, to.Name, minutes),
+			})
+		}
+	} else {
+		legs = []api.RouteLeg{}
 	}
 
 	dwellPerStop := 18

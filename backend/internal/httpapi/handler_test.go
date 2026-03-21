@@ -74,3 +74,87 @@ func TestSocialSessions(t *testing.T) {
 	}
 }
 
+func TestSocialParticipantsAndRecommendations(t *testing.T) {
+	cfg := &config.Config{Port: "8080"}
+	poiRepo := pois.NewRepository("../data/data.json")
+	_ = poiRepo.Load()
+	socialStore := social.NewStore()
+	socialStore.SeedDefault()
+
+	h := NewHandler(cfg, poiRepo, socialStore)
+	srv := httptest.NewServer(h.Router())
+	t.Cleanup(srv.Close)
+
+	joinBody := []byte(`{"displayName":"A"}`)
+	res, err := http.Post(srv.URL+"/api/social/sessions/session_urban_pulse/join", "application/json", bytes.NewReader(joinBody))
+	if err != nil {
+		t.Fatalf("join: %v", err)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("join status: %d", res.StatusCode)
+	}
+	var joinResp struct {
+		ParticipantId string `json:"participantId"`
+		AvatarSeed    string `json:"avatarSeed"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&joinResp); err != nil {
+		t.Fatalf("join decode: %v", err)
+	}
+	if joinResp.ParticipantId == "" || joinResp.AvatarSeed == "" {
+		t.Fatalf("missing participantId/avatarSeed")
+	}
+
+	locPayload := []byte(`{"participantId":"` + joinResp.ParticipantId + `","lat":10.77,"lng":106.70}`)
+	res2, err := http.Post(srv.URL+"/api/social/sessions/session_urban_pulse/location", "application/json", bytes.NewReader(locPayload))
+	if err != nil {
+		t.Fatalf("location: %v", err)
+	}
+	res2.Body.Close()
+	if res2.StatusCode != http.StatusOK {
+		t.Fatalf("location status: %d", res2.StatusCode)
+	}
+
+	res3, err := http.Get(srv.URL + "/api/social/sessions/session_urban_pulse/participants")
+	if err != nil {
+		t.Fatalf("participants: %v", err)
+	}
+	defer res3.Body.Close()
+	if res3.StatusCode != http.StatusOK {
+		t.Fatalf("participants status: %d", res3.StatusCode)
+	}
+
+	res4, err := http.Get(srv.URL + "/api/social/sessions/session_urban_pulse/recommendations")
+	if err != nil {
+		t.Fatalf("recs: %v", err)
+	}
+	defer res4.Body.Close()
+	if res4.StatusCode != http.StatusOK {
+		t.Fatalf("recs status: %d", res4.StatusCode)
+	}
+	var recs []api.Poi
+	if err := json.NewDecoder(res4.Body).Decode(&recs); err != nil {
+		t.Fatalf("recs decode: %v", err)
+	}
+	if len(recs) == 0 {
+		t.Fatalf("expected recommendations")
+	}
+}
+
+func TestCorsEchoOrigin(t *testing.T) {
+	cfg := &config.Config{Port: "8080"}
+	poiRepo := pois.NewRepository("../data/pois.json")
+	_ = poiRepo.Load()
+	socialStore := social.NewStore()
+	socialStore.SeedDefault()
+
+	h := NewHandler(cfg, poiRepo, socialStore)
+	r := httptest.NewRequest(http.MethodGet, "/healthz", nil)
+	r.Header.Set("Origin", "http://localhost:5175")
+	w := httptest.NewRecorder()
+	h.Router().ServeHTTP(w, r)
+
+	if got := w.Header().Get("Access-Control-Allow-Origin"); got != "*" {
+		t.Fatalf("expected allow-origin header, got %q", got)
+	}
+}

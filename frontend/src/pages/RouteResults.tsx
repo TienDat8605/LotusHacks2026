@@ -5,6 +5,7 @@ import { MapCanvas } from '@/components/map/MapCanvas';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { cn } from '@/lib/utils';
 import { useVibeMapStore } from '@/stores/vibemapStore';
+import type { Poi } from '@/api/types';
 
 function minutesLabel(mins: number) {
   const h = Math.floor(mins / 60);
@@ -28,6 +29,7 @@ export default function RouteResults() {
   });
 
   const activeLeg = useMemo(() => route?.legs[activeLegIndex], [route?.legs, activeLegIndex]);
+  const activePoi = useMemo(() => route?.pois.find((p) => p.id === activePoiId), [route?.pois, activePoiId]);
 
   if (!route) {
     return (
@@ -116,7 +118,7 @@ export default function RouteResults() {
                         <div className="flex-1">
                           <div className="text-sm font-extrabold text-on-surface">{p.name}</div>
                           <div className="text-xs text-on-surface-variant mt-0.5">
-                            {(p.category ?? 'Curated') + (p.rating ? ` · ${p.rating.toFixed(1)}` : '')}
+                            {(p.address ?? p.city ?? p.category ?? 'Curated') + (p.rating ? ` · ${p.rating.toFixed(1)}` : '')}
                           </div>
                         </div>
                         <ChevronRight className="h-4 w-4 text-on-surface-variant" />
@@ -181,6 +183,8 @@ export default function RouteResults() {
                 ))}
               </div>
 
+              <TikTokPanel poi={activePoi} />
+
               {activePoiId && (
                 <Link
                   to={`/results/${encodeURIComponent(route.id)}/vibe/${encodeURIComponent(activePoiId)}`}
@@ -198,3 +202,50 @@ export default function RouteResults() {
   );
 }
 
+function TikTokPanel(props: { poi?: Poi }) {
+  const url = props.poi?.videoUrl;
+  const id = props.poi?.videoId;
+  const embed = id ? `https://www.tiktok.com/embed/v2/${encodeURIComponent(id)}` : undefined;
+
+  if (!url && !embed) return null;
+
+  return (
+    <div className="mt-8">
+      <div className="flex items-center justify-between">
+        <h3 className="font-headline font-extrabold text-sm">TikTok</h3>
+        <span className="text-[10px] font-bold uppercase tracking-widest text-outline">Vibe Proof</span>
+      </div>
+
+      <div className="mt-4 bg-surface-container-low rounded-2xl overflow-hidden">
+        {embed ? (
+          <div className="aspect-[9/16] w-full">
+            <iframe
+              src={embed}
+              className="w-full h-full"
+              allow="encrypted-media;"
+              referrerPolicy="strict-origin-when-cross-origin"
+              title={props.poi?.name ?? 'TikTok'}
+            />
+          </div>
+        ) : null}
+
+        {url ? (
+          <div className="p-4 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-xs font-extrabold text-on-surface truncate">{props.poi?.name ?? 'Open video'}</div>
+              <div className="text-[10px] text-on-surface-variant truncate mt-1">{url}</div>
+            </div>
+            <a
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+              className="flex-shrink-0 bg-primary text-white px-4 py-2 rounded-full text-xs font-extrabold"
+            >
+              Open
+            </a>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}

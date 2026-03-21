@@ -3,6 +3,8 @@ package social
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"sort"
+	"strings"
 	"sync"
 	"time"
 
@@ -10,15 +12,17 @@ import (
 )
 
 type Store struct {
-	mu       sync.RWMutex
-	sessions map[string]*api.SocialSession
-	messages map[string][]api.ChatMessage
+	mu           sync.RWMutex
+	sessions     map[string]*api.SocialSession
+	messages     map[string][]api.ChatMessage
+	participants map[string]map[string]*api.SocialParticipant
 }
 
 func NewStore() *Store {
 	return &Store{
-		sessions: map[string]*api.SocialSession{},
-		messages: map[string][]api.ChatMessage{},
+		sessions:     map[string]*api.SocialSession{},
+		messages:     map[string][]api.ChatMessage{},
+		participants: map[string]map[string]*api.SocialParticipant{},
 	}
 }
 
@@ -41,6 +45,9 @@ func (s *Store) SeedDefault() {
 		{ID: newID("m"), Role: "assistant", Text: "Welcome to Urban Pulse. Drop your ETA and I’ll keep the vibe aligned.", CreatedAt: time.Now().UTC().Format(time.RFC3339)},
 		{ID: newID("m"), Role: "user", Text: "On my way — 10 mins.", CreatedAt: time.Now().UTC().Format(time.RFC3339)},
 	}
+
+	s.participants["session_urban_pulse"] = map[string]*api.SocialParticipant{}
+	s.participants["session_rooftop"] = map[string]*api.SocialParticipant{}
 }
 
 func (s *Store) ListSessions() []api.SocialSession {
@@ -53,15 +60,61 @@ func (s *Store) ListSessions() []api.SocialSession {
 	return out
 }
 
-func (s *Store) Join(sessionID string) (string, bool) {
+func (s *Store) Join(sessionID string, displayName string) (api.SocialParticipant, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	sess, ok := s.sessions[sessionID]
 	if !ok {
-		return "", false
+		return api.SocialParticipant{}, false
 	}
 	sess.ParticipantCount++
-	return newID("participant"), true
+	if strings.TrimSpace(displayName) == "" {
+		displayName = "Explorer"
+	}
+	pid := newID("participant")
+	p := &api.SocialParticipant{
+		ID:          pid,
+		DisplayName: displayName,
+		AvatarSeed:  newID("avatar"),
+		LastSeen:    time.Now().UTC().Format(time.RFC3339),
+	}
+	if s.participants[sessionID] == nil {
+		s.participants[sessionID] = map[string]*api.SocialParticipant{}
+	}
+	s.participants[sessionID][pid] = p
+	return *p, true
+}
+
+func (s *Store) UpdateLocation(sessionID, participantID string, lat, lng float64) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	room, ok := s.participants[sessionID]
+	if !ok {
+		return false
+	}
+	p, ok := room[participantID]
+	if !ok {
+		return false
+	}
+	p.Lat = &lat
+	p.Lng = &lng
+	p.LastSeen = time.Now().UTC().Format(time.RFC3339)
+	return true
+}
+
+func (s *Store) ListParticipants(sessionID string) ([]api.SocialParticipant, bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	if _, ok := s.sessions[sessionID]; !ok {
+		return nil, false
+	}
+	room := s.participants[sessionID]
+	out := make([]api.SocialParticipant, 0, len(room))
+	for _, p := range room {
+		out = append(out, *p)
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].LastSeen > out[j].LastSeen })
+	return out, true
 }
 
 func (s *Store) ListMessages(sessionID string) ([]api.ChatMessage, bool) {
