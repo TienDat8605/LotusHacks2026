@@ -16,6 +16,7 @@ class Poi(BaseModel):
     location: LatLng
     address: str | None = None
     city: str | None = None
+    imageUrl: str | None = None
     videoUrl: str | None = None
     videoId: str | None = None
     category: str | None = None

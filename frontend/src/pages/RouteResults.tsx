@@ -93,6 +93,51 @@ function stopBadge(poi?: Poi) {
   return 'Curated stop';
 }
 
+function normalizePoiLookupKey(value?: string) {
+  if (!value) return '';
+  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+}
+
+function findDirectDestinationPoi(route: RoutePlan | undefined, assistantPois: Poi[]) {
+  if (!route) return undefined;
+  if (route.pois.length > 0) return undefined;
+
+  const destination = route.destination;
+  if (!destination?.location) return undefined;
+
+  const destinationName = (destination.name ?? '').trim();
+  const destinationKey = normalizePoiLookupKey(destinationName);
+
+  let matchedPoi: Poi | undefined;
+  if (destinationKey) {
+    matchedPoi = assistantPois.find((poi) => normalizePoiLookupKey(poi.name) === destinationKey);
+  }
+  if (!matchedPoi && destinationName) {
+    const lowered = destinationName.toLowerCase();
+    matchedPoi = assistantPois.find((poi) => {
+      const poiName = poi.name.trim().toLowerCase();
+      return poiName.includes(lowered) || lowered.includes(poiName);
+    });
+  }
+
+  if (matchedPoi) {
+    return {
+      ...matchedPoi,
+      location: matchedPoi.location ?? destination.location,
+      name: matchedPoi.name || destinationName || 'Destination',
+    } satisfies Poi;
+  }
+
+  return {
+    id: `direct_dest_${route.id}`,
+    name: destinationName || 'Destination',
+    location: destination.location,
+    address: destinationName || undefined,
+    category: 'Destination',
+    badges: ['Direct route'],
+  } satisfies Poi;
+}
+
 function normalizeTikTokUrl(value?: string) {
   if (!value) return undefined;
 
@@ -160,6 +205,7 @@ function fallbackThumbnailUrl(poi?: Poi) {
 export default function RouteResults() {
   const params = useParams();
   const getRoute = useVibeMapStore((s) => s.getRoute);
+  const assistantSuggestedPois = useVibeMapStore((s) => s.assistant.suggestedPois);
   const route = params.routeId ? getRoute(params.routeId) : undefined;
   const [activePoiId, setActivePoiId] = useState<string | undefined>(route?.pois[0]?.id);
   const [activeLegIndex, setActiveLegIndex] = useState(0);
@@ -172,12 +218,16 @@ export default function RouteResults() {
     description: 'Review itinerary, stops, and turn-by-turn directions.',
   });
 
+  const directDestinationPoi = useMemo(
+    () => findDirectDestinationPoi(route, assistantSuggestedPois),
+    [route, assistantSuggestedPois]
+  );
   const activeLeg = useMemo(() => route?.legs[activeLegIndex], [route?.legs, activeLegIndex]);
   const activePoi = useMemo(() => route?.pois.find((p) => p.id === activePoiId) ?? route?.pois[0], [route?.pois, activePoiId]);
-  const totalStops = route?.pois.length ?? 0;
+  const selectedPoi = activePoi ?? route?.pois[0] ?? directDestinationPoi;
+  const totalStops = route ? (route.pois.length > 0 ? route.pois.length : selectedPoi ? 1 : 0) : 0;
   const totalDistance = route ? distanceLabel(routeDistanceKm(route)) : '0 km';
   const travelMinutes = route ? routeTravelMinutes(route) : 0;
-  const selectedPoi = activePoi ?? route?.pois[0];
   const selectedTikTokUrl = selectedPoi ? getTikTokUrl(selectedPoi) : undefined;
   const selectedEmbedUrl = selectedPoi ? getTikTokEmbedUrl(selectedPoi) : undefined;
   const selectedThumbnailUrl = selectedPoi ? getTikTokThumbnailUrl(selectedPoi) : undefined;
@@ -205,7 +255,7 @@ export default function RouteResults() {
     <div className="h-full w-full overflow-y-auto lg:overflow-hidden">
       <div className="grid min-h-full grid-cols-1 gap-4 p-4 lg:h-full lg:grid-cols-12 lg:p-8">
         <section className="relative isolate min-h-[28rem] overflow-hidden rounded-[32px] bg-surface-container shadow-float lg:col-span-8 lg:h-full">
-          <MapCanvas className="h-full" route={route} activePoiId={activePoi?.id} onPoiClick={(poi) => setActivePoiId(poi.id)} />
+          <MapCanvas className="h-full" route={route} activePoiId={selectedPoi?.id} onPoiClick={(poi) => setActivePoiId(poi.id)} />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10" />
 
           <div className="absolute bottom-4 left-4 z-[1200] lg:bottom-6 lg:left-6">
@@ -248,7 +298,7 @@ export default function RouteResults() {
                 </Link>
                 <Link
                   to="/assistant"
-                  state={activePoi ? { source: 'vibe-check', focusPoi: activePoi } : undefined}
+                  state={selectedPoi ? { source: 'vibe-check', focusPoi: selectedPoi } : undefined}
                   className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-container px-3 py-2 text-[11px] font-headline font-extrabold text-white shadow-lg transition-transform active:scale-95"
                 >
                   <Eye className="h-3.5 w-3.5" />
@@ -280,22 +330,22 @@ export default function RouteResults() {
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Selected stop</div>
-                      <h3 className="mt-2 font-headline text-lg font-extrabold text-on-surface">{activePoi?.name ?? 'Choose a stop'}</h3>
+                      <h3 className="mt-2 font-headline text-lg font-extrabold text-on-surface">{selectedPoi?.name ?? 'Choose a stop'}</h3>
                     </div>
                     <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
                       <Star className="h-4 w-4" />
                     </div>
                   </div>
                   <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">
-                    {activePoi
-                      ? activePoi.address ?? activePoi.city ?? activePoi.category ?? 'Curated stop on your route.'
+                    {selectedPoi
+                      ? selectedPoi.address ?? selectedPoi.city ?? selectedPoi.category ?? 'Curated stop on your route.'
                       : 'Tap a stop on the map or itinerary to inspect it.'}
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">{stopBadge(activePoi)}</span>
-                    {activePoi?.rating ? (
+                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">{stopBadge(selectedPoi)}</span>
+                    {selectedPoi?.rating ? (
                       <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface">
-                        {activePoi.rating.toFixed(1)} rating
+                        {selectedPoi.rating.toFixed(1)} rating
                       </span>
                     ) : null}
                   </div>
@@ -308,12 +358,48 @@ export default function RouteResults() {
                   </div>
                   <div className="mt-4 space-y-3">
                     {route.pois.length === 0 ? (
-                      <div className="rounded-[24px] border border-surface-container bg-surface-container-lowest px-4 py-4 text-sm text-on-surface-variant">
-                        This is a direct A→B route with no intermediate stops.
-                      </div>
+                      directDestinationPoi ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActivePoiId(directDestinationPoi.id);
+                            setActiveLegIndex(0);
+                            setPanelMode('tiktok');
+                          }}
+                          className={cn(
+                            'w-full rounded-[24px] border p-4 text-left transition-all',
+                            selectedPoi?.id === directDestinationPoi.id
+                              ? 'border-primary/20 bg-primary/5 shadow-sm'
+                              : 'border-surface-container bg-surface-container-lowest hover:bg-surface-container-low'
+                          )}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={cn('flex h-10 w-10 items-center justify-center rounded-2xl text-xs font-black', stopTone(0))}>1</div>
+                            <div className="min-w-0 flex-1">
+                              <div className="truncate text-sm font-extrabold text-on-surface">{directDestinationPoi.name}</div>
+                              <div className="mt-1 truncate text-xs text-on-surface-variant">
+                                {directDestinationPoi.address ?? directDestinationPoi.city ?? directDestinationPoi.category ?? 'Destination'}
+                              </div>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-on-surface-variant" />
+                          </div>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <span className="rounded-full bg-surface-container-low px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
+                              {stopBadge(directDestinationPoi)}
+                            </span>
+                            <span className="rounded-full bg-surface-container-low px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
+                              TikTok panel
+                            </span>
+                          </div>
+                        </button>
+                      ) : (
+                        <div className="rounded-[24px] border border-surface-container bg-surface-container-lowest px-4 py-4 text-sm text-on-surface-variant">
+                          This is a direct A→B route with no intermediate stops.
+                        </div>
+                      )
                     ) : (
                       route.pois.map((poi, idx) => {
-                        const active = poi.id === activePoi?.id;
+                        const active = poi.id === selectedPoi?.id;
                         return (
                           <button
                             key={poi.id}
@@ -422,7 +508,7 @@ export default function RouteResults() {
                 <div className="mt-5 flex items-start justify-between gap-4">
                   <div>
                     <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">TikTok panel</div>
-                    <h2 className="mt-2 font-headline text-2xl font-black text-on-surface">{activePoi?.name ?? 'Selected stop'}</h2>
+                    <h2 className="mt-2 font-headline text-2xl font-black text-on-surface">{selectedPoi?.name ?? 'Selected stop'}</h2>
                     <p className="mt-1 text-sm text-on-surface-variant">Focused social preview for this itinerary stop.</p>
                   </div>
                   <div className="rounded-full bg-tertiary-container/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-on-tertiary-container">
@@ -539,22 +625,22 @@ export default function RouteResults() {
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-outline">Stop details</div>
-                      <div className="mt-2 font-headline text-lg font-extrabold text-on-surface">{activePoi?.name ?? 'Selected stop'}</div>
+                      <div className="mt-2 font-headline text-lg font-extrabold text-on-surface">{selectedPoi?.name ?? 'Selected stop'}</div>
                     </div>
                     <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
                       <MapPin className="h-4 w-4" />
                     </div>
                   </div>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">{stopBadge(activePoi)}</span>
-                    {activePoi?.rating ? (
+                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">{stopBadge(selectedPoi)}</span>
+                    {selectedPoi?.rating ? (
                       <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface">
-                        {activePoi.rating.toFixed(1)} rating
+                        {selectedPoi.rating.toFixed(1)} rating
                       </span>
                     ) : null}
                   </div>
                   <p className="mt-4 text-sm leading-relaxed text-on-surface-variant">
-                    {activePoi?.address ?? activePoi?.city ?? activePoi?.category ?? 'Curated stop on your route.'}
+                    {selectedPoi?.address ?? selectedPoi?.city ?? selectedPoi?.category ?? 'Curated stop on your route.'}
                   </p>
                 </div>
               </div>

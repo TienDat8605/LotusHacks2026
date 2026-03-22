@@ -31,6 +31,16 @@ class AssistantChatService:
         self._zilliz = zilliz_store
         self._top_k = top_k
         self._fallback_search = fallback_search_service
+        self._fallback_doc_by_id: dict[str, ReviewDocument] = {}
+        self._fallback_doc_by_name: dict[str, ReviewDocument] = {}
+        if fallback_search_service is not None:
+            docs = getattr(fallback_search_service, "_documents", [])
+            if isinstance(docs, list):
+                for doc in docs:
+                    self._fallback_doc_by_id[doc.poi.id] = doc
+                    name_key = doc.poi.name.strip().lower()
+                    if name_key and name_key not in self._fallback_doc_by_name:
+                        self._fallback_doc_by_name[name_key] = doc
         self._threads = ThreadStore()
 
     def search_only(self, query: str, top_k: int | None = None) -> list[RetrievedReview]:
@@ -57,6 +67,8 @@ class AssistantChatService:
                     logger.warning("Assistant switched to local review retrieval after vector search failure")
                 except Exception:
                     logger.exception("Assistant local retrieval fallback also failed")
+
+        self._enrich_results_with_fallback_metadata(results)
 
         contexts = []
         for result in results:
@@ -168,6 +180,26 @@ class AssistantChatService:
                     right.poi.location.lng,
                 ) * 0.35
         return penalty
+
+    def _enrich_results_with_fallback_metadata(self, results: list[RetrievedReview]) -> None:
+        if not results:
+            return
+        if not self._fallback_doc_by_id and not self._fallback_doc_by_name:
+            return
+
+        for result in results:
+            doc = self._fallback_doc_by_id.get(result.poi.id)
+            if doc is None:
+                doc = self._fallback_doc_by_name.get(result.poi.name.strip().lower())
+            if doc is None:
+                continue
+
+            if not result.poi.imageUrl and doc.poi.imageUrl:
+                result.poi.imageUrl = doc.poi.imageUrl
+            if not result.poi.address and doc.poi.address:
+                result.poi.address = doc.poi.address
+            if not result.poi.city and doc.poi.city:
+                result.poi.city = doc.poi.city
 
     @staticmethod
     def _distance_km(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
