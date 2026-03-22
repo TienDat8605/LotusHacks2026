@@ -131,12 +131,17 @@ export function SocialMap(props: {
   );
   const currentLocationPoint = useMemo(() => {
     if (props.currentLocation) return props.currentLocation;
+    if (props.currentParticipantId) return null;
     if (!currentParticipant) return null;
     return { lat: currentParticipant.lat, lng: currentParticipant.lng };
-  }, [props.currentLocation, currentParticipant]);
+  }, [props.currentLocation, props.currentParticipantId, currentParticipant]);
+  const otherParticipants = useMemo(() => {
+    if (!props.currentParticipantId) return pinnedParticipants;
+    return pinnedParticipants.filter((participant) => participant.id !== props.currentParticipantId);
+  }, [pinnedParticipants, props.currentParticipantId]);
   const participantPoints = useMemo(
-    () => pinnedParticipants.map((participant) => ({ lat: participant.lat, lng: participant.lng })),
-    [pinnedParticipants]
+    () => otherParticipants.map((participant) => ({ lat: participant.lat, lng: participant.lng })),
+    [otherParticipants]
   );
   const mapPoints = useMemo(() => {
     if (!currentLocationPoint) return participantPoints;
@@ -149,9 +154,9 @@ export function SocialMap(props: {
     return [...participantPoints, currentLocationPoint];
   }, [participantPoints, currentLocationPoint]);
   const displayParticipants = useMemo(() => {
-    if (!currentLocationPoint || !props.currentParticipantId) return pinnedParticipants;
-    return pinnedParticipants.filter((participant) => participant.id !== props.currentParticipantId);
-  }, [pinnedParticipants, currentLocationPoint, props.currentParticipantId]);
+    if (!props.currentParticipantId) return pinnedParticipants;
+    return otherParticipants;
+  }, [otherParticipants, pinnedParticipants, props.currentParticipantId]);
 
   useEffect(() => {
     if (!mapRef.current) return;

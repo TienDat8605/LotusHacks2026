@@ -79,6 +79,67 @@ function metersBetween(a: { lat: number; lng: number }, b: { lat: number; lng: n
   return 6371000 * c;
 }
 
+type GeoFix = {
+  lat: number;
+  lng: number;
+  accuracy: number;
+};
+
+function getBestHighAccuracyFix(): Promise<GeoFix | null> {
+  if (!('geolocation' in navigator)) return Promise.resolve(null);
+
+  return new Promise((resolve) => {
+    let best: GeoFix | null = null;
+    let done = false;
+    let watchId: number | null = null;
+    let timerId: number | null = null;
+
+    const finalize = () => {
+      if (done) return;
+      done = true;
+      if (timerId != null) {
+        window.clearTimeout(timerId);
+        timerId = null;
+      }
+      if (watchId != null) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+      resolve(best);
+    };
+
+    const accept = (pos: GeolocationPosition) => {
+      const { latitude, longitude, accuracy } = pos.coords;
+      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
+      if (!Number.isFinite(accuracy) || accuracy <= 0) return;
+      const next: GeoFix = { lat: latitude, lng: longitude, accuracy };
+      if (!best || next.accuracy < best.accuracy) {
+        best = next;
+      }
+      if (next.accuracy <= 80) {
+        finalize();
+      }
+    };
+
+    timerId = window.setTimeout(finalize, 20000);
+
+    watchId = navigator.geolocation.watchPosition(
+      accept,
+      () => {
+        return;
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 }
+    );
+
+    navigator.geolocation.getCurrentPosition(
+      accept,
+      () => {
+        return;
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 14000 }
+    );
+  });
+}
+
 function generatedRecommendationImage(poi: Poi) {
   return `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
     `${poi.name}, Ho Chi Minh City social meetup hotspot, modern editorial travel photography, vibrant urban nightlife, cinematic lighting, realistic`
@@ -272,22 +333,13 @@ export default function SocialHub() {
     () => participants.filter((p) => typeof p.lat === 'number' && typeof p.lng === 'number'),
     [participants]
   );
-  const selfParticipant = useMemo(
-    () => participants.find((p) => p.id === participantId),
-    [participants, participantId]
+  const otherOnlineParticipants = useMemo(
+    () => onlineParticipants.filter((p) => p.id !== participantId),
+    [onlineParticipants, participantId]
   );
   const onlineCount = onlineParticipants.length;
   const uniqueRecommendations = useMemo(() => uniquePois(recommendations, 3), [recommendations]);
-  const currentParticipant = useMemo(
-    () => participants.find((p) => p.id === participantId) ?? onlineParticipants[0],
-    [participantId, participants, onlineParticipants]
-  );
-  const userLocationForDistance = useMemo(() => {
-    if (currentLocation) return currentLocation;
-    if (!selfParticipant) return null;
-    if (typeof selfParticipant.lat !== 'number' || typeof selfParticipant.lng !== 'number') return null;
-    return { lat: selfParticipant.lat, lng: selfParticipant.lng };
-  }, [currentLocation, selfParticipant]);
+  const userLocationForDistance = currentLocation;
   const nearbyFriends = useMemo(() => participants.slice(0, 4), [participants]);
   const sessionFeed = useMemo(() => feedItems(messages, participants), [messages, participants]);
   const isInActiveRoom = Boolean(participantId && joinedSessionId && joinedSessionId === activeId);
@@ -327,39 +379,17 @@ export default function SocialHub() {
     };
   }, [activeId]);
 
-  useEffect(() => {
-    if (!selfParticipant) return;
-    if (typeof selfParticipant.lat !== 'number' || typeof selfParticipant.lng !== 'number') return;
-    if (currentLocation) return;
-    setCurrentLocation({ lat: selfParticipant.lat, lng: selfParticipant.lng });
-  }, [selfParticipant, currentLocation]);
-
   function publishCurrentLocationOnce(sessionId: string, pid: string) {
     if (!('geolocation' in navigator)) return;
     const api = getApiClient();
-    const publish = (pos: GeolocationPosition) => {
-      const { latitude, longitude, accuracy } = pos.coords;
-      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
-      if (Number.isFinite(accuracy) && accuracy > 30000) return;
-      const next = { lat: latitude, lng: longitude };
+    void getBestHighAccuracyFix().then((fix) => {
+      if (!fix) return;
+      if (fix.accuracy > 2500) return;
+      const next = { lat: fix.lat, lng: fix.lng };
       lastSentLocationRef.current = next;
       setCurrentLocation(next);
       void api.updateSocialLocation(sessionId, pid, next.lat, next.lng);
-    };
-
-    navigator.geolocation.getCurrentPosition(
-      publish,
-      () => {
-        navigator.geolocation.getCurrentPosition(
-          publish,
-          () => {
-            return;
-          },
-          { enableHighAccuracy: false, maximumAge: 120000, timeout: 8000 }
-        );
-      },
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 }
-    );
+    });
   }
 
   async function join(sessionId = activeId) {
@@ -459,8 +489,8 @@ export default function SocialHub() {
   }
 
   const mapCenter = {
-    lat: currentLocation?.lat ?? selfParticipant?.lat ?? currentParticipant?.lat ?? onlineParticipants[0]?.lat ?? uniqueRecommendations[0]?.location.lat ?? 10.7757,
-    lng: currentLocation?.lng ?? selfParticipant?.lng ?? currentParticipant?.lng ?? onlineParticipants[0]?.lng ?? uniqueRecommendations[0]?.location.lng ?? 106.7008,
+    lat: currentLocation?.lat ?? otherOnlineParticipants[0]?.lat ?? uniqueRecommendations[0]?.location.lat ?? 10.7757,
+    lng: currentLocation?.lng ?? otherOnlineParticipants[0]?.lng ?? uniqueRecommendations[0]?.location.lng ?? 106.7008,
   };
 
   return (
