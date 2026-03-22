@@ -3,7 +3,6 @@ package httpapi
 import (
 	"math"
 	"sort"
-	"strings"
 
 	"vibemap/backend/internal/api"
 )
@@ -29,18 +28,12 @@ func rankPoisForParticipants(pois []api.Poi, participants []api.SocialParticipan
 		return []api.Poi{}
 	}
 	if len(points) == 0 {
+		if len(pois) < limit {
+			limit = len(pois)
+		}
 		out := make([]api.Poi, 0, limit)
-		seen := map[string]struct{}{}
-		for _, poi := range pois {
-			key := poiUniqueKey(poi)
-			if _, ok := seen[key]; ok {
-				continue
-			}
-			seen[key] = struct{}{}
-			out = append(out, poi)
-			if len(out) >= limit {
-				break
-			}
+		for i := 0; i < limit; i++ {
+			out = append(out, pois[i])
 		}
 		return out
 	}
@@ -69,28 +62,14 @@ func rankPoisForParticipants(pois []api.Poi, participants []api.SocialParticipan
 		return scored[i].poi.ID < scored[j].poi.ID
 	})
 
+	if len(scored) < limit {
+		limit = len(scored)
+	}
 	out := make([]api.Poi, 0, limit)
-	seen := map[string]struct{}{}
-	for _, candidate := range scored {
-		key := poiUniqueKey(candidate.poi)
-		if _, ok := seen[key]; ok {
-			continue
-		}
-		seen[key] = struct{}{}
-		out = append(out, candidate.poi)
-		if len(out) >= limit {
-			break
-		}
+	for i := 0; i < limit; i++ {
+		out = append(out, scored[i].poi)
 	}
 	return out
-}
-
-func poiUniqueKey(poi api.Poi) string {
-	name := strings.ToLower(strings.TrimSpace(poi.Name))
-	if name != "" {
-		return name
-	}
-	return strings.ToLower(strings.TrimSpace(poi.ID))
 }
 
 func haversineMeters(lat1, lon1, lat2, lon2 float64) float64 {

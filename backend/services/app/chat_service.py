@@ -19,6 +19,10 @@ def _is_route_request(text: str) -> bool:
     return "suggest a destination and route vibe" in lowered or "backend planner will create stops between" in lowered
 
 
+def _normalize_lookup_key(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", value.strip().lower()).strip("_")
+
+
 class AssistantChatService:
     def __init__(
         self,
@@ -33,6 +37,7 @@ class AssistantChatService:
         self._fallback_search = fallback_search_service
         self._fallback_doc_by_id: dict[str, ReviewDocument] = {}
         self._fallback_doc_by_name: dict[str, ReviewDocument] = {}
+        self._fallback_doc_by_name_normalized: dict[str, ReviewDocument] = {}
         if fallback_search_service is not None:
             docs = getattr(fallback_search_service, "_documents", [])
             if isinstance(docs, list):
@@ -41,6 +46,9 @@ class AssistantChatService:
                     name_key = doc.poi.name.strip().lower()
                     if name_key and name_key not in self._fallback_doc_by_name:
                         self._fallback_doc_by_name[name_key] = doc
+                    normalized_name_key = _normalize_lookup_key(doc.poi.name)
+                    if normalized_name_key and normalized_name_key not in self._fallback_doc_by_name_normalized:
+                        self._fallback_doc_by_name_normalized[normalized_name_key] = doc
         self._threads = ThreadStore()
 
     def search_only(self, query: str, top_k: int | None = None) -> list[RetrievedReview]:
@@ -52,28 +60,18 @@ class AssistantChatService:
         self._threads.add_message(thread_id, "user", text)
 
         route_mode = _is_route_request(text)
-        desired_size = 3 if route_mode else max(3, self._top_k)
-        search_pool_size = 15 if route_mode else max(12, desired_size * 4)
         results: list[RetrievedReview] = []
         try:
-            results = self.search_only(text, search_pool_size)
-            results = self._dedupe_results(results, search_pool_size)
+            results = self.search_only(text, 12 if route_mode else None)
             if route_mode:
                 results = self._pick_compact_route_results(results, 3)
-                results = self._dedupe_results(results, 3)
-            else:
-                results = results[:desired_size]
         except Exception:
             logger.exception("Assistant vector search failed")
             if self._fallback_search:
                 try:
-                    results = self._fallback_search.search_only(text, search_pool_size)
-                    results = self._dedupe_results(results, search_pool_size)
+                    results = self._fallback_search.search_only(text, 12 if route_mode else None)
                     if route_mode:
                         results = self._pick_compact_route_results(results, 3)
-                        results = self._dedupe_results(results, 3)
-                    else:
-                        results = results[:desired_size]
                     logger.warning("Assistant switched to local review retrieval after vector search failure")
                 except Exception:
                     logger.exception("Assistant local retrieval fallback also failed")
@@ -194,13 +192,15 @@ class AssistantChatService:
     def _enrich_results_with_fallback_metadata(self, results: list[RetrievedReview]) -> None:
         if not results:
             return
-        if not self._fallback_doc_by_id and not self._fallback_doc_by_name:
+        if not self._fallback_doc_by_id and not self._fallback_doc_by_name and not self._fallback_doc_by_name_normalized:
             return
 
         for result in results:
             doc = self._fallback_doc_by_id.get(result.poi.id)
             if doc is None:
                 doc = self._fallback_doc_by_name.get(result.poi.name.strip().lower())
+            if doc is None:
+                doc = self._fallback_doc_by_name_normalized.get(_normalize_lookup_key(result.poi.name))
             if doc is None:
                 continue
 
@@ -214,28 +214,6 @@ class AssistantChatService:
                 result.poi.videoUrl = doc.poi.videoUrl
             if not result.poi.videoId and doc.poi.videoId:
                 result.poi.videoId = doc.poi.videoId
-
-    def _dedupe_results(self, results: list[RetrievedReview], limit: int) -> list[RetrievedReview]:
-        if not results:
-            return []
-        out: list[RetrievedReview] = []
-        seen: set[str] = set()
-        for item in results:
-            key = self._result_dedupe_key(item)
-            if key in seen:
-                continue
-            seen.add(key)
-            out.append(item)
-            if len(out) >= limit:
-                break
-        return out
-
-    @staticmethod
-    def _result_dedupe_key(item: RetrievedReview) -> str:
-        name_key = re.sub(r"\s+", " ", (item.poi.name or "").strip().lower())
-        if name_key:
-            return name_key
-        return item.poi.id
 
     @staticmethod
     def _distance_km(lat1: float, lng1: float, lat2: float, lng2: float) -> float:

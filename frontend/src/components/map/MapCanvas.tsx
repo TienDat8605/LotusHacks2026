@@ -11,24 +11,6 @@ function toLatLng(p: LatLng): [number, number] {
   return [p.lat, p.lng];
 }
 
-function metersBetween(a: LatLng, b: LatLng) {
-  const toRad = (value: number) => (value * Math.PI) / 180;
-  const dLat = toRad(b.lat - a.lat);
-  const dLng = toRad(b.lng - a.lng);
-  const lat1 = toRad(a.lat);
-  const lat2 = toRad(b.lat);
-  const x = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
-  return 6371000 * c;
-}
-
-function overlapsNamedPin(point: LatLng, origin?: LatLng, destination?: LatLng) {
-  const overlapMeters = 16;
-  if (origin && metersBetween(point, origin) <= overlapMeters) return true;
-  if (destination && metersBetween(point, destination) <= overlapMeters) return true;
-  return false;
-}
-
 function BoundsFitter(props: { points: LatLng[] }) {
   const map = useMap();
   const hasFittedRef = useRef(false);
@@ -128,13 +110,6 @@ export function MapCanvas(props: {
   const destination = route?.destination?.location;
 
   const pois = useMemo(() => route?.pois ?? [], [route]);
-  const visiblePois = useMemo(
-    () =>
-      pois
-        .map((poi, index) => ({ poi, index }))
-        .filter(({ poi }) => !overlapsNamedPin(poi.location, origin, destination)),
-    [destination, origin, pois]
-  );
 
   const fitPoints = useMemo(() => {
     const pts = [] as LatLng[];
@@ -188,11 +163,11 @@ export function MapCanvas(props: {
           );
         })}
 
-        {visiblePois.map(({ poi, index }) => (
+        {pois.map((poi, i) => (
           <Marker
             key={poi.id}
             position={toLatLng(poi.location)}
-            icon={poiIcon(index + 1, poi.id === props.activePoiId)}
+            icon={poiIcon(i + 1, poi.id === props.activePoiId)}
             eventHandlers={{
               click: () => props.onPoiClick?.(poi),
             }}
