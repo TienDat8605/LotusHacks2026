@@ -75,11 +75,6 @@ function resolvePoiImageUrl(raw?: string) {
   return `/assets/${value.replace(/^\/+/, '')}`;
 }
 
-function normalizePoiLookupKey(value?: string) {
-  if (!value) return '';
-  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
-}
-
 type AssistantFocusState = {
   source?: string;
   focusPoi?: Poi;
@@ -239,34 +234,18 @@ export default function AiAssistant() {
         includeTrending: true,
       };
       const route = await api.planNormalRoute(request);
-      const targetPoiNameKey = normalizePoiLookupKey(poi.name);
-      const matchedRoutePoi = route.pois.find((candidate) => {
-        if (candidate.id === poi.id) return true;
-        const candidateKey = normalizePoiLookupKey(candidate.name);
-        return !!targetPoiNameKey && candidateKey === targetPoiNameKey;
-      });
-      const directDestinationPoi: Poi = {
-        ...matchedRoutePoi,
-        ...poi,
-        location: poi.location,
-        imageUrl: poi.imageUrl ?? matchedRoutePoi?.imageUrl,
-        videoUrl: poi.videoUrl ?? matchedRoutePoi?.videoUrl,
-        videoId: poi.videoId ?? matchedRoutePoi?.videoId,
-        address: poi.address ?? matchedRoutePoi?.address,
-        city: poi.city ?? matchedRoutePoi?.city,
-        badges: poi.badges?.length ? poi.badges : matchedRoutePoi?.badges,
-      };
-      const routeWithSelectedPoi = {
+      const directRoute = {
         ...route,
         destination: {
           name: poi.name,
-          location: route.destination?.location ?? directDestinationPoi.location,
+          location: route.destination?.location ?? poi.location,
         },
-        pois: [directDestinationPoi],
+        // Ask POI "show route there" is direct A→B; keep POI list empty so map only shows Start/End pins.
+        pois: [],
       };
       setLastPlan(request);
-      setRoute(routeWithSelectedPoi);
-      navigate(`/results/${encodeURIComponent(routeWithSelectedPoi.id)}`);
+      setRoute(directRoute);
+      navigate(`/results/${encodeURIComponent(directRoute.id)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not build the route to this place.');
     } finally {
