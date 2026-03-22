@@ -55,6 +55,12 @@ function buildFocusedPoiPrompt(poi: Poi) {
   return `Vibe check this specific place: ${poi.name}${where ? ` (${where})` : ''}. Tell me what vibe it has, what to order or try first, best visit time, and why this place matches the vibe.`;
 }
 
+function generatedPoiImage(poi: Poi) {
+  return `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
+    `${poi.name}, Ho Chi Minh City travel photo, vibrant urban destination, realistic editorial composition`
+  )}&image_size=landscape_16_9`;
+}
+
 type AssistantFocusState = {
   source?: string;
   focusPoi?: Poi;
@@ -83,7 +89,9 @@ export default function AiAssistant() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [planningKey, setPlanningKey] = useState<string | null>(null);
+  const [poiImageErrors, setPoiImageErrors] = useState<Record<string, boolean>>({});
   const handledFocusKeyRef = useRef<string>('');
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const messages = assistant.messages;
   const suggestedPois = assistant.suggestedPois;
@@ -122,6 +130,12 @@ export default function AiAssistant() {
     void send(prompt, { focusPoi: focusedPoiFromState, forceMode: 'poi' });
     navigate('/assistant', { replace: true, state: null });
   }, [focusedPoiFromState, navigate]);
+
+  useEffect(() => {
+    const el = messagesEndRef.current;
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [messages.length, suggestedPois.length, sending, planningKey, error, mode]);
 
   async function send(text: string, options?: { focusPoi?: Poi; forceMode?: 'poi' | 'route' }) {
     const trimmed = text.trim();
@@ -372,39 +386,47 @@ export default function AiAssistant() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-12 gap-4">
+                <div className={cn('grid gap-3', mode === 'poi' ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2')}>
                   {suggestedPois.slice(0, mode === 'poi' ? 3 : 4).map((p, idx) => (
                     <div
                       key={p.id}
-                      className={cn(
-                        'col-span-12 bg-white rounded-lg overflow-hidden shadow-float border border-surface-container',
-                        idx === 1 ? 'lg:col-span-11 lg:col-start-2' : 'lg:col-span-11'
-                      )}
+                      className="bg-white rounded-2xl overflow-hidden shadow-float border border-surface-container"
                     >
-                      <div className="relative h-28 bg-[radial-gradient(circle_at_30%_30%,rgba(0,75,227,0.14),transparent_55%),radial-gradient(circle_at_70%_60%,rgba(185,0,55,0.12),transparent_55%)]">
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white" />
+                      <div className="relative h-20 bg-surface-container-low">
+                        <img
+                          src={poiImageErrors[p.id] ? generatedPoiImage(p) : p.imageUrl?.trim() || generatedPoiImage(p)}
+                          alt={p.name}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                          onError={(event) => {
+                            if (poiImageErrors[p.id]) return;
+                            setPoiImageErrors((prev) => ({ ...prev, [p.id]: true }));
+                            event.currentTarget.src = generatedPoiImage(p);
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
                         {p.badges?.[0] && (
-                          <div className="absolute top-3 left-3 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                          <div className="absolute top-2 left-2 bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest">
                             {p.badges[0]}
                           </div>
                         )}
                       </div>
-                      <div className="p-4">
+                      <div className="p-3">
                         <div className="flex items-start justify-between gap-3">
-                          <h3 className="font-headline font-bold text-lg text-on-surface">{p.name}</h3>
+                          <h3 className="font-headline font-bold text-base text-on-surface truncate">{p.name}</h3>
                           {mode === 'route' && (
-                            <span className="rounded-full bg-surface-container-low px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+                            <span className="rounded-full bg-surface-container-low px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-primary">
                               Stop {idx + 1}
                             </span>
                           )}
                         </div>
-                        <p className="text-on-surface-variant text-sm mt-1">
+                        <p className="text-on-surface-variant text-xs mt-1 truncate">
                           {p.category ?? 'Curated'}
-                          {p.rating ? ` - ${p.rating.toFixed(1)} stars` : ''}
+                          {p.rating ? ` - ${p.rating.toFixed(1)}⭐` : ''}
                         </p>
                         {(p.address || p.city) && (
-                          <p className="text-on-surface-variant text-sm mt-3 leading-relaxed">
-                            {[p.address, p.city].filter(Boolean).join(' - ')}
+                          <p className="text-on-surface-variant text-xs mt-2 truncate">
+                            {[p.address, p.city].filter(Boolean).join(' · ')}
                           </p>
                         )}
                         {mode === 'poi' && (
@@ -412,9 +434,9 @@ export default function AiAssistant() {
                             type="button"
                             onClick={() => void routeToSinglePoi(p)}
                             disabled={planningKey !== null}
-                            className="w-full mt-4 py-3 rounded-full bg-primary text-white font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-70"
+                            className="w-full mt-3 py-2 rounded-full bg-primary text-white font-semibold text-xs flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-70"
                           >
-                            <Send className="h-4 w-4" />
+                            <Send className="h-3.5 w-3.5" />
                             {planningKey === p.id ? 'Routing there...' : 'Show route there'}
                           </button>
                         )}
@@ -456,6 +478,7 @@ export default function AiAssistant() {
                 ))}
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
 
           <div className="absolute bottom-0 left-0 right-0 p-4 pb-8 bg-gradient-to-t from-surface-container-low via-surface-container-low to-transparent">
