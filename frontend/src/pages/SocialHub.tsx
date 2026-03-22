@@ -88,7 +88,11 @@ function generatedRecommendationImage(poi: Poi) {
 function recommendationImageSrc(poi: Poi) {
   const raw = (poi.imageUrl ?? '').trim();
   if (!raw) return generatedRecommendationImage(poi);
-  if (/^https?:\/\//i.test(raw)) return raw;
+  if (/^https?:\/\//i.test(raw) || /^data:/i.test(raw)) return raw;
+  if (raw.startsWith('/assets/')) return apiBase ? `${apiBase}${raw}` : raw;
+  if (raw.startsWith('assets/')) return apiBase ? `${apiBase}/${raw}` : `/${raw}`;
+  if (raw.startsWith('/images/')) return apiBase ? `${apiBase}/assets${raw}` : `/assets${raw}`;
+  if (raw.startsWith('images/')) return apiBase ? `${apiBase}/assets/${raw}` : `/assets/${raw}`;
   const normalized = raw.replace(/^\/+/, '');
   if (!normalized) return generatedRecommendationImage(poi);
   return apiBase ? `${apiBase}/assets/${normalized}` : `/assets/${normalized}`;
@@ -103,6 +107,29 @@ type RecommendationAccent = {
 type FeedItem =
   | { id: string; type: 'status'; icon: typeof Zap; tone: string; text: string; meta: string }
   | { id: string; type: 'message'; message: ChatMessage; participant?: SocialParticipant };
+
+function poiUniqueKey(poi: Poi) {
+  const name = (poi.name ?? '').trim().toLowerCase();
+  if (name) return name;
+  return (poi.id ?? '').trim().toLowerCase();
+}
+
+function uniquePois(pois: Poi[], limit = 3) {
+  const out: Poi[] = [];
+  const seen = new Set<string>();
+  for (const poi of pois) {
+    const key = poiUniqueKey(poi);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(poi);
+    if (out.length >= limit) break;
+  }
+  return out;
+}
+
+function mergeUniquePois(primary: Poi[], fallback: Poi[], limit = 3) {
+  return uniquePois([...primary, ...fallback], limit);
+}
 
 function recommendationAccent(poi: Poi, index: number): RecommendationAccent {
   if (poi.badges?.some((badge) => /trend/i.test(badge))) {
@@ -186,7 +213,9 @@ function applySocialEvent(
   if (event.type === 'snapshot') {
     if (event.participants) setParticipants(event.participants);
     if (event.messages) setMessages(event.messages);
-    if (event.recommendations) setRecommendations(event.recommendations.slice(0, 3));
+    if (event.recommendations) {
+      setRecommendations((current) => mergeUniquePois(event.recommendations ?? [], current, 3));
+    }
     if (event.session) {
       setActiveId(event.session.id);
       setSessions((current) => {
@@ -236,7 +265,6 @@ export default function SocialHub() {
   const [roomName, setRoomName] = useState('');
   const [joinCode, setJoinCode] = useState('');
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const geoWatchId = useRef<number | null>(null);
   const lastSentLocationRef = useRef<{ lat: number; lng: number } | null>(null);
 
   const active = useMemo(() => sessions.find((s) => s.id === activeId), [sessions, activeId]);
@@ -249,6 +277,7 @@ export default function SocialHub() {
     [participants, participantId]
   );
   const onlineCount = onlineParticipants.length;
+  const uniqueRecommendations = useMemo(() => uniquePois(recommendations, 3), [recommendations]);
   const currentParticipant = useMemo(
     () => participants.find((p) => p.id === participantId) ?? onlineParticipants[0],
     [participantId, participants, onlineParticipants]
@@ -305,93 +334,31 @@ export default function SocialHub() {
     setCurrentLocation({ lat: selfParticipant.lat, lng: selfParticipant.lng });
   }, [selfParticipant, currentLocation]);
 
-  useEffect(() => {
-    if (currentLocation) return;
-    if (!('geolocation' in navigator)) return;
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
-        setCurrentLocation({ lat: latitude, lng: longitude });
-      },
-      () => {
-        return;
-      },
-      { enableHighAccuracy: true, maximumAge: 60000, timeout: 12000 }
-    );
-  }, [currentLocation]);
-
-  useEffect(() => {
-    if (!participantId || !activeId) return;
-    if (!('geolocation' in navigator)) return;
-
-    const api = getApiClient();
-    const minMoveMeters = 12;
-    const maxAcceptedAccuracyMeters = 30000;
-    lastSentLocationRef.current = null;
-
-    const handlePosition = (pos: GeolocationPosition) => {
-      const { latitude, longitude, accuracy } = pos.coords;
-      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
-      if (Number.isFinite(accuracy) && accuracy > maxAcceptedAccuracyMeters) return;
-
-      const next = { lat: latitude, lng: longitude };
-      const prev = lastSentLocationRef.current;
-      if (prev && metersBetween(prev, next) < minMoveMeters) {
-        setCurrentLocation(next);
-        return;
-      }
-
-      lastSentLocationRef.current = next;
-      setCurrentLocation(next);
-      void api.updateSocialLocation(activeId, participantId, next.lat, next.lng);
-    };
-
-    if (geoWatchId.current != null) {
-      navigator.geolocation.clearWatch(geoWatchId.current);
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      handlePosition,
-      () => {
-        return;
-      },
-      { enableHighAccuracy: true, maximumAge: 30000, timeout: 12000 }
-    );
-
-    geoWatchId.current = navigator.geolocation.watchPosition(
-      handlePosition,
-      () => {
-        return;
-      },
-      { enableHighAccuracy: true, maximumAge: 30000, timeout: 12000 }
-    );
-
-    return () => {
-      if (geoWatchId.current != null) {
-        navigator.geolocation.clearWatch(geoWatchId.current);
-        geoWatchId.current = null;
-      }
-    };
-  }, [activeId, participantId]);
-
   function publishCurrentLocationOnce(sessionId: string, pid: string) {
     if (!('geolocation' in navigator)) return;
     const api = getApiClient();
+    const publish = (pos: GeolocationPosition) => {
+      const { latitude, longitude, accuracy } = pos.coords;
+      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
+      if (Number.isFinite(accuracy) && accuracy > 30000) return;
+      const next = { lat: latitude, lng: longitude };
+      lastSentLocationRef.current = next;
+      setCurrentLocation(next);
+      void api.updateSocialLocation(sessionId, pid, next.lat, next.lng);
+    };
+
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude, accuracy } = pos.coords;
-        if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
-        if (Number.isFinite(accuracy) && accuracy > 30000) return;
-        const next = { lat: latitude, lng: longitude };
-        lastSentLocationRef.current = next;
-        setCurrentLocation(next);
-        void api.updateSocialLocation(sessionId, pid, next.lat, next.lng);
-      },
+      publish,
       () => {
-        return;
+        navigator.geolocation.getCurrentPosition(
+          publish,
+          () => {
+            return;
+          },
+          { enableHighAccuracy: false, maximumAge: 120000, timeout: 8000 }
+        );
       },
-      { enableHighAccuracy: true, maximumAge: 15000, timeout: 8000 }
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 }
     );
   }
 
@@ -492,8 +459,8 @@ export default function SocialHub() {
   }
 
   const mapCenter = {
-    lat: currentLocation?.lat ?? selfParticipant?.lat ?? currentParticipant?.lat ?? onlineParticipants[0]?.lat ?? recommendations[0]?.location.lat ?? 10.7757,
-    lng: currentLocation?.lng ?? selfParticipant?.lng ?? currentParticipant?.lng ?? onlineParticipants[0]?.lng ?? recommendations[0]?.location.lng ?? 106.7008,
+    lat: currentLocation?.lat ?? selfParticipant?.lat ?? currentParticipant?.lat ?? onlineParticipants[0]?.lat ?? uniqueRecommendations[0]?.location.lat ?? 10.7757,
+    lng: currentLocation?.lng ?? selfParticipant?.lng ?? currentParticipant?.lng ?? onlineParticipants[0]?.lng ?? uniqueRecommendations[0]?.location.lng ?? 106.7008,
   };
 
   return (
@@ -505,7 +472,7 @@ export default function SocialHub() {
               <SocialMap
                 center={mapCenter}
                 participants={participants}
-                recommendations={recommendations.slice(0, 3)}
+                recommendations={uniqueRecommendations}
                 currentParticipantId={participantId}
                 currentLocation={currentLocation ?? undefined}
                 className="h-full rounded-none border-0 shadow-none"
@@ -541,7 +508,7 @@ export default function SocialHub() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {recommendations.slice(0, 3).map((poi, index) => {
+                {uniqueRecommendations.map((poi, index) => {
                   const accent = recommendationAccent(poi, index);
                   const AccentIcon = accent.icon;
                   const recommendationDistance = userLocationForDistance
@@ -584,7 +551,7 @@ export default function SocialHub() {
                     </article>
                   );
                 })}
-                {!recommendations.length && !loading ? (
+                {!uniqueRecommendations.length && !loading ? (
                   <div className="rounded-2xl border border-dashed border-slate-300 bg-white/70 p-6 text-sm text-on-surface-variant">
                     Share live location in the room to unlock nearby recommendations.
                   </div>

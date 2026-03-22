@@ -1,4 +1,4 @@
-import { Bot, MapPin, PlusCircle, Send, Sparkles } from 'lucide-react';
+import { Bot, Compass, Flame, Leaf, MapPin, PlusCircle, Send, Sparkles } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -75,6 +75,55 @@ function resolvePoiImageUrl(raw?: string) {
   return `/assets/${value.replace(/^\/+/, '')}`;
 }
 
+function poiUniqueKey(poi: Poi) {
+  const name = (poi.name ?? '').trim().toLowerCase();
+  if (name) return name;
+  return (poi.id ?? '').trim().toLowerCase();
+}
+
+function uniquePois(pois: Poi[], limit = 3) {
+  const out: Poi[] = [];
+  const seen = new Set<string>();
+  for (const poi of pois) {
+    const key = poiUniqueKey(poi);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(poi);
+    if (out.length >= limit) break;
+  }
+  return out;
+}
+
+type RecommendationAccent = {
+  icon: typeof Compass;
+  label: string;
+  tone: string;
+};
+
+function recommendationAccent(poi: Poi, index: number): RecommendationAccent {
+  if (poi.badges?.some((badge) => /trend/i.test(badge))) {
+    return {
+      icon: Flame,
+      label: poi.badges.find((badge) => /trend/i.test(badge)) ?? 'Trending',
+      tone: 'text-orange-600 bg-orange-500/10',
+    };
+  }
+
+  if (poi.category?.toLowerCase().includes('park')) {
+    return {
+      icon: Leaf,
+      label: 'Nature',
+      tone: 'text-emerald-700 bg-emerald-500/10',
+    };
+  }
+
+  const fallback: RecommendationAccent[] = [
+    { icon: Compass, label: 'Nearby', tone: 'text-primary bg-primary/10' },
+    { icon: Sparkles, label: 'Group pick', tone: 'text-fuchsia-700 bg-fuchsia-500/10' },
+  ];
+  return fallback[index % fallback.length];
+}
+
 type AssistantFocusState = {
   source?: string;
   focusPoi?: Poi;
@@ -111,6 +160,7 @@ export default function AiAssistant() {
   const suggestedPois = assistant.suggestedPois;
   const suggestedPlan = assistant.suggestedPlan;
   const followUps = assistant.followUps;
+  const uniqueSuggestedPois = useMemo(() => uniquePois(suggestedPois, 3), [suggestedPois]);
 
   const placeholder = useMemo(
     () => (mode === 'poi' ? 'Where to next, explorer?' : 'Plan a route: date vibe, budget, and mood'),
@@ -155,7 +205,7 @@ export default function AiAssistant() {
     const el = messagesEndRef.current;
     if (!el) return;
     el.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }, [messages.length, suggestedPois.length, sending, planningKey, error, mode]);
+  }, [messages.length, uniqueSuggestedPois.length, sending, planningKey, error, mode]);
 
   async function send(text: string, options?: { focusPoi?: Poi; forceMode?: 'poi' | 'route' }) {
     const trimmed = text.trim();
@@ -186,20 +236,21 @@ export default function AiAssistant() {
           : `Recommend the single best matching place for this request and explain why: ${trimmed}`;
 
       const resp = await api.sendAssistantMessage(threadId, outbound);
-      const suggestedPois = focusedPoi
+      const incomingSuggested = focusedPoi
         ? [focusedPoi, ...(resp.suggestedPois ?? []).filter((poi) => poi.id !== focusedPoi.id)]
-        : resp.suggestedPois;
+        : resp.suggestedPois ?? [];
+      const mergedSuggested = uniquePois([...incomingSuggested, ...assistant.suggestedPois], 3);
 
       replaceAssistantFromResponse({
         ...resp,
-        suggestedPois,
+        suggestedPois: mergedSuggested,
         suggestedPlan:
           focusedPoi
             ? null
             : activeMode === 'route'
             ? resp.suggestedPlan ?? {
                 origin,
-                destination: resp.suggestedPois?.[resp.suggestedPois.length - 1]?.name,
+                destination: mergedSuggested[mergedSuggested.length - 1]?.name,
                 timeBudgetMinutes: prefs.defaultTimeBudgetMinutes,
                 transportMode: prefs.defaultTransportMode,
                 includeTrending: true,
@@ -234,9 +285,19 @@ export default function AiAssistant() {
         includeTrending: true,
       };
       const route = await api.planNormalRoute(request);
+      const routeWithDestinationPoi = route.pois.length
+        ? route
+        : {
+            ...route,
+            destination: {
+              name: poi.name,
+              location: route.destination?.location ?? poi.location,
+            },
+            pois: [poi],
+          };
       setLastPlan(request);
-      setRoute(route);
-      navigate(`/results/${encodeURIComponent(route.id)}`);
+      setRoute(routeWithDestinationPoi);
+      navigate(`/results/${encodeURIComponent(routeWithDestinationPoi.id)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not build the route to this place.');
     } finally {
@@ -246,9 +307,10 @@ export default function AiAssistant() {
 
   async function planSuggestedRoute() {
     const trimmedOrigin = origin.trim();
+    const fallbackPoiIds = uniqueSuggestedPois.map((poi) => poi.id);
     const exactPoiIds = suggestedPlan?.requiredPoiIds?.length
-      ? suggestedPlan.requiredPoiIds
-      : suggestedPois.map((poi) => poi.id);
+      ? Array.from(new Set(suggestedPlan.requiredPoiIds.filter(Boolean))).slice(0, 3)
+      : fallbackPoiIds;
 
     if (!trimmedOrigin) {
       setError('Please enter your starting location first.');
@@ -264,7 +326,7 @@ export default function AiAssistant() {
 
     try {
       const api = getApiClient();
-      const selectedPois = suggestedPois.slice(0, 3);
+      const selectedPois = uniqueSuggestedPois.slice(0, 3);
       const request = {
         origin: trimmedOrigin,
         transportMode: suggestedPlan?.transportMode ?? prefs.defaultTransportMode,
@@ -282,7 +344,7 @@ export default function AiAssistant() {
 
       setAssistantState({
         messages: [...messages, plannedMessage],
-        suggestedPois: route.pois,
+        suggestedPois: uniquePois(route.pois, 3),
         suggestedPlan: {
           origin: request.origin,
           transportMode: request.transportMode,
@@ -380,7 +442,7 @@ export default function AiAssistant() {
                   </div>
                 </div>
 
-                {messageIndex === suggestionAnchorIndex && suggestedPois.length > 0 && (
+                {messageIndex === suggestionAnchorIndex && uniqueSuggestedPois.length > 0 && (
                   <div className="space-y-4">
                     <div className="px-1">
                       <div className="text-[11px] font-bold uppercase tracking-[0.24em] text-outline">
@@ -388,63 +450,52 @@ export default function AiAssistant() {
                       </div>
                     </div>
 
-                    <div className={cn('grid gap-3', mode === 'poi' ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2')}>
-                      {suggestedPois.slice(0, mode === 'poi' ? 3 : 4).map((p, idx) => (
-                        <div
-                          key={p.id}
-                          className="bg-white rounded-2xl overflow-hidden shadow-float border border-surface-container"
-                        >
-                          <div className="relative h-20 bg-surface-container-low">
-                            <img
-                              src={poiImageErrors[p.id] ? generatedPoiImage(p) : resolvePoiImageUrl(p.imageUrl) || generatedPoiImage(p)}
-                              alt={p.name}
-                              className="h-full w-full object-cover"
-                              loading="lazy"
-                              onError={(event) => {
-                                if (poiImageErrors[p.id]) return;
-                                setPoiImageErrors((prev) => ({ ...prev, [p.id]: true }));
-                                event.currentTarget.src = generatedPoiImage(p);
-                              }}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
-                            {p.badges?.[0] && (
-                              <div className="absolute top-2 left-2 bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest">
-                                {p.badges[0]}
-                              </div>
-                            )}
-                          </div>
-                          <div className="p-3">
-                            <div className="flex items-start justify-between gap-3">
-                              <h3 className="font-headline font-bold text-base text-on-surface truncate">{p.name}</h3>
-                              {mode === 'route' && (
-                                <span className="rounded-full bg-surface-container-low px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-primary">
-                                  Stop {idx + 1}
-                                </span>
-                              )}
+                    <div className={cn('grid gap-3', mode === 'poi' ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3')}>
+                      {uniqueSuggestedPois.map((p, idx) => {
+                        const accent = recommendationAccent(p, idx);
+                        const AccentIcon = accent.icon;
+                        return (
+                          <article
+                            key={p.id}
+                            className="group rounded-2xl border border-slate-200/60 bg-white p-4 shadow-sm transition-all hover:border-primary/30"
+                          >
+                            <div className="mb-3 h-24 overflow-hidden rounded-xl bg-slate-100">
+                              <img
+                                src={poiImageErrors[p.id] ? generatedPoiImage(p) : resolvePoiImageUrl(p.imageUrl) || generatedPoiImage(p)}
+                                alt={p.name}
+                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                loading="lazy"
+                                onError={(event) => {
+                                  if (poiImageErrors[p.id]) return;
+                                  setPoiImageErrors((prev) => ({ ...prev, [p.id]: true }));
+                                  event.currentTarget.src = generatedPoiImage(p);
+                                }}
+                              />
                             </div>
-                            <p className="text-on-surface-variant text-xs mt-1 truncate">
-                              {p.category ?? 'Curated'}
-                              {p.rating ? ` - ${p.rating.toFixed(1)}⭐` : ''}
-                            </p>
-                            {(p.address || p.city) && (
-                              <p className="text-on-surface-variant text-xs mt-2 truncate">
-                                {[p.address, p.city].filter(Boolean).join(' · ')}
-                              </p>
-                            )}
+                            <h4 className="truncate text-sm font-bold text-on-surface">{p.name}</h4>
+                            <div className="mt-2 flex items-center justify-between gap-3 text-[11px]">
+                              <span className="truncate font-medium text-slate-500">
+                                {[p.address, p.city].filter(Boolean).join(' · ') || p.category || 'Curated'}
+                              </span>
+                              <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-bold', accent.tone)}>
+                                <AccentIcon className="h-3.5 w-3.5" />
+                                {mode === 'route' ? `Stop ${idx + 1}` : accent.label}
+                              </span>
+                            </div>
                             {mode === 'poi' && (
                               <button
                                 type="button"
                                 onClick={() => void routeToSinglePoi(p)}
                                 disabled={planningKey !== null}
-                                className="w-full mt-3 py-2 rounded-full bg-primary text-white font-semibold text-xs flex items-center justify-center gap-2 active:scale-95 transition-transform disabled:opacity-70"
+                                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2.5 text-xs font-extrabold uppercase tracking-[0.14em] text-white transition-transform active:scale-95 disabled:opacity-70"
                               >
                                 <Send className="h-3.5 w-3.5" />
-                                {planningKey === p.id ? 'Routing there...' : 'Show route there'}
+                                {planningKey === p.id ? 'Routing...' : 'Show route'}
                               </button>
                             )}
-                          </div>
-                        </div>
-                      ))}
+                          </article>
+                        );
+                      })}
                     </div>
 
                     {mode === 'route' && (
